@@ -1,0 +1,31 @@
+[
+    {
+        "id": 1,
+        "name": "Exciter 155 VVA phiên bản cao cấp ABS mới",
+        "price": 54000000,
+        "images": [
+            "EXCITER155.webp",
+            "qJeans11.webp",
+            "qJeans12.webp"
+        ]
+    },
+    {
+        "id": 2,
+        "name": "VARIO 160",
+        "price": 150,
+        "images": [
+            "vario160.png",
+            "image4.jpg"
+        ]
+    },
+    {
+        "id": 1,
+        "name": "Janus phiên bản tiêu chuẩn",
+        "price": 350000,
+        "images": [
+            "Janus-standard.webp",
+            "qJeans11.webp",
+            "qJeans12.webp"
+        ]
+    }
+]
