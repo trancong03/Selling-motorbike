@@ -1,7 +1,7 @@
 import { BellRing, FilePenIcon, Heart, HomeIcon, LogOut, NotebookText, Search, SettingsIcon, ShoppingCart, UserCircle } from "lucide-react";
 import React, { useState, useEffect, useRef } from "react";
 
-export default function Header() {
+export default function Header({ onLoginClick, userInfo, setUserInfo }) {
   const [isSticky, setIsSticky] = useState(false);
   const [activeLink, setActiveLink] = useState("home");
   const[isLoggedIn, setIsLoggedIn] = useState(false);
@@ -37,11 +37,14 @@ export default function Header() {
   const handleAuthClick = () => {
     if (isLoggedIn) {
       console.log("Đăng xuất thành công");
+      setUserInfo(null); // Đặt lại thông tin người dùng
+      setIsLoggedIn(false); // Cập nhật trạng thái đăng nhập
     } else {
-      console.log("Đăng nhập thành công");
+      onLoginClick();
     }
     setIsLoggedIn(!isLoggedIn);
     setIsMenuOpen(false);
+    
   };
   return (
     <div className={`transition-all duration-300 ${isSticky ? 'fixed top-0 left-0 w-full shadow-md z-50' : ''}`}>
@@ -143,7 +146,7 @@ export default function Header() {
                 }`}
             >
               <UserCircle size={24} />
-              Tài khoản
+              {userInfo ? userInfo.full_name : "Tài khoản"}
             </a>
 
             {/* Menu con bên dưới */}
