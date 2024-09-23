@@ -18,9 +18,7 @@ export default function Home() {
       <div className="grid grid-cols-4 m-[5%]">
         {listProduct.map((product) => {
           return (
-            
             <CartItem 
-            
               key={product.id}
               name={product.name}
               price={product.price}
