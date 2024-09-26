@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Banner from "../Components/Banner";
+import Banner from "../Components/Header/Banner";
 import CartItem from "../Components/ui/cartItem";
 
 

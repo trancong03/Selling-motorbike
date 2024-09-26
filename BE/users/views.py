@@ -1,36 +1,17 @@
-import pyodbc
-import json 
+import json
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-
-def get_connection():
-    conn = pyodbc.connect(
-        'DRIVER={ODBC Driver 17 for SQL Server};'
-        'SERVER=localhost;'
-        'DATABASE=test;'
-        'UID=sa;'
-        'PWD=123;'
-    )
-    return conn
+from .models import NguoiDung
+from .serializers import NguoiDungSerializer
 
 @csrf_exempt
 def get_all_users(request):
     if request.method == 'GET':
-        conn = get_connection()
-        cursor = conn.cursor()
+        users = NguoiDung.objects.all()  # Sử dụng model để lấy tất cả người dùng
+        serializer = NguoiDungSerializer(users, many=True)  # Serialize danh sách người dùng
+        return JsonResponse({'users': serializer.data}, safe=False)
 
-        # Truy vấn tất cả user từ bảng users
-        query = """
-        SELECT full_name, age
-        FROM users
-        """
-        cursor.execute(query)
-        results = cursor.fetchall()
-
-        # Chuyển đổi kết quả thành danh sách các dict
-        users = [{'full_name': row[0], 'age': row[1]} for row in results]
-
-        return JsonResponse({'users': users}, safe=False)
+    return JsonResponse({'error': 'Method not allowed'}, status=405)
 
 @csrf_exempt
 def login(request):
@@ -39,22 +20,11 @@ def login(request):
         username = data.get('username')
         password = data.get('password')
 
-        conn = get_connection()
-        cursor = conn.cursor()
-
-        query = """
-        SELECT full_name, age 
-        FROM users 
-        WHERE username=? AND password=?
-        """
-        cursor.execute(query, (username, password))
-        result = cursor.fetchone()
-
-        if result:
-            full_name, age = result
-            return JsonResponse({'full_name': full_name, 'age': age})
-        else:
+        try:
+            user = NguoiDung.objects.get(username=username, password=password)  # Tìm người dùng
+            serializer = NguoiDungSerializer(user)  # Serialize thông tin người dùng
+            return JsonResponse({'user': serializer.data}, status=200)
+        except NguoiDung.DoesNotExist:
             return JsonResponse({'error': 'Invalid credentials'}, status=401)
-    
-    # Nếu không phải là POST, trả về lỗi 405 Method Not Allowed
+
     return JsonResponse({'error': 'Method not allowed'}, status=405)

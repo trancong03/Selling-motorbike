@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import '../Style/login.css';
+import '../../Style/login.css';
 import { FaFacebookF, FaGooglePlusG } from 'react-icons/fa';
 import { BadgeX } from 'lucide-react';
 
@@ -46,6 +46,7 @@ const DN = ({ closeLogin, onLoginSuccess }) => {
             }
             const data = await response.json();
             onLoginSuccess(data);
+            
         } catch (err) {
             setError(err.message);
         }

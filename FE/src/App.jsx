@@ -1,19 +1,19 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./App.css";
 import "swiper/css";
 import "swiper/css/free-mode";
 import "swiper/css/pagination";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Footer from "./Components/Footer";
-import ErrorPage from "./Components/ErrorPage";
-import Navbar from "./Components/Navbar";
-import Header from "./Components/Header";
-import DN from './Components/DN';
+import Footer from "./Components/Footer/Footer";
+import ErrorPage from "./Components/Footer/ErrorPage";
+import Header from "./Components/Header/Header";
+import DN from './Components/Header/DN';
 import Home from "./Pages/Home";
+import Account from "./Pages/Account";
 
 function App() {
   const [showLogin, setShowLogin] = useState(false);
-  const [userInfo, setUserInfo] = useState(null); // Lưu trữ thông tin người dùng
+  const [userInfo, setUserInfo] = useState({}); // Lưu trữ thông tin người dùng
 
   const handleLoginClick = () => {
     setShowLogin(true); // Khi click nút "Login", hiển thị DN
@@ -24,13 +24,17 @@ function App() {
   };
 
   const handleLoginSuccess = (data) => {
-    setUserInfo(data); // Cập nhật thông tin người dùng
+    setUserInfo(data.user); // Cập nhật thông tin người dùng
+    localStorage.setItem('userInfo', JSON.stringify(data.user));
     setShowLogin(false); // Đóng form đăng nhập
   };
-  const handleLogout = () => {
-    setUserInfo(null); // Xóa thông tin người dùng khi đăng xuất
-  };
-
+ 
+  useEffect(() => {
+    const storedUserInfo = localStorage.getItem('userInfo');
+    if (storedUserInfo) {
+      setUserInfo(JSON.parse(storedUserInfo)); // Tải thông tin từ localStorage
+    }
+  }, []);
   return (
     <>
       <BrowserRouter>
@@ -39,6 +43,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="*" element={<ErrorPage />} />
+          <Route path="/account" element={<Account user = {userInfo} setUserInfo={setUserInfo} />}/>
         </Routes>
       </BrowserRouter>
       <Footer />
