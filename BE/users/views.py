@@ -10,7 +10,6 @@ def get_all_users(request):
         users = NguoiDung.objects.all()  # Sử dụng model để lấy tất cả người dùng
         serializer = NguoiDungSerializer(users, many=True)  # Serialize danh sách người dùng
         return JsonResponse({'users': serializer.data}, safe=False)
-
     return JsonResponse({'error': 'Method not allowed'}, status=405)
 
 @csrf_exempt
