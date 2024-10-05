@@ -1,16 +1,23 @@
-import React from 'react'
+import React, { useState } from 'react'
 import NavigationAccount from '../Components/userUI/navigationAccount';
 import ResetPassWord from '../Components/userUI/ResetPassWord';
+import LocationSelector from '../Components/ui/LocationSelector';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlay } from '@fortawesome/free-solid-svg-icons';
 
 export default function Account({user,setUserInfo}) {
-    const handleChange = (e) => {
+    const [showLocationSelector, setShowLocationSelector] = useState(false);
+
+    const toggleLocationSelector = () => {
+        setShowLocationSelector(!showLocationSelector);
+    };
+    const updateAddress = (address) => {
         setUserInfo({
             ...user,
-            [e.target.name]: e.target.value
+            address: address
         });
+        toggleLocationSelector(); // Đóng modal sau khi cập nhật địa chỉ
     };
-    console.log(user);
-    
   return (
       <div className=" mx-auto w-full bg-white shadow-lg rounded-md flex justify-start items-start gap-4">
             <NavigationAccount user={user}/>
@@ -36,7 +43,7 @@ export default function Account({user,setUserInfo}) {
                               id="name"
                               name="name"
                               value={user.fullname}
-                              onChange={handleChange}
+                              onChange={(e) => setUserInfo({ ...user, fullname: e.target.value })}
                               className="w-full focus:outline-none "
                           />
                       </div>
@@ -49,6 +56,7 @@ export default function Account({user,setUserInfo}) {
                               id="phone"
                               name="phone"
                               value={user.phone}
+
                               disabled
                               className="w-full "
                           />
@@ -65,7 +73,7 @@ export default function Account({user,setUserInfo}) {
                           id="nickname"
                           name="nickname"
                           value={user.email}
-                          onChange={handleChange}
+                            onChange={(e) => setUserInfo({ ...user, email: e.target.value })}
                           className="w-full focus:outline-none "
                       />
                   </div>
@@ -74,16 +82,19 @@ export default function Account({user,setUserInfo}) {
                       <label className="block text-sm text-slate-400  font-bold">
                          Địa chỉ <span className="text-red-500">*</span>
                       </label>
-                      <input
-                          type="text"
-                          id="address"
-                          name="address"
-                          value={user.address}
-                          onChange={handleChange}
-                          className="w-full focus:outline-none "
-                      />
+                      <div className='flex text-slate-500'>
+                          <input
+                              type="text"
+                              id="address"
+                              name="address"
+                              value={user.address}
+                              onChange={(e) => setUserInfo({ ...user, address: e.target.value })}
+                              onClick={toggleLocationSelector}
+                              className="w-full focus:outline-none "
+                          />
+                          <FontAwesomeIcon icon={faPlay} />
+                      </div>
                   </div>
-                  
                  
               </div>
               <div className="relative mt-3">
@@ -91,7 +102,7 @@ export default function Account({user,setUserInfo}) {
                     CCCD / CMND / Hộ Chiếu <span className="text-red-500">*</span>
                   </label>
                   <input className="block w-full px-4 py-2 text-gray-500 bg-white border border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      value={user.identity_card} onChange={(e) => setUserInfo({ ...user, gender: e.target.value })} > 
+                      value={user.identity_card} onChange={(e) => setUserInfo({ ...user, identity_card: e.target.value })} > 
                       
                   </input>
                   
@@ -131,7 +142,7 @@ export default function Account({user,setUserInfo}) {
                           id="introduction"
                           name="introduction"
                           value={user.discription}
-                          onChange={handleChange}
+                          onChange={(e) => setUserInfo({ ...user, discription: e.target.value })} 
                           rows="4"
                           placeholder="Viết vài dòng giới thiệu về gian hàng của bạn..."
                           className="w-full focus:outline-none ">
@@ -146,9 +157,24 @@ export default function Account({user,setUserInfo}) {
                   </p>
               </div>
                  <ResetPassWord/>
+              {showLocationSelector && (
+                  <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+                      <div className="bg-white p-6 rounded-md w-[50vw] relative">
+                          <button
+                              className="absolute top-2 right-2 text-gray-500"
+                              onClick={toggleLocationSelector}
+                              style={{ fontSize: '2.5rem' }}  // Kích thước tùy chỉnh
+                          >
+                              &times;
+                          </button>
+                          <LocationSelector updateAddress={updateAddress} /> {/* Hiển thị component LocationSelector */}
+                      </div>
+                  </div>
+              )}   
               <br />
               <br />
           </div>
+          
       </div>
   )
 }
