@@ -7,7 +7,6 @@ import { faPlay } from '@fortawesome/free-solid-svg-icons';
 
 export default function Account({user,setUserInfo}) {
     const [showLocationSelector, setShowLocationSelector] = useState(false);
-
     const toggleLocationSelector = () => {
         setShowLocationSelector(!showLocationSelector);
     };
@@ -18,6 +17,29 @@ export default function Account({user,setUserInfo}) {
         });
         toggleLocationSelector(); // Đóng modal sau khi cập nhật địa chỉ
     };
+    const saveUserInfo = async () => {
+        try {
+            const response = await fetch(`http://localhost:8000/api/users/${user.iduser}/`, {
+                method: 'PUT',  // Bạn có thể dùng 'PATCH' nếu chỉ cập nhật một số trường
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(user),  // Gửi toàn bộ thông tin người dùng
+            });
+
+            if (!response.ok) {
+                throw new Error('Something went wrong!');
+            }
+
+            const result = await response.json();
+            console.log('User updated:', result);
+            alert('Thông tin đã được cập nhật!');
+        } catch (error) {
+            console.error('Error updating user:', error);
+            alert('Có lỗi xảy ra khi cập nhật thông tin!');
+        }
+    };
+
   return (
       <div className=" mx-auto w-full bg-white shadow-lg rounded-md flex justify-start items-start gap-4">
             <NavigationAccount user={user}/>
@@ -149,7 +171,7 @@ export default function Account({user,setUserInfo}) {
                       </textarea>
                       <span className="text-xs text-gray-500">Tối đa 60 từ</span>
                   </div>
-                  <button className="w-[15vw] mb-3 bg-orange-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50">
+                  <button onClick={saveUserInfo}  className="w-[15vw] mb-3 bg-orange-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50">
                      Thay đổi thông tin
                   </button>
                   <p className=" block text-xs text-gray-500 mt-1">

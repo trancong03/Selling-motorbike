@@ -16,7 +16,6 @@ const DN = ({ closeLogin, onLoginSuccess }) => {
             setError("Username và Password không được để trống.");
             return;
         }
-
         // Kiểm tra định dạng username (ví dụ: không chứa ký tự đặc biệt)
         const usernameRegex = /^[a-zA-Z0-9_]+$/;
         if (!usernameRegex.test(username)) {
@@ -60,7 +59,6 @@ const DN = ({ closeLogin, onLoginSuccess }) => {
         setIsRightPanelActive(false);
     };
 
-    // Đóng form khi nhấn ra ngoài khu vực form
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (formRef.current && !formRef.current.contains(event.target)) {

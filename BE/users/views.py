@@ -27,3 +27,30 @@ def login(request):
             return JsonResponse({'error': 'Invalid credentials'}, status=401)
 
     return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+@csrf_exempt
+def update_user(request, id):
+    if request.method == 'PUT':
+        try:
+            user = NguoiDung.objects.get(iduser=id.strip())  # Loại bỏ khoảng trắng
+            data = json.loads(request.body)
+
+            # Cập nhật thông tin người dùng
+            user.fullname = data.get('fullname', user.fullname)
+            user.email = data.get('email', user.email)
+            user.address = data.get('address', user.address)
+            user.phone = data.get('phone', user.phone)
+            user.gender = data.get('gender', user.gender)
+            user.identity_card = data.get('identity_card', user.identity_card)
+            user.discription = data.get('discription', user.discription)
+            user.birthdate = data.get('birthdate', user.birthdate)
+
+            user.save()  # Lưu thay đổi
+
+            serializer = NguoiDungSerializer(user)
+            return JsonResponse(serializer.data, status=200)
+
+        except NguoiDung.DoesNotExist:
+            return JsonResponse({'error': 'User not found'}, status=404)
+
+    return JsonResponse({'error': 'Method not allowed'}, status=405)
