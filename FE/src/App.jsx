@@ -10,44 +10,71 @@ import Header from "./Components/Header/Header";
 import DN from './Components/Header/DN';
 import Home from "./Pages/Home";
 import Account from "./Pages/Account";
+import InfomationAccount from "./Components/userUI/InfomationAccount";
+import ResetPassWord from "./Components/userUI/ResetPassWord";
+import ForgotPassword from "./Components/userUI/ForgotPassword";
 
 function App() {
   const [showLogin, setShowLogin] = useState(false);
-  const [userInfo, setUserInfo] = useState({}); // Lưu trữ thông tin người dùng
+  const [userInfo, setUserInfo] = useState({});
+  const [isForgotPasswordVisible, setIsForgotPasswordVisible] = useState(false);
 
   const handleLoginClick = () => {
-    setShowLogin(true); // Khi click nút "Login", hiển thị DN
+    setShowLogin(true);
+    setIsForgotPasswordVisible(false); // Đảm bảo quên mật khẩu không được hiển thị khi đăng nhập
   };
 
   const closeLogin = () => {
-    setShowLogin(false); // Đóng form đăng nhập
+    setShowLogin(false);
+    setIsForgotPasswordVisible(false); // Đóng cả hai khi thoát
+  };
+  const closeForgotPassword = () => {
+    setIsForgotPasswordVisible(false); // Đóng cả hai khi thoát
   };
 
+
   const handleLoginSuccess = (data) => {
-    setUserInfo(data.user); // Cập nhật thông tin người dùng
+    setUserInfo(data.user);
     localStorage.setItem('userInfo', JSON.stringify(data.user));
-    setShowLogin(false); // Đóng form đăng nhập
+    setShowLogin(false);
   };
- 
+
   useEffect(() => {
     const storedUserInfo = localStorage.getItem('userInfo');
     if (storedUserInfo) {
-      setUserInfo(JSON.parse(storedUserInfo)); // Tải thông tin từ localStorage
+      try {
+        setUserInfo(JSON.parse(storedUserInfo));
+      } catch (error) {
+        console.error('Invalid JSON in localStorage', error);
+      }
     }
   }, []);
+
+  const handleForgotPasswordClick = () => {
+    setIsForgotPasswordVisible(true);
+  };
+
   return (
-    <>
-      <BrowserRouter>
-        <Header userInfo={userInfo} setUserInfo={setUserInfo} onLoginClick={handleLoginClick} className="fixed top-0 left-0 w-full bg-white shadow-md z-50" />
-        {showLogin && <DN closeLogin={closeLogin} onLoginSuccess={handleLoginSuccess}  />}
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="*" element={<ErrorPage />} />
-          <Route path="/account" element={<Account user = {userInfo} setUserInfo={setUserInfo} />}/>
-        </Routes>
-      </BrowserRouter>
+    <BrowserRouter>
+      <Header userInfo={userInfo} setUserInfo={setUserInfo} onLoginClick={handleLoginClick} className="fixed top-0 left-0 w-full bg-white shadow-md z-50" />
+      {showLogin && (
+        <DN
+          closeLogin={closeLogin}
+          onLoginSuccess={handleLoginSuccess}
+          onForgotPassword={handleForgotPasswordClick}
+        />
+      )}
+      {isForgotPasswordVisible && <ForgotPassword closeForgotPassword={closeForgotPassword} />}
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/account/*" element={<Account user={userInfo} setUserInfo={setUserInfo} />}>
+          <Route path="info" element={<InfomationAccount user={userInfo} setUserInfo={setUserInfo} />} />
+          <Route path="reset-password" element={<ResetPassWord user={userInfo} />} />
+        </Route>
+        <Route path="*" element={<ErrorPage />} />
+      </Routes>
       <Footer />
-    </>
+    </BrowserRouter>
   );
 }
 

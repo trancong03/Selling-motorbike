@@ -5,21 +5,18 @@ import { useNavigate } from 'react-router-dom';
 export default function Header({ onLoginClick, userInfo, setUserInfo,  }) {
   const [isSticky, setIsSticky] = useState(false);
   const [activeLink, setActiveLink] = useState("home");
-  const [isLoggedIn, setIsLoggedIn] = useState(userInfo?true:false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef(null);
   const navigate = useNavigate();
 
   const handleSettingsClick = () => {
-    if(!userInfo){
+    if ( userInfo == null || !userInfo){
       onLoginClick();
     }
     else{
       navigate('/account');
     }
   };
-
-    // Đóng menu khi nhấp ra ngoài
     useEffect(() => {
       const handleClickOutside = (event) => {
         if (menuRef.current && !menuRef.current.contains(event.target)) {
@@ -34,7 +31,7 @@ export default function Header({ onLoginClick, userInfo, setUserInfo,  }) {
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 100) { // Adjust this value based on your header height
+      if (window.scrollY > 100) {
         setIsSticky(true);
       } else {
         setIsSticky(false);
@@ -46,15 +43,17 @@ export default function Header({ onLoginClick, userInfo, setUserInfo,  }) {
     };
   }, []);
   const handleAuthClick = () => {
-    if (isLoggedIn) {
-      setUserInfo(null); // Đặt lại thông tin người dùng
-      setIsLoggedIn(false); // Cập nhật trạng thái đăng nhập
-    } else {
+    if (userInfo!=null||userInfo) {
+      setUserInfo(null);
+      localStorage.removeItem('userInfo'); 
+      navigate('/');
+    }
+    if (userInfo == null || !userInfo.fullname) {
       onLoginClick();
     }
-    setIsLoggedIn(!isLoggedIn);
-    setIsMenuOpen(false);
+    setIsMenuOpen(false); // Đóng menu
   };
+
   return (
     <div className={`transition-all duration-300 ${isSticky ? 'fixed top-0 left-0 w-full shadow-md z-50' : ''}`}>
       <div className=" h-20 flex items-center bg-yellow-300 p-3 ">
@@ -142,12 +141,11 @@ export default function Header({ onLoginClick, userInfo, setUserInfo,  }) {
         </div>
         <div className="px-3 py-2 h-10 w-[20vw] bg-transparent rounded-3xl flex items-center justify-start relative ">
           <nav className="relative">
-            {/* Nút Đăng nhập */}
             <a
               href="#"
               onClick={() => {
                 setActiveLink("dn");
-                setIsMenuOpen(!isMenuOpen); // Hiển thị/ẩn menu con khi nhấp
+                setIsMenuOpen(!isMenuOpen); 
               }}
               className={`text-[#5b5858cc] flex gap-2 items-center font-arial px-3 py-2 ${activeLink === "dn"
                 ? "text-black font-bold"
@@ -156,13 +154,11 @@ export default function Header({ onLoginClick, userInfo, setUserInfo,  }) {
             >
             
               <img
-                src={userInfo ? `image/${userInfo.avatar}` : "/image/icon.png"}
-                alt=""
+                src={userInfo && userInfo.avatar ? `/image/${userInfo.avatar}` : "/image/icon.png"}
+                alt="User Avatar"
                 className="w-12 h-12 rounded-full"
               />
-
               {userInfo?.fullname || "Tài khoản"}
-
             </a>
 
             {/* Menu con bên dưới */}
@@ -180,7 +176,7 @@ export default function Header({ onLoginClick, userInfo, setUserInfo,  }) {
                   <li className="py-2 px-3 hover:bg-gray-100">
                     <button className="w-full text-left flex items-center gap-2" onClick={handleAuthClick}>
                       <LogOut/>
-                      {userInfo ? "Logout" : "Login"}
+                      {userInfo == null || !userInfo.fullname ? "Login" : "Logout"}
                     </button>
                   </li>
                 </ul>

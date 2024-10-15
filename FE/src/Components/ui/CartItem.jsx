@@ -1,8 +1,6 @@
 import React from 'react';
 
 export default function CartItem({ name, price, images = [] }) {
-    console.log(images);
-
     return (
         <div className='w-[20vw] bg-[#f3f3f3] rounded-2xl ml-3 mb-5'>
             <div className='flex items-center justify-center flex-col'>
@@ -14,7 +12,7 @@ export default function CartItem({ name, price, images = [] }) {
                 <div className='flex gap-4 m-3'>
                     {
                         images.map((image, index) => (
-                           <button>
+                           <button key={index}>
                                 <img className='w-[3rem] h-[3rem] rounded-md' key={index} src={`image/${image}`} alt={name} />
                            </button> 
                         ))

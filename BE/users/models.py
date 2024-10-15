@@ -1,5 +1,4 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser
 
 class NguoiDung(models.Model):
     GENDER_CHOICES = [
@@ -24,7 +23,7 @@ class NguoiDung(models.Model):
     balance = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
 
     class Meta:
-        db_table = 'NguoiDung' 
+        db_table = 'NguoiDung'
     
     def __str__(self):
         return self.fullname
