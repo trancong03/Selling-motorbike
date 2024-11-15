@@ -7,29 +7,29 @@ export default function InfomationAccount({ user, setUserInfo }) {
     const toggleLocationSelector = () => {
         setShowLocationSelector(!showLocationSelector);
     };
-    const updateAddress = (address) => {
+    const updatediachi = (diachi) => {
         setUserInfo({
             ...user,
-            address: address
+            diachi: diachi
         });
         toggleLocationSelector();
     };
     const saveUserInfo = async () => {
         try {
-            const response = await fetch(`http://localhost:8000/api/users/${user.iduser.trim()}/`, {
+            const response = await fetch(`http://localhost:8000/api/users/${user.manguoidung}/`, {
                 method: 'PUT',  // Thay bằng 'PATCH' nếu chỉ cập nhật một số trường
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    fullname: user.fullname,
+                    hoten: user.hoten,
                     email: user.email,
-                    address: user.address,
-                    phone: user.phone,
-                    gender: user.gender,
-                    identity_card: user.identity_card,
-                    discription: user.discription,
-                    birthdate: user.birthdate,
+                    diachi: user.diachi,
+                    sodienthoai: user.sodienthoai,
+                    gioitinh: user.gioitinh,
+                    socccd: user.socccd,
+                    mota: user.mota,
+                    ngaysinh: user.ngaysinh,
                 }),
             });
 
@@ -68,8 +68,8 @@ export default function InfomationAccount({ user, setUserInfo }) {
                           type="text"
                           id="name"
                           name="name"
-                          value={user.fullname || ""}
-                          onChange={(e) => setUserInfo({ ...user, fullname: e.target.value })}
+                          value={user.hoten || ""}
+                          onChange={(e) => setUserInfo({ ...user, hoten: e.target.value })}
                           className="w-full focus:outline-none text-slate-400  font-bold"
                       />
                   </div>
@@ -79,9 +79,9 @@ export default function InfomationAccount({ user, setUserInfo }) {
                       </label>
                       <input
                           type="text"
-                          id="phone"
-                          name="phone"
-                          value={user.phone || ""}
+                          id="sodienthoai"
+                          name="sodienthoai"
+                          value={user.sodienthoai || ""}
 
                           disabled
                           className="w-full text-slate-400  font-bold"
@@ -111,10 +111,10 @@ export default function InfomationAccount({ user, setUserInfo }) {
                   <div className='flex text-slate-500'>
                       <input
                           type="text"
-                          id="address"
-                          name="address"
-                          value={user.address || ""}
-                          onChange={(e) => setUserInfo({ ...user, address: e.target.value })}
+                          id="diachi"
+                          name="diachi"
+                          value={user.diachi || ""}
+                          onChange={(e) => setUserInfo({ ...user, diachi: e.target.value })}
                           onClick={toggleLocationSelector}
                           className="w-full focus:outline-none "
                       />
@@ -128,7 +128,7 @@ export default function InfomationAccount({ user, setUserInfo }) {
                   CCCD / CMND / Hộ Chiếu <span className="text-red-500">*</span>
               </label>
               <input className="block w-full px-4 py-2 text-gray-500 bg-white border border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  value={user.identity_card || ""} onChange={(e) => setUserInfo({ ...user, identity_card: e.target.value })} >
+                  value={user.socccd || ""} onChange={(e) => setUserInfo({ ...user, socccd: e.target.value })} >
               </input>
 
           </div>
@@ -136,10 +136,10 @@ export default function InfomationAccount({ user, setUserInfo }) {
               <div className="relative">
                   <select
                       className="block w-full px-4 py-2 text-gray-500 bg-white border border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      value={user.gender || ""}
+                      value={user.gioitinh || ""}
                       onChange={(e) => {
                           if (user) {
-                              setUserInfo({ ...user, gender: e.target.value });
+                              setUserInfo({ ...user, gioitinh: e.target.value });
                           }
                       }}
                   >
@@ -159,8 +159,8 @@ export default function InfomationAccount({ user, setUserInfo }) {
 
               <div className="relative">
                   <input type="date"
-                      value={user.birthdate || ""}
-                      onChange={(e) => setUserInfo({ ...user, birthdate: e.target.value })}
+                      value={user.ngaysinh || ""}
+                      onChange={(e) => setUserInfo({ ...user, ngaysinh: e.target.value })}
                       className="block w-full px-4 py-2 text-gray-500 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
 
               </div>
@@ -173,8 +173,8 @@ export default function InfomationAccount({ user, setUserInfo }) {
                   <textarea
                       id="introduction"
                       name="introduction"
-                      value={user.discription || ""}
-                      onChange={(e) => setUserInfo({ ...user, discription: e.target.value })}
+                      value={user.mota || ""}
+                      onChange={(e) => setUserInfo({ ...user, mota: e.target.value })}
                       rows="4"
                       placeholder="Viết vài dòng giới thiệu về gian hàng của bạn..."
                       className="w-full focus:outline-none text-slate-400  font-bold ">
@@ -198,7 +198,7 @@ export default function InfomationAccount({ user, setUserInfo }) {
                       >
                           &times;
                       </button>
-                      <LocationSelector updateAddress={updateAddress} /> {/* Hiển thị component LocationSelector */}
+                      <LocationSelector updatediachi={updatediachi} /> {/* Hiển thị component LocationSelector */}
                   </div>
               </div>
           )}

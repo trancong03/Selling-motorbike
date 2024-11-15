@@ -2,6 +2,11 @@ from users.repositories.user_repositorie import UserRepository
 from users.models import NguoiDung
 from django.core.cache import cache
 class UserService:
+
+    @staticmethod
+    def get_user_by_id(iduser):
+        return UserRepository.get_user_by_id(iduser)
+
     @staticmethod
     def update_images(user: NguoiDung, avatar_name=None, background_name=None):
         UserRepository.update_images(user, avatar_name, background_name)
@@ -27,9 +32,7 @@ class UserService:
     def reset_password_forgot(email, new_password):
        user:NguoiDung = UserRepository.get_user_by_email(email)
        return UserRepository.reset_password_forgot(user, new_password)
-    @staticmethod
-    def get_user_by_id(iduser):
-        return UserRepository.get_user_by_id(iduser)
+   
     
     @staticmethod
     def update_user_info(user: NguoiDung, data):

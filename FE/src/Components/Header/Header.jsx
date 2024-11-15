@@ -48,11 +48,12 @@ export default function Header({ onLoginClick, userInfo, setUserInfo,  }) {
       localStorage.removeItem('userInfo'); 
       navigate('/');
     }
-    if (userInfo == null || !userInfo.fullname) {
+    if (userInfo == null || !hoten) {
       onLoginClick();
     }
     setIsMenuOpen(false); // Đóng menu
   };
+console.log(userInfo);
 
   return (
     <div className={`transition-all duration-300 ${isSticky ? 'fixed top-0 left-0 w-full shadow-md z-50' : ''}`}>
@@ -154,11 +155,11 @@ export default function Header({ onLoginClick, userInfo, setUserInfo,  }) {
             >
             
               <img
-                src={userInfo && userInfo.avatar ? `/image/${userInfo.avatar}` : "/image/icon.png"}
-                alt="User Avatar"
+                src={userInfo && userInfo.anhdaidien ? `/image/${userInfo.anhdaidien}` : "/image/icon.png"}
+                alt="User anhdaidien"
                 className="w-12 h-12 rounded-full"
               />
-              {userInfo?.fullname || "Tài khoản"}
+              {userInfo?.hoten || "Tài khoản"}
             </a>
 
             {/* Menu con bên dưới */}
@@ -176,7 +177,7 @@ export default function Header({ onLoginClick, userInfo, setUserInfo,  }) {
                   <li className="py-2 px-3 hover:bg-gray-100">
                     <button className="w-full text-left flex items-center gap-2" onClick={handleAuthClick}>
                       <LogOut/>
-                      {userInfo == null || !userInfo.fullname ? "Login" : "Logout"}
+                      {userInfo == null || !userInfo.hoten ? "Login" : "Logout"}
                     </button>
                   </li>
                 </ul>

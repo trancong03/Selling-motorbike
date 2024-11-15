@@ -3,10 +3,24 @@ import random
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
-from .services.user_service import UserService
-from .serializers import NguoiDungSerializer
+from ..services.user_service import UserService
+from ..serializers import NguoiDungSerializer
 from django.core.mail import send_mail
 from django.conf import settings
+
+@csrf_exempt
+@require_http_methods(['PUT'])
+def update_user(request, id):
+    user = UserService.get_user_by_id(id)
+    if not user:
+        return JsonResponse({'error': 'User not found'}, status=404)
+    try:
+        data = json.loads(request.body)
+    except json.JSONDecodeError:
+        return JsonResponse({'error': 'Invalid JSON'}, status=400)
+    user = UserService.update_user_info(user, data)
+    serializer = NguoiDungSerializer(user)
+    return JsonResponse(serializer.data, status=200)
 @csrf_exempt
 def login(request):
     if request.method == 'POST':
@@ -22,18 +36,6 @@ def login(request):
     return JsonResponse({'error': 'Method not allowed'}, status=405)
 
 @csrf_exempt
-@require_http_methods(['PUT'])
-def update_user(request, id):
-    user = UserService.get_user_by_id(id.strip())
-    if not user:
-        return JsonResponse({'error': 'User not found'}, status=404)
-    try:
-        data = json.loads(request.body)
-    except json.JSONDecodeError:
-        return JsonResponse({'error': 'Invalid JSON'}, status=400)
-    user = UserService.update_user_info(user, data)
-    serializer = NguoiDungSerializer(user)
-    return JsonResponse(serializer.data, status=200)
 
 @csrf_exempt
 @require_http_methods(['POST'])

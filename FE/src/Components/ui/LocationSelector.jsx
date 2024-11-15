@@ -2,14 +2,14 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretDown, faPlay } from '@fortawesome/free-solid-svg-icons';
-const LocationSelector = ({ updateAddress }) => {
+const LocationSelector = ({ updatediachi }) => {
     const [tinh, setTinh] = useState([]);
     const [quan, setQuan] = useState([]);
     const [phuong, setPhuong] = useState([]);
     const [selectedTinh, setSelectedTinh] = useState('');
     const [selectedQuan, setSelectedQuan] = useState('');
     const [selectedPhuong, setSelectedPhuong] = useState('');
-    const [addressDetail, setAddressDetail] = useState('');
+    const [diachiDetail, setdiachiDetail] = useState('');
 
     // Lưu tên đầy đủ cho tỉnh, quận, phường
     const [tinhName, setTinhName] = useState('');
@@ -43,8 +43,6 @@ const LocationSelector = ({ updateAddress }) => {
                 });
         }
     }, [selectedTinh]);
-
-    // Lấy danh sách phường xã khi quận thay đổi
     useEffect(() => {
         if (selectedQuan) {
             axios.get(`https://esgoo.net/api-tinhthanh/3/${selectedQuan}.htm`)
@@ -60,9 +58,9 @@ const LocationSelector = ({ updateAddress }) => {
     }, [selectedQuan]);
 
     const handleSubmit = () => {
-        const fullAddress = ` ${addressDetail},${phuongName}, ${quanName}, ${tinhName}`;
-        console.log("Địa chỉ đầy đủ:", fullAddress);
-        updateAddress(fullAddress); 
+        const fulldiachi = ` ${diachiDetail},${phuongName}, ${quanName}, ${tinhName}`;
+        console.log("Địa chỉ đầy đủ:", fulldiachi);
+        updatediachi(fulldiachi); 
     };
 
 
@@ -160,8 +158,8 @@ const LocationSelector = ({ updateAddress }) => {
                     <input
                         type="text"
                         className="appearance-none text-xl w-full focus:outline-none focus:border-blue-500"
-                        value={addressDetail}
-                        onChange={(e) => setAddressDetail(e.target.value)}
+                        value={diachiDetail}
+                        onChange={(e) => setdiachiDetail(e.target.value)}
                         placeholder="Nhập địa chỉ cụ thể"
                     />
                 </div>

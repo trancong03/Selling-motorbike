@@ -13,6 +13,7 @@ import Account from "./Pages/Account";
 import InfomationAccount from "./Components/userUI/InfomationAccount";
 import ResetPassWord from "./Components/userUI/ResetPassWord";
 import ForgotPassword from "./Components/userUI/ForgotPassword";
+import { CartProvider } from "./Components/context/CardContext";
 
 function App() {
   const [showLogin, setShowLogin] = useState(false);
@@ -53,29 +54,31 @@ function App() {
   const handleForgotPasswordClick = () => {
     setIsForgotPasswordVisible(true);
   };
-
   return (
-    <BrowserRouter>
-      <Header userInfo={userInfo} setUserInfo={setUserInfo} onLoginClick={handleLoginClick} className="fixed top-0 left-0 w-full bg-white shadow-md z-50" />
-      {showLogin && (
-        <DN
-          closeLogin={closeLogin}
-          onLoginSuccess={handleLoginSuccess}
-          onForgotPassword={handleForgotPasswordClick}
-        />
-      )}
-      {isForgotPasswordVisible && <ForgotPassword closeForgotPassword={closeForgotPassword} />}
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/account/*" element={<Account user={userInfo} setUserInfo={setUserInfo} />}>
-          <Route path="info" element={<InfomationAccount user={userInfo} setUserInfo={setUserInfo} />} />
-          <Route path="reset-password" element={<ResetPassWord user={userInfo} />} />
-        </Route>
-        <Route path="*" element={<ErrorPage />} />
-      </Routes>
-      <Footer />
-    </BrowserRouter>
+    <CartProvider personID={userInfo ? userInfo.iduser : "5"}>
+      <BrowserRouter>
+        <Header userInfo={userInfo} setUserInfo={setUserInfo} onLoginClick={handleLoginClick} className="fixed top-0 left-0 w-full bg-white shadow-md z-50" />
+        {showLogin && (
+          <DN
+            closeLogin={closeLogin}
+            onLoginSuccess={handleLoginSuccess}
+            onForgotPassword={handleForgotPasswordClick}
+          />
+        )}
+        {isForgotPasswordVisible && <ForgotPassword closeForgotPassword={closeForgotPassword} />}
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/account/*" element={<Account user={userInfo} setUserInfo={setUserInfo} />}>
+            <Route path="info" element={<InfomationAccount user={userInfo} setUserInfo={setUserInfo} />} />
+            <Route path="reset-password" element={<ResetPassWord user={userInfo} />} />
+          </Route>
+          <Route path="*" element={<ErrorPage />} />
+        </Routes>
+        <Footer />
+      </BrowserRouter>
+    </CartProvider>
   );
 }
+ 
 
 export default App;

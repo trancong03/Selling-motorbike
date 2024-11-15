@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import '../../Style/login.css';
 import { FaFacebookF, FaGooglePlusG } from 'react-icons/fa';
 import { BadgeX } from 'lucide-react';
+import { getCSRFToken } from './../getCSRFToken';
 const DN = ({ closeLogin, onLoginSuccess, onForgotPassword }) => {
     const [isRightPanelActive, setIsRightPanelActive] = useState(false);
     const formRef = useRef(null); // Dùng để theo dõi khu vực form
@@ -25,10 +26,12 @@ const DN = ({ closeLogin, onLoginSuccess, onForgotPassword }) => {
         }
         setError(""); // Xóa lỗi trước khi gửi
         try {
+            const csrftoken = getCSRFToken();
             const response = await fetch('http://127.0.0.1:8000/api/login/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken
                 },
                 body: JSON.stringify({ username, password }),
             });

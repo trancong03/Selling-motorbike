@@ -6,19 +6,17 @@ const BusinessCard = ({user}) => {
     const toggleVisibility = () => {
         setIsVisible(!isVisible);
     };
+
     return (
         <div className="max-w-md mx-auto bg-white rounded-lg overflow-hidden shadow-md p-4">
             {/* Header Image */}
             <div className="relative">
                 <img
-                src={`image/${user.avatar}`} // Thay bằng URL ảnh của bạn
+                src={`image/${user.anhdaidien}`} // Thay bằng URL ảnh của bạn
                     alt="Ford"
                     className="w-full h-40 object-cover"
                 />
-                <div className="absolute top-3 right-3 bg-black text-white text-xs px-2 py-1 rounded">
-                    Hoạt động 5 ngày trước
-                </div>
-
+              
                 {/* Avatar Image */}
                 <div className="absolute -bottom-8 left-4">
                     <img
@@ -35,7 +33,7 @@ const BusinessCard = ({user}) => {
             </div>
             {/* Profile Info */}
             <div className="mt-3 pl-4">
-                <h2 className="text-xl font-semibold">{user.fullname}</h2>
+                <h2 className="text-xl font-semibold">{user.hoten}</h2>
                 <div className="flex items-center">
                     <span className="text-yellow-500 text-sm">
                         ★★★★★
@@ -44,7 +42,7 @@ const BusinessCard = ({user}) => {
                     <span className="ml-2 text-blue-500">Đã xác thực</span>
                 </div>
                 <p className="text-sm text-gray-600 mt-1">
-                    <FontAwesomeIcon icon={faLocationDot}/> {user.address}
+                    <FontAwesomeIcon icon={faLocationDot}/> {user.diachi}
                 </p>
                 <p className="text-sm text-gray-600 mt-1">
                     <FontAwesomeIcon icon={faEnvelope} />  {user.email}

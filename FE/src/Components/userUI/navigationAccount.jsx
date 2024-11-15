@@ -4,14 +4,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope, faLocationDot, faShare, faPlus } from '@fortawesome/free-solid-svg-icons';
 
 export default function NavigationAccount({ user, setUserInfo }) {
-    const [coverImage, setCoverImage] = useState(`image/${user.background || 'default-cover.jpg'}`); // Thay 'default-cover.jpg' bằng đường dẫn tới hình ảnh mặc định
-    const [avatarImage, setAvatarImage] = useState(`image/${user.avatar || 'default-avatar.jpg'}`); // Thay 'default-avatar.jpg' bằng đường dẫn tới hình ảnh mặc định
+    const [coverImage, setCoverImage] = useState(`image/${user.anhnen || 'default-cover.jpg'}`); // Thay 'default-cover.jpg' bằng đường dẫn tới hình ảnh mặc định
+    const [avatarImage, setAvatarImage] = useState(`image/${user.anhdaidien || 'default-avatar.jpg'}`); // Thay 'default-avatar.jpg' bằng đường dẫn tới hình ảnh mặc định
     const [avatarFile, setAvatarFile] = useState(null);
     const [coverFile, setCoverFile] = useState(null);
 
     useEffect(() => {
-        setCoverImage(`/image/${user.background || 'default-cover.jpg'}`);
-        setAvatarImage(`/image/${user.avatar || 'default-avatar.jpg'}`);
+        setCoverImage(`/image/${user.anhnen || 'default-cover.jpg'}`);
+        setAvatarImage(`/image/${user.anhdaidien || 'default-avatar.jpg'}`);
     }, [user]);
 
 
@@ -60,7 +60,7 @@ export default function NavigationAccount({ user, setUserInfo }) {
         };
     }
     
-    formData.append('iduser', user.iduser);
+    formData.append('iduser', user.manguoidung);
 
     try {
         const response = await fetch('http://localhost:8000/api/update-images/', {
@@ -72,7 +72,6 @@ export default function NavigationAccount({ user, setUserInfo }) {
         
         if (result.success) {
             alert('Images updated successfully');
-            
             // Cập nhật state userInfo và lưu vào localStorage
             setUserInfo(updatedUserInfo);
             localStorage.setItem('userInfo', JSON.stringify(updatedUserInfo)); // Lưu userInfo sau khi state đã được cập nhật
@@ -127,7 +126,7 @@ export default function NavigationAccount({ user, setUserInfo }) {
                 </div>
                 <br />
                 <div className="mt-3 pl-4">
-                    <h2 className="text-xl font-semibold">{user.fullname}</h2>
+                    <h2 className="text-xl font-semibold">{user.hoten}</h2>
                     <div className="flex items-center">
                         <span className="text-yellow-500 text-sm">★★★★☆</span>
                         <span className="ml-2 text-sm">(1 nhận xét)</span>
@@ -137,7 +136,7 @@ export default function NavigationAccount({ user, setUserInfo }) {
                         <h1>Người theo dõi : <b>0</b> |  Đang theo dõi:  <b>0</b></h1>
                     </div>
                     <p className="text-gray-600 mt-2 text-md">
-                        <FontAwesomeIcon icon={faLocationDot} /> {user.address}
+                        <FontAwesomeIcon icon={faLocationDot} /> {user.diachi}
                     </p>
                     <p className="text-sm text-gray-600 mt-2 text-md">
                         <FontAwesomeIcon icon={faEnvelope} />  {user.email}

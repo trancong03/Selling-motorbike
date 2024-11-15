@@ -4,7 +4,7 @@ class UserRepository:
     @staticmethod
     def get_user_by_id(iduser):
         try:
-            return NguoiDung.objects.get(iduser=iduser)
+            return NguoiDung.objects.get(manguoidung=iduser)
         except NguoiDung.DoesNotExist:
             return None
     @staticmethod
@@ -16,20 +16,20 @@ class UserRepository:
     @staticmethod
     def login(username, password):
         try:
-            return NguoiDung.objects.get(username=username, password=password)
+            return NguoiDung.objects.get(tendangnhap=username, matkhau=password)
         except NguoiDung.DoesNotExist:
             return None
 
     @staticmethod
     def update_user_info(user: NguoiDung, data):
-        user.fullname = data.get('fullname', user.fullname)
+        user.hoten = data.get('hoten', user.hoten)
         user.email = data.get('email', user.email)
-        user.address = data.get('address', user.address)
-        user.phone = data.get('phone', user.phone)
-        user.gender = data.get('gender', user.gender)
-        user.identity_card = data.get('identity_card', user.identity_card)
-        user.discription = data.get('discription', user.discription)
-        user.birthdate = data.get('birthdate', user.birthdate)
+        user.diachi = data.get('diachi', user.diachi)
+        user.sodienthoai = data.get('sodienthoai', user.sodienthoai)
+        user.gioitinh = data.get('gioitinh', user.gioitinh)
+        user.socccd = data.get('socccd', user.socccd)
+        user.mota = data.get('mota', user.mota)
+        user.ngaysinh = data.get('ngaysinh', user.ngaysinh)
         user.save()
         return user
     
