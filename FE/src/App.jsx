@@ -14,6 +14,7 @@ import InfomationAccount from "./Components/userUI/InfomationAccount";
 import ResetPassWord from "./Components/userUI/ResetPassWord";
 import ForgotPassword from "./Components/userUI/ForgotPassword";
 import { CartProvider } from "./Components/context/CardContext";
+import ProductDetail from "./Pages/ProductDetail";
 
 function App() {
   const [showLogin, setShowLogin] = useState(false);
@@ -72,6 +73,7 @@ function App() {
             <Route path="info" element={<InfomationAccount user={userInfo} setUserInfo={setUserInfo} />} />
             <Route path="reset-password" element={<ResetPassWord user={userInfo} />} />
           </Route>
+          <Route path="/product-detail" element={<ProductDetail />} />
           <Route path="*" element={<ErrorPage />} />
         </Routes>
         <Footer />

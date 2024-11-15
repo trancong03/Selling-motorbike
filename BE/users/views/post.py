@@ -1,39 +1,17 @@
-import json
 from django.http import JsonResponse
-from ..utils.db import execute_query
+import json
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
+from ..services.post_service import PostService
+
 def get_all_bai_viet(request):
-    # Câu truy vấn SQL sử dụng FOR JSON AUTO
-    query = """
-    SELECT 
-    BAIVIET.*,
-    (SELECT  HINHANH.*  FROM  HINHANH   WHERE   HINHANH.MABAIVIET = BAIVIET.MABAIVIET  FOR JSON PATH) AS HINHANH  ,
-    NGUOIDUNG.*
-    FROM 
-        BAIVIET
-    JOIN 
-        NGUOIDUNG ON BAIVIET.MANGUOIDUNG = NGUOIDUNG.MANGUOIDUNG
-    FOR JSON AUTO;
-
-    """
-    
-    # Thực thi câu truy vấn và lấy kết quả
-    query_result = execute_query(query)
-    
-    # In kết quả để kiểm tra cấu trúc
-    print(query_result)
-
-    # Kiểm tra nếu query_result không phải là danh sách trống
+    query_result = PostService.get_all_bai_viet()
     if query_result and isinstance(query_result, list):
-        # Lấy khóa động đầu tiên từ kết quả
-        if query_result[0]:
-            # Giải nén dữ liệu JSON từ đối tượng trả về
-            dynamic_key = list(query_result[0].keys())[0]  # Lấy khóa đầu tiên trong kết quả JSON
-            json_data_str = query_result[0].get(dynamic_key, '')
-            
-            if json_data_str:
-                # Giải nén chuỗi JSON và trả về dữ liệu
-                cleaned_data = json.loads(json_data_str)
-                return JsonResponse(cleaned_data, safe=False)
-    
-    # Trả về phản hồi lỗi nếu không có dữ liệu hoặc cấu trúc không đúng
+        json_data = query_result[0].get('', '')
+        if json_data:
+            try:
+                parsed_result = json.loads(json_data)
+                return JsonResponse(parsed_result, safe=False)
+            except json.JSONDecodeError:
+                return JsonResponse({"error": "Failed to decode JSON"}, status=500)
     return JsonResponse({"error": "No data found or invalid structure"}, status=404)

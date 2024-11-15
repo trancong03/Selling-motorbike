@@ -2,9 +2,16 @@ import { ShoppingCartIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { FaHeart } from "react-icons/fa";
 import { useCart } from "../context/CardContext";
+import { useNavigate } from "react-router-dom";
 
 export default function CartItem({ Product }) {
+    console.log("nefffff" ,Product);
+    
     const defaultImage = 'default.jpg';
+    const navigate = useNavigate();
+    const handleViewDetails = () => {
+        navigate("/product-detail", { state: { product: Product } });
+    };
     const [isLiked, setIsLiked] = useState(false);
     const { addToCart, likeProduct, isProductLiked } = useCart();
 
@@ -46,8 +53,8 @@ export default function CartItem({ Product }) {
                                 </div>
                             </button>
                             <button
-                                className='w-full h-[3rem] bg-[#1D7E20] text-white font-bold rounded-full mt-3'
-                                // onClick={() => { addToCart(Product) }}
+                                className="w-full h-[3rem] bg-[#1D7E20] text-white font-bold rounded-full mt-3"
+                                onClick={handleViewDetails}
                             >
                                 <div className="flex items-center justify-center gap-2">
                                     <ShoppingCartIcon />
