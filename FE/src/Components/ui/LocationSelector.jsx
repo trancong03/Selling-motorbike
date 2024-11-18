@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCaretDown, faPlay } from '@fortawesome/free-solid-svg-icons';
+import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
+
 const LocationSelector = ({ updatediachi }) => {
     const [tinh, setTinh] = useState([]);
     const [quan, setQuan] = useState([]);
@@ -9,165 +10,198 @@ const LocationSelector = ({ updatediachi }) => {
     const [selectedTinh, setSelectedTinh] = useState('');
     const [selectedQuan, setSelectedQuan] = useState('');
     const [selectedPhuong, setSelectedPhuong] = useState('');
-    const [diachiDetail, setdiachiDetail] = useState('');
-
-    // Lưu tên đầy đủ cho tỉnh, quận, phường
+    const [diachiDetail, setDiachiDetail] = useState('');
+    
     const [tinhName, setTinhName] = useState('');
     const [quanName, setQuanName] = useState('');
     const [phuongName, setPhuongName] = useState('');
-    // Lấy danh sách tỉnh thành khi component mount
+    
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+
+    // Fetch provinces
     useEffect(() => {
-        axios.get('https://esgoo.net/api-tinhthanh/1/0.htm')
+        setLoading(true);
+        axios.get('https://provinces.open-api.vn/api/?depth=1')
             .then(response => {
-                if (response.data.error === 0) {
-                    setTinh(response.data.data);
-                }
+                setTinh(response.data);
+                setLoading(false);
             })
             .catch(error => {
-                console.error("Lỗi khi lấy danh sách tỉnh thành:", error);
+                setError('Error fetching provinces');
+                setLoading(false);
             });
     }, []);
 
-    // Lấy danh sách quận huyện khi tỉnh thay đổi
+    // Fetch districts when province changes
     useEffect(() => {
         if (selectedTinh) {
-            axios.get(`https://esgoo.net/api-tinhthanh/2/${selectedTinh}.htm`)
+            setLoading(true);
+            axios.get(`https://provinces.open-api.vn/api/p/${selectedTinh}?depth=2`)
                 .then(response => {
-                    if (response.data.error === 0) {
-                        setQuan(response.data.data);
-                        setPhuong([]);  // Reset danh sách phường xã khi chọn quận huyện mới
-                    }
+                    setQuan(response.data.districts);
+                    setPhuong([]);
+                    setLoading(false);
                 })
                 .catch(error => {
-                    console.error("Lỗi khi lấy danh sách quận huyện:", error);
+                    setError('Error fetching districts');
+                    setLoading(false);
                 });
         }
     }, [selectedTinh]);
+
+    // Fetch wards when district changes
     useEffect(() => {
         if (selectedQuan) {
-            axios.get(`https://esgoo.net/api-tinhthanh/3/${selectedQuan}.htm`)
+            setLoading(true);
+            axios.get(`https://provinces.open-api.vn/api/d/${selectedQuan}?depth=2`)
                 .then(response => {
-                    if (response.data.error === 0) {
-                        setPhuong(response.data.data);
-                    }
+                    setPhuong(response.data.wards);
+                    setLoading(false);
                 })
                 .catch(error => {
-                    console.error("Lỗi khi lấy danh sách phường xã:", error);
+                    setError('Error fetching wards');
+                    setLoading(false);
                 });
         }
     }, [selectedQuan]);
 
     const handleSubmit = () => {
-        const fulldiachi = ` ${diachiDetail},${phuongName}, ${quanName}, ${tinhName}`;
-        console.log("Địa chỉ đầy đủ:", fulldiachi);
-        updatediachi(fulldiachi); 
+        // Ensure each value is selected and valid
+        if (!selectedTinh || !selectedQuan || !selectedPhuong || !diachiDetail) {
+            alert('Please complete all fields');
+            return;
+        }
+        const fulldiachi = `${diachiDetail}, ${phuongName}, ${quanName}, ${tinhName}`;
+        updatediachi(fulldiachi);
     };
 
-
+    const isFormValid = selectedTinh && selectedQuan && selectedPhuong && diachiDetail;
 
     return (
         <div className="p-6 max-w-full mx-auto">
             <h3 className="text-center text-2xl font-semibold mb-4">Địa chỉ</h3>
+            
+            {/* Error message */}
+            {error && <div className="text-red-500 text-center mb-4">{error}</div>}
+
             <div className="space-y-4">
-                <div className='block w-full p-2 border rounded-md'>
+                {/* Province (Tỉnh) Dropdown */}
+                <div className="block w-full p-2 border rounded-md">
                     <label className="block mb-1 text-sm">Tỉnh, Thành phố *</label>
                     <div className="relative w-full">
-                    <select
+                        <select
                             className="appearance-none text-xl w-full h-12 pl-3 pr-10 focus:outline-none focus:border-blue-500"
-                        id="tinh"
-                        name="tinh"
-                        value={selectedTinh}
+                            id="tinh"
+                            name="tinh"
+                            value={selectedTinh}
                             onChange={(e) => {
-                                setSelectedTinh(e.target.value);
-                                const selected = tinh.find(item => item.id === e.target.value);
-                                setTinhName(selected ? selected.full_name : ''); 
+                                const selectedValue =  String(e.target.value);
+                                setSelectedTinh(selectedValue);
+
+                                // Normalize the comparison by converting the code and value to strings
+                                const selected = tinh.find(item =>  String(item.code) === String(selectedValue));
+
+                                if (selected) {
+                                    setTinhName(selected.name);  // Update province name
+                                } else {
+                                    setTinhName('');  // Reset name if no match
+                                }
                             }}
-                    >
-                        <option value="">Tỉnh Thành</option>
-                        {tinh.map((item) => (
-                            <option key={item.id} value={item.id}>
-                                {item.full_name}
-                            </option>
-                        ))}
-                    </select>
-                    <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                        <FontAwesomeIcon icon={faCaretDown} />
-                    </div>
+
+                        >
+                            <option value="">Tỉnh Thành</option>
+                            {tinh.map(({ code, name }) => (
+                                <option key={code} value={code}>
+                                    {name}
+                                </option>
+                            ))}
+                        </select>
+                        <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                            <FontAwesomeIcon icon={faCaretDown} />
+                        </div>
                     </div>
                 </div>
 
-                <div className='block w-full p-2 border rounded-md'>
+                {/* District (Quận, Huyện) Dropdown */}
+                <div className="block w-full p-2 border rounded-md">
                     <label className="block mb-1">Quận, Huyện, Thị xã *</label>
                     <div className="relative w-full">
-                    <select
-                        className="appearance-none text-xl w-full h-12
-                         pl-3 pr-10 focus:outline-none focus:border-blue-500"
-                        id="quan"
-                        name="quan"
-                        value={selectedQuan}
+                        <select
+                            className="appearance-none text-xl w-full h-12 pl-3 pr-10 focus:outline-none focus:border-blue-500"
+                            id="quan"
+                            name="quan"
+                            value={selectedQuan}
                             onChange={(e) => {
-                                setSelectedQuan(e.target.value);
-                                const selected = quan.find(item => item.id === e.target.value);
-                                setQuanName(selected ? selected.full_name : ''); 
+                                setSelectedQuan( String(e.target.value));
+                                const selected = quan.find(item =>  String(item.code) ===  String(e.target.value));
+                                setQuanName(selected ? selected.name : '');
                             }}
-                        disabled={!selectedTinh}
-                    >
-                        <option value="">Quận Huyện</option>
-                        {quan.map((item) => (
-                            <option key={item.id} value={item.id}>
-                                {item.full_name}
-                            </option>
-                        ))}
-                    </select>
+                            disabled={!selectedTinh}
+                        >
+                            <option value="">Quận Huyện</option>
+                            {quan.map(({ code, name }) => (
+                                <option key={code} value={code}>
+                                    {name}
+                                </option>
+                            ))}
+                        </select>
                         <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
                             <FontAwesomeIcon icon={faCaretDown} />
                         </div>
                     </div>
                 </div>
 
-                <div className='block w-full p-2 border rounded-md'>
+                {/* Ward (Phường, Xã) Dropdown */}
+                <div className="block w-full p-2 border rounded-md">
                     <label className="block mb-1">Phường, Xã, Thị trấn *</label>
                     <div className="relative w-full">
-                    <select
-                        className="appearance-none text-xl w-full h-12 pl-3 pr-10 focus:outline-none focus:border-blue-500"
-                        id="phuong"
-                        name="phuong"
-                        value={selectedPhuong}
+                        <select
+                            className="appearance-none text-xl w-full h-12 pl-3 pr-10 focus:outline-none focus:border-blue-500"
+                            id="phuong"
+                            name="phuong"
+                            value={selectedPhuong}
                             onChange={(e) => {
-                                setSelectedPhuong(e.target.value);
-                                const selected = phuong.find(item => item.id === e.target.value);
-                                setPhuongName(selected ? selected.full_name : '');
+                                setSelectedPhuong( String(e.target.value));
+                                const selected = phuong.find(item =>  String(item.code) ===  String(e.target.value));
+                                setPhuongName(selected ? selected.name : '');
                             }}
-                        disabled={!selectedQuan}
-                    >
-                        <option value="">Phường Xã</option>
-                        {phuong.map((item) => (
-                            <option key={item.id} value={item.id}>
-                                {item.full_name}
-                            </option>
-                        ))}
-                    </select>
+                            disabled={!selectedQuan}
+                        >
+                            <option value="">Phường Xã</option>
+                            {phuong.map(({ code, name }) => (
+                                <option key={code} value={code}>
+                                    {name}
+                                </option>
+                            ))}
+                        </select>
                         <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
                             <FontAwesomeIcon icon={faCaretDown} />
                         </div>
                     </div>
                 </div>
 
-                <div className='block w-full p-2 border rounded-md'>
+                {/* Specific Address Input */}
+                <div className="block w-full p-2 border rounded-md">
                     <label className="block mb-1">Địa chỉ cụ thể</label>
                     <input
                         type="text"
                         className="appearance-none text-xl w-full focus:outline-none focus:border-blue-500"
                         value={diachiDetail}
-                        onChange={(e) => setdiachiDetail(e.target.value)}
+                        onChange={(e) => {
+                            const valueWithoutComma = e.target.value.replace(/,/g, '');
+                            setDiachiDetail(valueWithoutComma);
+                        }}
                         placeholder="Nhập địa chỉ cụ thể"
                     />
+
                 </div>
             </div>
 
             <button
-                className="w-full mt-6 py-3 bg-orange-500 text-white font-semibold rounded-md"
+                className={`w-full mt-6 py-3 ${isFormValid ? 'bg-orange-500' : 'bg-gray-300'} text-white font-semibold rounded-md`}
                 onClick={handleSubmit}
+                disabled={!isFormValid}
             >
                 XONG
             </button>
