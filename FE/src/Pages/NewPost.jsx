@@ -1,9 +1,12 @@
 import { ImagePlus } from "lucide-react";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import LocationSelector from "../Components/ui/LocationSelector";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlay } from "@fortawesome/free-solid-svg-icons";
 import { useCart } from "../Components/context/CardContext";
+import DungTichSelect from "../Components/newpost/DungTichSelect ";
+import NamMuaSelect from "../Components/newpost/namMuaSelect";
+import XuatXuSelect from './../Components/newpost/XuatXuSelect';
+import HangXeSelect from './../Components/newpost/HangXeSelect';
+import XemTruoc from "../Components/newpost/XemTruoc";
 
 function NewPost() {
    
@@ -11,8 +14,10 @@ function NewPost() {
     const toggleLocationSelector = () => {
         setShowLocationSelector(!showLocationSelector);
     };
+    const [showPreview, setShowPreview] = useState(false);
+
     
-    const { personID } = useCart();
+    const { personID, User } = useCart();
 
     const [images, setImages] = useState([]);
     const [formData, setFormData] = useState({
@@ -78,25 +83,29 @@ function NewPost() {
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
+        console.log("Form data:", formData);
     };
-
+    const handleDropdownChange = (fieldName) => (selectedValue) => {
+        setFormData({ ...formData, [fieldName]: selectedValue });
+        console.log("Form data:", formData);
+    };
     // Xử lý khi submit form
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(images);
         const imageString = images.map((file) => file.file).join(",");
-        const dataToSubmit = {
-            ...formData,
-            danhSachHinh: imageString, // Thêm chuỗi ảnh vào dữ liệu form
-        };
-        console.log("Form data:", dataToSubmit);
-        // Xử lý upload form và hình ảnh tại đây
+        setFormData({ ...formData, danhSachHinh: imageString });
+    }
+      
+    // Toggle xem trước
+    const togglePreview = () => {
+        const imageString = images.map((file) => file.file).join(",");
+        setFormData({ ...formData, danhSachHinh: imageString });
+        setShowPreview(!showPreview);
     };
-
     return (
       
 <div>
-            <form className="max-w-5xl mx-auto p-6 bg-white shadow-md rounded-lg"
+            <form className="max-w-5xl mx-auto p-6 bg-white shadow-md rounded-lg "
                 onSubmit={handleSubmit}>
                 {/* Phần hình ảnh */}
                 <label className="block text-lg font-medium mb-2">Hình ảnh và Video sản phẩm</label>
@@ -175,18 +184,7 @@ function NewPost() {
 
                     {/* Hãng xe */}
                     <div>
-                        <label htmlFor="hangXe" className="block text-sm font-medium text-gray-700">
-                            Hãng xe <span className="text-red-500">*</span>
-                        </label>
-                        <input
-                            type="text"
-                            id="hangXe"
-                            name="hangXe"
-                            value={formData.hangXe}
-                            onChange={handleChange}
-                            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                            required
-                        />
+                        <HangXeSelect onSelect={handleDropdownChange("hangXe")} />
                     </div>
 
                     {/* Loại xe */}
@@ -194,47 +192,32 @@ function NewPost() {
                         <label htmlFor="loaiXe" className="block text-sm font-medium text-gray-700">
                             Loại xe <span className="text-red-500">*</span>
                         </label>
-                        <input
-                            type="text"
+                        <select
                             id="loaiXe"
                             name="loaiXe"
                             value={formData.loaiXe}
                             onChange={handleChange}
                             className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
                             required
-                        />
+                        >
+                            <option value="" disabled>Chọn loại xe</option>
+                            <option value="Tay ga">Tay ga</option>
+                            <option value="Xe số">Xe số</option>
+                            <option value="Xe côn/moto">Xe côn/moto</option>
+                        </select>
                     </div>
+
 
                     {/* Năm đăng ký */}
                     <div>
-                        <label htmlFor="namDangKy" className="block text-sm font-medium text-gray-700">
-                            Năm đăng ký <span className="text-red-500">*</span>
-                        </label>
-                        <input
-                            type="number"
-                            id="namDangKy"
-                            name="namDangKy"
-                            value={formData.namDangKy}
-                            onChange={handleChange}
-                            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                            required
-                        />
+                        <NamMuaSelect onSelect={handleDropdownChange("namMua")} />
                     </div>
 
                     {/* Dung tích */}
                     <div>
-                        <label htmlFor="dungTich" className="block text-sm font-medium text-gray-700">
-                            Dung tích xe
-                        </label>
-                        <input
-                            type="text"
-                            id="dungTich"
-                            name="dungTich"
-                            value={formData.dungTich}
-                            onChange={handleChange}
-                            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                        />
+                        <DungTichSelect onSelect={handleDropdownChange("dungTich")} />
                     </div>
+
 
                     {/* Số km đã đi */}
                     <div>
@@ -256,29 +239,22 @@ function NewPost() {
                         <label htmlFor="baoHanh" className="block text-sm font-medium text-gray-700">
                             Bảo hành
                         </label>
-                        <input
-                            type="text"
+                        <select
                             id="baoHanh"
                             name="baoHanh"
                             value={formData.baoHanh}
                             onChange={handleChange}
                             className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                        />
+                        >
+                            <option value="" disabled>Chọn bảo hành</option>
+                            <option value="chinhHang">Bảo hành chính hãng</option>
+                            <option value="khongBaoHanh">Không bảo hành</option>
+                        </select>
                     </div>
 
                     {/* Xuất xứ */}
                     <div>
-                        <label htmlFor="xuatXu" className="block text-sm font-medium text-gray-700">
-                            Xuất xứ
-                        </label>
-                        <input
-                            type="text"
-                            id="xuatXu"
-                            name="xuatXu"
-                            value={formData.xuatXu}
-                            onChange={handleChange}
-                            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                        />
+                        <XuatXuSelect onSelect={handleDropdownChange("xuatXu")} />
                     </div>
 
                     {/* Tình trạng xe */}
@@ -286,15 +262,18 @@ function NewPost() {
                         <label htmlFor="tinhTrangXe" className="block text-sm font-medium text-gray-700">
                             Tình trạng xe
                         </label>
-                        <input
-                            type="text"
+                        <select
                             id="tinhTrangXe"
                             name="tinhTrangXe"
                             value={formData.tinhTrangXe}
                             onChange={handleChange}
                             className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                        />
+                        >
+                            <option value="moi">Mới</option>
+                            <option value="daSuDung">Đã sử dụng</option>
+                        </select>
                     </div>
+
 
                     {/* Giá bán */}
                     <div>
@@ -328,6 +307,12 @@ function NewPost() {
                             id="moTa"
                             className="w-full border border-gray-300 rounded-md p-2 resize-none focus:ring-2 focus:ring-blue-500 focus:outline-none"
                             required
+                            placeholder={
+                                `- Chính sách bảo hành, bảo trì, đổi trả xe
+- Địa chỉ giao nhận, đổi trả xe
+- Thời gian sử dụng xe
+- Bảo trì xe: bao lâu/ lần, tại hãng hay không?
+- Tình trạng giấy tờ`}
                         />
                         <span className="absolute bottom-1 right-2 text-sm text-gray-500">
                             {formData.moTa.length}/1500
@@ -350,14 +335,16 @@ function NewPost() {
                         />
                     </div>
                 </div>
-                <div className="flex items-center justify-center gap-4">
-                    {/* Nút xem trước */}
+                <div className="flex items-center justify-center gap-4 ">
+                    {/* Nút Xem trước */}
                     <button
-                        type="submit"
-                        className="w-80 border border-solid  font-semibold p-3 rounded-md hover:bg-slate-500/50"
+                        type="button"
+                        onClick={togglePreview}
+                        className="w-80  font-semibold p-3 border border-solid rounded-md bg-white hover:bg-slate-300"
                     >
                         Xem trước
                     </button>
+                    
                     {/* Nút submit */}
                     <button
                         type="submit"
@@ -381,6 +368,24 @@ function NewPost() {
                     </div>
                 </div>
             )}
+            {showPreview && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50" onClick={togglePreview}>
+                    <div
+                       
+                        className="bg-white p-6 rounded-md w-auto max-h-[90vh] overflow-y-auto"
+                    >
+                        <XemTruoc product={formData} user={User} />
+                        <button
+                            type="button"
+                            onClick={togglePreview}
+                            className="  mt-4 px-4 py-2 bg-red-500 text-white rounded-md"
+                        >
+                            Đóng
+                        </button>
+                    </div>
+                </div>
+            )}
+
 </div>
     );
 }

@@ -17,6 +17,14 @@ export default function Header({ onLoginClick, userInfo, setUserInfo,  }) {
       navigate('/account');
     }
   };
+  const handleDangTinClick = () => {
+    if (userInfo == null || !userInfo) {
+      onLoginClick();
+    }
+    else {
+      navigate('/new-post');
+    }
+  };
     useEffect(() => {
       const handleClickOutside = (event) => {
         if (menuRef.current && !menuRef.current.contains(event.target)) {
@@ -186,7 +194,7 @@ console.log(userInfo);
           </nav>
         </div>
         <div className="px-3 py-2 h-10 w-[10vw] text-white bg-orange-500 rounded-xl flex items-center justify-start  ">
-          <button className="cursor-pointer flex gap-2 items-center">
+          <button className="cursor-pointer flex gap-2 items-center" onClick={handleDangTinClick}>
             <FilePenIcon />
             <h4>Bán Xe</h4>
           </button>

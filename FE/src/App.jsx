@@ -57,7 +57,7 @@ function App() {
     setIsForgotPasswordVisible(true);
   };
   return (
-    <CartProvider personID={userInfo.manguoidung }>
+    <CartProvider personID={userInfo.manguoidung} User ={userInfo}>
       <BrowserRouter>
         <Header userInfo={userInfo} setUserInfo={setUserInfo} onLoginClick={handleLoginClick} className="fixed top-0 left-0 w-full bg-white shadow-md z-50" />
         {showLogin && (

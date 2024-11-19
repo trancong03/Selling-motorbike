@@ -2,7 +2,7 @@ import { createContext, useState, useContext, useEffect } from 'react';
 
 const CartContext = createContext();
 
-export const CartProvider = ({ children, personID }) => {
+export const CartProvider = ({ children, personID,User }) => {
     const [cartItems, setCartItems] = useState([]);
     const [likeProducts, setLikeProducts] = useState([]);
     const [address, setAddress] = useState([]);
@@ -173,7 +173,7 @@ export const CartProvider = ({ children, personID }) => {
     };
     return (
         <CartContext.Provider value={{
-            personID, cartItems, addToCart, removeFromCart,
+            personID, User, cartItems, addToCart, removeFromCart,
             likeProduct, likeProducts, isProductLiked, updateAddress,
             address, create_delivery_address
         }}>
