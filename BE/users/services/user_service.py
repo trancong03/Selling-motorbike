@@ -27,7 +27,7 @@ class UserService:
 
     @staticmethod
     def reset_password(user: NguoiDung, new_password):
-       return UserRepository.reset_password(user, new_password)
+       return UserRepository.reset_password_forgot(user, new_password)
     @staticmethod
     def reset_password_forgot(email, new_password):
        user:NguoiDung = UserRepository.get_user_by_email(email)

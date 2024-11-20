@@ -107,8 +107,6 @@ function NewPost() {
     // Xử lý khi submit form
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        // Kiểm tra dữ liệu formData
         Object.keys(formData).forEach(key => {
             console.log(key, formData[key]);
             if (Array.isArray(formData[key])) {

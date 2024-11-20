@@ -44,7 +44,7 @@ export default function productDetail() {
         <div className ="flex items-center justify-center">
             <div className="flex  max-w-[100%] items-center justify-center">
                 <div className="bg-gray-100 flex items-center justify-center w-3/5 min-h-screen ">
-                    <div className="flex flex-col items-center space-y-4 ">
+                    <div className="flex flex-col items-center space-y-4 min-w-[100%]">
                         {/* Ảnh chính */}
                         <div className="relative">
                             <button
@@ -83,13 +83,13 @@ export default function productDetail() {
                         </div>
                         <div className="flex flex-col items-start w-full ml-[10%]">
                                 <h2 className=" text-xl font-bold"> Mô tả chi tiết</h2>
-                                <span>
+                            <span className=" max-w-[90%]">
                                     {product.MOTA}
                                 </span>
                         </div>
                         <div className="flex flex-col items-start w-full ml-[10%]">
                             <h2 className="text-xl font-bold">Thông số kỹ thuật</h2>
-                            <div className="grid grid-cols-2 gap-y-4 text-lg">
+                            <div className="grid grid-cols-2 gap-y-4 gap-x-8 text-lg">
                                 <div className="flex items-center">
                                     <Car className="mr-2" />
                                     <h3 className='line-clamp-3 font-arial'>Hãng xe: {product.HANGXE || 'Sản phẩm không có tên'}</h3>
@@ -130,7 +130,7 @@ export default function productDetail() {
                     </div>
                     
                 </div>
-                <div className="flex items-start justify-start w-2/5 min-h-screen ml-3">
+                <div className="flex items-start justify-start w-2/5 min-h-full ml-3">
                     <div className="max-w-lg rounded-lg overflow-hidden">
                         <div className="p-6">
                             <div className="rounded-lg overflow-hidden bg-white p-6 min-w-full">
@@ -152,12 +152,12 @@ export default function productDetail() {
                                 {/* Seller Info */}
                                 <div className="flex items-center mb-6 space-x-4">
                                     <img
-                                        src={product.NGUOIDUNG[0].ANHDAIDIEN ? `/http://127.0.0.1:8000//media/images/${product.NGUOIDUNG[0].ANHDAIDIEN}` : "/http://127.0.0.1:8000//media/images/icon.png"}
+                                        src={product.NGUOIDUNG[0].ANHDAIDIEN ? `http://127.0.0.1:8000//media/images/${product.NGUOIDUNG[0].ANHDAIDIEN}` : "/http://127.0.0.1:8000//media/images/icon.png"}
                                         alt="User avatar"
                                         className="w-12 h-12 rounded-full border-2 border-gray-300"
                                     />
                                     <div className="flex-1">
-                                        <div className="font-medium text-gray-700">Thiên Hương</div>
+                                        <div className="font-medium text-gray-700">{product.NGUOIDUNG[0].HOTEN}</div>
                                         <div className="flex items-center text-sm text-yellow-500">
                                             <Star className="w-4 h-4 mr-1" />
                                             <span>4.6 (14)</span>

@@ -8,6 +8,8 @@ const DN = ({ closeLogin, onLoginSuccess, onForgotPassword }) => {
     const formRef = useRef(null); // Dùng để theo dõi khu vực form
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [email, setEmail] = useState('');
+    const [fullname, setFullname] = useState('');
     const [error, setError] = useState('');
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -47,6 +49,51 @@ const DN = ({ closeLogin, onLoginSuccess, onForgotPassword }) => {
             setError(err.message);
         }
     };
+    const handleSignUpSubmit = async (e) => {
+        e.preventDefault();
+
+        // Kiểm tra các trường đầu vào
+        if (!username || !password || !email) {
+            setError("Username, Password và Email là bắt buộc.");
+            return;
+        }
+
+        const usernameRegex = /^[a-zA-Z0-9_]+$/;
+        if (!usernameRegex.test(username)) {
+            setError("Username chỉ được chứa chữ cái, số và dấu gạch dưới.");
+            return;
+        }
+
+        if (password.length < 5) {
+            setError("Password phải có ít nhất 5 ký tự.");
+            return;
+        }
+
+        setError(""); // Xóa lỗi trước khi gửi
+
+        try {
+            const csrftoken = getCSRFToken();
+            const response = await fetch('http://127.0.0.1:8000/api/register/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken
+                },
+                body: JSON.stringify({ username, password, email,fullname }),
+            });
+
+            if (!response.ok) {
+                const data = await response.json();
+                throw new Error(data.error || 'Something went wrong');
+            }
+
+            const data = await response.json();
+            alert(data.message);
+            // Có thể chuyển hướng đến trang đăng nhập hoặc làm gì đó sau khi đăng ký thành công
+        } catch (err) {
+            setError(err.message);
+        }
+    };
 
     const handleSignUpClick = () => {
         setIsRightPanelActive(true);
@@ -71,21 +118,45 @@ const DN = ({ closeLogin, onLoginSuccess, onForgotPassword }) => {
                 </button>
 
                 <div className="form-container sign-up-container">
-                    <form>
+                    <form onSubmit={handleSignUpSubmit}>
                         <h1>Create Account</h1>
                         <div className="social-container">
                             <a href="#" className="social"><FaFacebookF /></a>
                             <a href="#" className="social"><FaGooglePlusG /></a>
                         </div>
                         <span>or use your email for registration</span>
-                        <input type="text" placeholder="Username" autoComplete="current-username" />
+                        <input
+                            type="text"
+                            placeholder="Full name"
+                            autoComplete="current-email"
+                            value={fullname}
+                            onChange={(e) => setFullname(e.target.value)}
+                        />
+                        <input
+                            type="text"
+                            placeholder="Username"
+                            autoComplete="current-username"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                        />
+                        <input
+                            type="email"
+                            placeholder="Email"
+                            autoComplete="current-email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                        />
                         <input
                             type="password"
                             placeholder="Password"
                             autoComplete="current-password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
                         />
-                        <button>Sign Up</button>
+                        <button type="submit">Sign Up</button>
+                        <span className="error">{error}</span>
                     </form>
+
                 </div>
 
                 <div className="form-container sign-in-container">
@@ -128,7 +199,7 @@ const DN = ({ closeLogin, onLoginSuccess, onForgotPassword }) => {
                         <div className="overlay-panel overlay-left  bg-slate-600/50">
                             <img
                                 className="h-16  w-40"
-                                src="/http://127.0.0.1:8000//media/images/logo.png"
+                                src="http://127.0.0.1:8000//media/images/logo.png"
                                 alt="Logo"
                             />
                             <h1>Welcome Back!</h1>
@@ -138,7 +209,7 @@ const DN = ({ closeLogin, onLoginSuccess, onForgotPassword }) => {
                         <div className="overlay-panel overlay-right  bg-slate-500/50">
                             <img
                                 className="h-16  w-40"
-                                src="/http://127.0.0.1:8000//media/images/logo.png"
+                                src="http://127.0.0.1:8000//media/images/logo.png"
                                 alt="Logo"
                             />
                             <h1>Hello!</h1>

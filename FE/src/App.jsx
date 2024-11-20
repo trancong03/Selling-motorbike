@@ -16,6 +16,7 @@ import ForgotPassword from "./Components/userUI/ForgotPassword";
 import { CartProvider } from "./Components/context/CardContext";
 import ProductDetail from "./Pages/ProductDetail";
 import NewPost from "./Pages/NewPost";
+import axios from "axios";
 
 function App() {
   const [showLogin, setShowLogin] = useState(false);
@@ -44,17 +45,41 @@ function App() {
     localStorage.setItem('userInfo', JSON.stringify(data.user));
     setShowLogin(false);
   };
-
-  useEffect(() => {
-    const storedUserInfo = localStorage.getItem('userInfo');
-    if (storedUserInfo) {
-      try {
-        setUserInfo(JSON.parse(storedUserInfo));
-      } catch (error) {
-        console.error('Invalid JSON in localStorage', error);
+  const getUserById = async (iduser) => {
+    try {
+      const response = await axios.get(`http://127.0.0.1:8000/api/user/${iduser}/`);
+      if (response.status === 200) {
+        return response.data.user; // Trả về thông tin người dùng
+      }
+    } catch (error) {
+      if (error.response) {
+        console.error('Error:', error.response.data.error);
+        return null;
+      } else {
+        console.error('Network Error:', error.message);
+        return null;
       }
     }
+  };
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const storedUserInfo = localStorage.getItem('userInfo');
+      if (storedUserInfo) {
+        try {
+          const userData = JSON.parse(storedUserInfo);
+          const user = await getUserById(userData.manguoidung);
+          setUserInfo(user); // Cập nhật state với dữ liệu người dùng
+        } catch (error) {
+          console.error('Invalid JSON in localStorage', error);
+          setError('Có lỗi xảy ra khi lấy thông tin người dùng.');
+        }
+      }
+    };
+
+    fetchUserData(); // Gọi hàm lấy dữ liệu người dùng
   }, []);
+
 
   const handleForgotPasswordClick = () => {
     setIsForgotPasswordVisible(true);

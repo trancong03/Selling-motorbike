@@ -2,86 +2,75 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom'; // Nhập Link từ react-router-dom
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope, faLocationDot, faShare, faPlus } from '@fortawesome/free-solid-svg-icons';
-
+import { BellRing, BookMarked, Heart, Info, ListOrdered, LogOut, TimerReset, Wallet } from 'lucide-react';
+import { FaCartPlus } from 'react-icons/fa';
 export default function NavigationAccount({ user, setUserInfo }) {
     const [coverImage, setCoverImage] = useState(`image/${user.anhnen || 'default-cover.jpg'}`); // Thay 'default-cover.jpg' bằng đường dẫn tới hình ảnh mặc định
     const [avatarImage, setAvatarImage] = useState(`image/${user.anhdaidien || 'default-avatar.jpg'}`); // Thay 'default-avatar.jpg' bằng đường dẫn tới hình ảnh mặc định
-    const [avatarFile, setAvatarFile] = useState(null);
-    const [coverFile, setCoverFile] = useState(null);
 
     useEffect(() => {
         setCoverImage(`/image/${user.anhnen || 'default-cover.jpg'}`);
         setAvatarImage(`/image/${user.anhdaidien || 'default-avatar.jpg'}`);
     }, [user]);
 
+    const handleImageChange = async (file, type) => {
+        if (!file) return;
+
+        const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+        if (file.size > MAX_FILE_SIZE) {
+            alert('File size exceeds the maximum limit (5MB).');
+            return;
+        }
+        console.log(file);
+
+        const formData = new FormData();
+        if (type === 'avatar') {
+            formData.append('avatar', file.name);
+        } else {
+            formData.append('background', file.name);
+        }
+        formData.append('iduser', user.manguoidung);
+
+        try {
+            const response = await fetch('http://localhost:8000/api/update-images/', {
+                method: 'POST',
+                body: formData,
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                alert(`${type === 'background' ? 'Cover' : 'Avatar'} updated successfully`);
+                if (type === 'background') {
+                    setCoverImage(URL.createObjectURL(file)); // Hiển thị ảnh ngay lập tức
+                } else {
+                    setAvatarImage(URL.createObjectURL(file)); // Hiển thị ảnh ngay lập tức
+                }
+                // Reload lại trang sau khi cập nhật thành công
+                window.location.reload();
+            } else {
+                alert(`Error updating ${type}: ` + result.error);
+            }
+        } catch (error) {
+            alert('Error: ' + error);
+        }
+    };
 
 
     const handleCoverChange = (event) => {
         const file = event.target.files[0];
         if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setCoverImage(reader.result);
-            };
-            setCoverFile(file); // Lưu file để gửi lên máy chủ
-            reader.readAsDataURL(file);
+            handleImageChange(file, 'background');
         }
     };
 
     const handleAvatarChange = (event) => {
         const file = event.target.files[0];
         if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setAvatarImage(reader.result);
-            };
-            setAvatarFile(file); // Lưu file để gửi lên máy chủ
-            reader.readAsDataURL(file);
+            handleImageChange(file, 'avatar');
         }
     };
 
-    const handleSubmit = async () => {
-    const formData = new FormData();
-    let updatedUserInfo = { ...user }; // Tạo bản sao của user để cập nhật
-    
-    if (coverFile) {
-        formData.append('background', coverFile.name); // Gửi tên file
-        updatedUserInfo = {
-            ...updatedUserInfo,
-            background: coverFile.name, // Cập nhật background trong bản sao của user
-        };
-    }
-    
-    if (avatarFile) {
-        formData.append('avatar', avatarFile.name); // Gửi tên file
-        updatedUserInfo = {
-            ...updatedUserInfo,
-            avatar: avatarFile.name, // Cập nhật avatar trong bản sao của user
-        };
-    }
-    
-    formData.append('iduser', user.manguoidung);
-
-    try {
-        const response = await fetch('http://localhost:8000/api/update-images/', {
-            method: 'POST',
-            body: formData,
-        });
-
-        const result = await response.json();
-        
-        if (result.success) {
-            alert('Images updated successfully');
-            // Cập nhật state userInfo và lưu vào localStorage
-            setUserInfo(updatedUserInfo);
-            localStorage.setItem('userInfo', JSON.stringify(updatedUserInfo)); // Lưu userInfo sau khi state đã được cập nhật
-        } else {
-            alert('Error updating images: ' + result.error);
-        }
-    } catch (error) {
-        alert('Error: ' + error);
-    }
-};
 
     return (
         <div className='w-[30vw]'>
@@ -125,11 +114,11 @@ export default function NavigationAccount({ user, setUserInfo }) {
                     </div>
                 </div>
                 <br />
-                <div className="mt-3 pl-4">
+                <div className="mt-3 pl-4 shadow-sm p-4">
                     <h2 className="text-xl font-semibold">{user.hoten}</h2>
                     <div className="flex items-center">
-                        <span className="text-yellow-500 text-sm">★★★★☆</span>
-                        <span className="ml-2 text-sm">(1 nhận xét)</span>
+                        <span className="text-yellow-500 text-lg">★★★★☆</span>
+                        <span className="ml-2 text-lg">(1 nhận xét)</span>
                         <span className="ml-2 text-blue-500">Đã xác thực</span>
                     </div>
                     <div className='pt-3 pb-3 text-slate-500 text-lg'>
@@ -138,24 +127,42 @@ export default function NavigationAccount({ user, setUserInfo }) {
                     <p className="text-gray-600 mt-2 text-md">
                         <FontAwesomeIcon icon={faLocationDot} /> {user.diachi}
                     </p>
-                    <p className="text-sm text-gray-600 mt-2 text-md">
+                    <p className="text-lg text-gray-600 mt-2 text-md">
                         <FontAwesomeIcon icon={faEnvelope} />  {user.email}
                     </p>
+                    <br />
+                    <hr />
                 </div>
-                <button onClick={handleSubmit} className='border p-2 w-[80%] border-solid rounded-xl font-bold bg-orange-400 text-white text-lg mt-3 flex items-center justify-center gap-2'>
-                    <FontAwesomeIcon icon={faShare} />
-                    <h1>Cập Nhật Hình Ảnh</h1>
-                </button>
-                <Link to="/account"> {/* Sử dụng Link để điều hướng */}
-                    <button className='border p-2 w-[80%] hover:bg-slate-300 border-solid rounded-xl font-bold text-lg mt-3'>
-                        Chỉnh Sửa Trang Cá Nhân
-                    </button>
-                </Link>
-                <Link to="/account/reset-password"> {/* Sử dụng Link để điều hướng */}
-                    <button className='border p-2 w-[80%] hover:bg-slate-300 border-solid rounded-xl font-bold text-lg mt-3'>
-                        Thay đổi mật khẩu
-                    </button>
-                </Link>
+               
+                <ul className='space-y-4 text-lg shadow-sm'>
+                    <li className='flex justify-start ml-3 items-center  hover:bg-gray-200'>
+                        <Info />
+                        <a href="/account" className="block p-2 rounded">Thông tin tài khoản</a></li>
+                    <li className='flex justify-start ml-3 items-center  hover:bg-gray-200 ' >
+                        <ListOrdered />
+                        <a href="/orders" className="block p-2 rounded">Quản lý Tin</a></li>
+                    <li className='flex justify-start ml-3 items-center  hover:bg-gray-200'>
+                        <FaCartPlus />
+                        <a href="/account/cart" className="block p-2 rounded">Sản phẩm trong giỏ hàng</a></li>
+                    <li className='flex justify-start ml-3 items-center  hover:bg-gray-200'>
+                        <Heart />
+                        <a href="/account/like-product" className="block p-2 rounded">Tin yêu thích</a></li>
+
+                    {/* <li className='flex justify-start ml-3 items-center  hover:bg-gray-200'>
+                        <BookMarked />
+                        <a href="/account/manage-address" className="block p-2 rounded">Quản lý địa chỉ</a></li>
+                    <li className='flex justify-start ml-3 items-center  hover:bg-gray-200'>
+                        <Wallet />
+                        <a href="/vouchers" className="block p-2 rounded">Ví voucher</a></li> */}
+                    <li className='flex justify-start ml-3 h-full items-center  hover:bg-gray-200'>
+                        <TimerReset />
+                        <a href="/account/reset-password" className="block p-2 rounded">
+                            Thay đổi mật khẩu</a></li>
+                    <li className='flex justify-start ml-3 items-center  hover:bg-gray-200'>
+                        <LogOut />
+                        <a href="/logout" className="block p-2 rounded">Đăng xuất</a></li>
+
+                </ul>
             </div>
         </div>
     );

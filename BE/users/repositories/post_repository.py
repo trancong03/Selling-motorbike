@@ -34,7 +34,7 @@ class PostRepository:
         query = f"""
         EXEC dbo.TaoBaiViet 
             '{ma_nguoi_dung}', '{ma_gd}', N'{tieu_de}', '{thong_tin_lien_lac}', N'{mo_ta}', 
-            '{dia_chi_bai_viet}', '{hang_xe}', N'{loai_xe}', '{nam_mua}', '{dung_tich}', 
+            N'{dia_chi_bai_viet}', '{hang_xe}', N'{loai_xe}', '{nam_mua}', '{dung_tich}', 
             '{so_km_da_di}', N'{bao_hanh}', N'{xuat_xu}', N'{tinh_trang_xe}', '{gia_ban}', '{danh_sach_hinh}';
         """
 

@@ -1,7 +1,8 @@
-import { BellRing, FilePenIcon, Heart, HomeIcon, LogOut, NotebookText, Search, SettingsIcon, ShoppingCart, UserCircle } from "lucide-react";
+import { BellRing, FilePenIcon, HomeIcon, NotebookText, Heart, LogOut, Search, ShoppingCart as ShoppingCartIcon, Info, ListOrdered, Wallet  } from "lucide-react";
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from 'react-router-dom';
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
 export default function Header({ onLoginClick, userInfo, setUserInfo,  }) {
   const [isSticky, setIsSticky] = useState(false);
   const [activeLink, setActiveLink] = useState("home");
@@ -60,6 +61,14 @@ export default function Header({ onLoginClick, userInfo, setUserInfo,  }) {
       onLoginClick();
     }
     setIsMenuOpen(false); // Đóng menu
+  };
+  const handleNavigation = (path) => {
+    if (!userInfo || !userInfo.hoten) {
+      onLoginClick();
+    } else {
+      navigate(path); // Điều hướng đến trang đích
+    }
+    setIsMenuOpen(false);
   };
 console.log(userInfo);
 
@@ -172,25 +181,66 @@ console.log(userInfo);
 
             {/* Menu con bên dưới */}
             {isMenuOpen && (
-              <div 
+              <div
                 ref={menuRef}
-              className="absolute top-[8.5vh] mt-2 bg-white border rounded shadow-md  w-48 z-50">
-                <ul>
-                  <li className="py-2 px-3 hover:bg-gray-100">
-                    <button className="w-full text-left flex items-center gap-2" onClick={handleSettingsClick}>
-                      <SettingsIcon/>
-                      Cài đặt
-                    </button>
+                className="absolute top-[8.5vh] mt-2 bg-white border rounded shadow-md w-60 z-50"
+              >
+                <ul className="space-y-4">
+                  <li
+                    className="flex justify-start ml-3 items-center hover:bg-gray-200"
+                    onClick={() => handleNavigation('/orders')}
+                  >
+                    <ListOrdered />
+                    <a className="block p-2 rounded">Quản lý tin</a>
                   </li>
-                  <li className="py-2 px-3 hover:bg-gray-100">
-                    <button className="w-full text-left flex items-center gap-2" onClick={handleAuthClick}>
-                      <LogOut/>
-                      {userInfo == null || !userInfo.hoten ? "Login" : "Logout"}
-                    </button>
+                  <li
+                    className="flex justify-start ml-3 items-center hover:bg-gray-200"
+                    onClick={() => handleNavigation('/notifications')}
+                  >
+                    <BellRing />
+                    <a className="block p-2 rounded">Thông báo</a>
+                  </li>
+                  <li
+                    className="flex justify-start ml-3 items-center hover:bg-gray-200"
+                    onClick={() => handleNavigation('/favorites')}
+                  >
+                    <Heart />
+                    <a className="block p-2 rounded">Tin yêu thích</a>
+                  </li>
+                  <li
+                    className="flex justify-start ml-3 items-center hover:bg-gray-200"
+                    onClick={() => handleNavigation('/account')}
+                  >
+                    <Info />
+                    <a className="block p-2 rounded">Thông tin tài khoản</a>
+                  </li>
+                  {/* <li
+                    className="flex justify-start ml-3 items-center hover:bg-gray-200"
+                    onClick={() => handleNavigation('/address')}
+                  >
+                    <FontAwesomeIcon icon={faLocationDot} />
+                    <a className="block p-2 rounded">Số địa chỉ</a>
+                  </li>
+                  <li
+                    className="flex justify-start ml-3 items-center hover:bg-gray-200"
+                    onClick={() => handleNavigation('/vouchers')}
+                  >
+                    <Wallet />
+                    <a className="block p-2 rounded">Ví voucher</a>
+                  </li> */}
+                  <li
+                    className="flex justify-start ml-3 items-center hover:bg-gray-200"
+                    onClick={handleAuthClick}
+                  >
+                    <LogOut />
+                    <a className="block p-2 rounded">
+                      {userInfo == null || !userInfo.hoten ? 'Login' : 'Logout'}
+                    </a>
                   </li>
                 </ul>
               </div>
             )}
+
           </nav>
         </div>
         <div className="px-3 py-2 h-10 w-[10vw] text-white bg-orange-500 rounded-xl flex items-center justify-start  ">

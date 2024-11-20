@@ -15,7 +15,8 @@ import jwt
 from datetime import datetime, timedelta, timezone
 from django.conf import settings
 from rest_framework.exceptions import AuthenticationFailed
-    
+from django.contrib.auth.hashers import make_password   
+from django.contrib.auth.hashers import check_password
 def create_jwt(user):
     """
     Tạo JWT cho người dùng sau khi đăng nhập thành công.
@@ -72,11 +73,13 @@ def login(request):
         data = json.loads(request.body)
         username = data.get('username')
         password = data.get('password')
-        
-        # Xác thực người dùng
-        user = UserService.login(username, password)
-        if user:
-            token = create_jwt(user)
+        try:
+            user = NguoiDung.objects.get(tendangnhap=username)  # Truy vấn người dùng qua username
+        except NguoiDung.DoesNotExist:
+            return JsonResponse({'error': 'Invalid credentials'}, status=401)
+        if check_password(password.strip(), user.matkhau.strip()):  # So sánh mật khẩu đã nhập với mật khẩu đã mã hóa trong cơ sở dữ liệu
+            print("Mật khẩu đúng!")
+            token = create_jwt(user)  # Tạo token JWT nếu cần thiết
             serializer = NguoiDungSerializer(user)
             return JsonResponse({
                 'user': serializer.data,
@@ -86,6 +89,15 @@ def login(request):
         return JsonResponse({'error': 'Invalid credentials'}, status=401)
 
     return JsonResponse({'error': 'Method not allowed'}, status=405)
+@csrf_exempt
+@require_http_methods(['GET'])
+def get_user(request, iduser):
+    user = UserService.get_user_by_id(iduser)
+    if user:
+        serializer = NguoiDungSerializer(user) 
+        return JsonResponse({'user': serializer.data}, status=200)
+    else:
+        return JsonResponse({'error': 'User not found'}, status=404)
 
 @csrf_exempt
 @require_http_methods(['PUT'])
@@ -101,6 +113,38 @@ def update_user(request, id):
     serializer = NguoiDungSerializer(user)
     return JsonResponse(serializer.data, status=200)
 
+@csrf_exempt
+def register(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            username = data.get('username')
+            password = data.get('password')
+            full_name = data.get('fullname')
+            email = data.get('email')
+            if not username or not password or not email or not full_name:
+                return JsonResponse({'error': 'Tất cả các trường là bắt buộc'}, status=400)
+            # Kiểm tra xem tên người dùng hoặc email đã tồn tại chưa
+            if NguoiDung.objects.filter(tendangnhap=username).exists():
+                return JsonResponse({'error': 'Tên người dùng đã tồn tại'}, status=400)
+            if NguoiDung.objects.filter(email=email).exists():
+                return JsonResponse({'error': 'Email đã được sử dụng'}, status=400)
+            # Mã hóa mật khẩu trước khi lưu vào cơ sở dữ liệu
+            hashed_password = make_password(password)
+            # Tạo người dùng mới
+            new_user = NguoiDung.objects.create(
+                tendangnhap=username,
+                matkhau=hashed_password,
+                email=email,
+                hoten=full_name
+            )
+            new_user.save()
+            return JsonResponse({'message': 'Đăng ký thành công'}, status=201)
+
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+
+    return JsonResponse({'error': 'Phương thức không hợp lệ'}, status=405)
 
 @csrf_exempt
 @require_http_methods(['POST'])
@@ -113,6 +157,8 @@ def update_user_images(request):
     user = UserService.get_user_by_id(iduser)
     if not user:
         return JsonResponse({'error': 'User not found'}, status=404)
+    print(avatar_name, background_name)
+    
     UserService.update_images(user, avatar_name=avatar_name, background_name=background_name)
     return JsonResponse({'success': True}, status=200)
 
@@ -122,11 +168,11 @@ def reset_password(request):
         data = json.loads(request.body)
         user_id = data.get('user_id')
         new_password = data.get('new_password')
-        print(f"userid: `{user_id}` ")
+        hashed_password = make_password(new_password)
         user = UserService.get_user_by_id(user_id)
         if not user:
             return JsonResponse({'error': 'User not found'}, status=404)
-        UserService.reset_password(user, new_password)
+        UserService.reset_password(user, hashed_password)
         return JsonResponse({'success': True, 'message': 'Mật khẩu đã được thay đổi thành công.'})
     return JsonResponse({'error': 'Method not allowed'}, status=405)
 @csrf_exempt

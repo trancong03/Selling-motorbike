@@ -79,7 +79,7 @@ export default function CartItem({ Product }) {
                         className="w-5 h-5 rounded-full"
                     />
                     <h4 className='truncate font-arial text-green-950  text-sm '>
-                        {Product.DIACHIBAIVIET || 'Sản phẩm không có tên'}
+                        {Product.DIACHIBAIVIET.split(',').pop().trim()|| 'Sản phẩm không có tên'}
                     </h4>
                 </div>
                

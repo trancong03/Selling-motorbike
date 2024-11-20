@@ -21,7 +21,7 @@ export default function ResetPassWord({user}) {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    user_id: user.iduser,
+                    user_id: user.manguoidung,
                     current_password: currentPassword,
                     new_password: newPassword,
                 }),

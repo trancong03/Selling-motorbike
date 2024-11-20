@@ -32,16 +32,16 @@ class UserRepository:
         user.ngaysinh = data.get('ngaysinh', user.ngaysinh)
         user.save()
         return user
-    
     @staticmethod
     def reset_password_forgot(user: NguoiDung, new_password):
-        user.password = new_password
+        user.matkhau = new_password
         user.save()
         return user
     @staticmethod   
     def update_images(user: NguoiDung, avatar_name, background_name):
+       
         if avatar_name:
-            user.avatar = avatar_name
+            user.anhdaidien = avatar_name
         if background_name:
-            user.background = background_name
+            user.anhnen = background_name
         user.save()

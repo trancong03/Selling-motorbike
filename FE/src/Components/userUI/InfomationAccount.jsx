@@ -73,18 +73,17 @@ export default function InfomationAccount({ user, setUserInfo }) {
                           className="w-full focus:outline-none text-slate-400  font-bold"
                       />
                   </div>
-                  <div className="mb-4 p-3 w-[30vw]  border border-gray-300 rounded-md text-lg  bg-gray-100">
-                      <label className="block text-sm text-slate-400  font-bold">
-                          Số điện thoại <span className="text-red-500">*</span>
+                  <div className="mb-4 p-3 w-[60vw]  border border-gray-300 rounded-md text-lg text-slate-400  font-bold">
+                      <label className="block text-sm font-medium mb-1" htmlFor="nickname">
+                          Số điện thoại :
                       </label>
                       <input
                           type="text"
                           id="sodienthoai"
                           name="sodienthoai"
                           value={user.sodienthoai || ""}
-
-                          disabled
-                          className="w-full text-slate-400  font-bold"
+                          onChange={(e) => setUserInfo({ ...user, sodienthoai: e.target.value })}
+                          className="w-full focus:outline-none text-slate-400  font-bold"
                       />
                   </div>
 
