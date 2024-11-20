@@ -56,7 +56,7 @@ export default function Header({ onLoginClick, userInfo, setUserInfo,  }) {
       localStorage.removeItem('userInfo'); 
       navigate('/');
     }
-    if (userInfo == null || !hoten) {
+    if (userInfo == null ) {
       onLoginClick();
     }
     setIsMenuOpen(false); // Đóng menu
@@ -69,7 +69,7 @@ console.log(userInfo);
         <div className=" mr-5">
           <img
             className="h-16  w-40"
-            src="/image/logo.png"
+            src="http://127.0.0.1:8000//media/images/logo.png"
             alt="Logo"
           />
         </div>
@@ -163,7 +163,7 @@ console.log(userInfo);
             >
             
               <img
-                src={userInfo && userInfo.anhdaidien ? `/image/${userInfo.anhdaidien}` : "/image/icon.png"}
+                src={userInfo && userInfo.anhdaidien ? `http://127.0.0.1:8000//media/images/${userInfo.anhdaidien}` : "http://127.0.0.1:8000//media/images/icon.png"}
                 alt="User anhdaidien"
                 className="w-12 h-12 rounded-full"
               />

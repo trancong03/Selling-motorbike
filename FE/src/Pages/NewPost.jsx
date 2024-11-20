@@ -7,6 +7,7 @@ import NamMuaSelect from "../Components/newpost/namMuaSelect";
 import XuatXuSelect from './../Components/newpost/XuatXuSelect';
 import HangXeSelect from './../Components/newpost/HangXeSelect';
 import XemTruoc from "../Components/newpost/XemTruoc";
+import apiClient from './../../services/apiclient';
 
 function NewPost() {
    
@@ -66,18 +67,32 @@ function NewPost() {
             return;
         }
         const newImages = files.map((file) => ({
-            file: file.name,
+            fileObject:file,
+            fileName: file.name,
             preview: URL.createObjectURL(file),
         }));
         
         setImages((prev) => [...prev, ...newImages]);
+        
     };
 
     // Xóa ảnh đã chọn
     const handleRemoveImage = (index) => {
         const updatedImages = images.filter((_, i) => i !== index);
         setImages(updatedImages);
+        
     };
+    useEffect(() => {
+        // Chỉ cập nhật formData nếu có hình ảnh
+        const imageString = images.map((file) => file.fileName).join("/");
+        const fileObjects = images.map((file) => file.fileObject);
+        // Cập nhật danh sách hình ảnh và file hình ảnh trong formData
+        setFormData((prevFormData) => ({
+            ...prevFormData,
+            danhSachHinh: imageString,
+            danhSachFileHinh: fileObjects,
+        }));
+    }, [images]);
 
     // Xử lý khi thay đổi form
     const handleChange = (e) => {
@@ -90,15 +105,55 @@ function NewPost() {
         console.log("Form data:", formData);
     };
     // Xử lý khi submit form
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        const imageString = images.map((file) => file.file).join(",");
-        setFormData({ ...formData, danhSachHinh: imageString });
-    }
+
+        // Kiểm tra dữ liệu formData
+        Object.keys(formData).forEach(key => {
+            console.log(key, formData[key]);
+            if (Array.isArray(formData[key])) {
+                formData[key].forEach(item => {
+                    console.log(item);
+                });
+            }
+        });
+
+        try {
+            const formDataToSend = new FormData();
+
+            // Thêm các trường không phải tệp vào formData
+            Object.keys(formData).forEach(key => {
+                if (key !== 'danhSachFileHinh') {
+                    formDataToSend.append(key, formData[key]);
+                }
+            });
+
+            // Thêm tệp hình ảnh vào FormData
+            formData.danhSachFileHinh.forEach((file) => {
+                formDataToSend.append('danhSachFileHinh', file);
+            });
+
+            // Thêm token vào header (nếu có)
+            const token = localStorage.getItem('authToken'); // Hoặc lấy token từ Context, Redux, v.v.
+            console.log(token);
+            
+            const response = await apiClient.post('/api/new-post/', formDataToSend, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Authorization': `Bearer ${token}`, 
+                },
+            });
+
+            console.log('Bài viết đã được tạo:', response.data);
+        } catch (error) {
+            console.error('Lỗi khi tạo bài viết:', error.response ? error.response.data : error.message);
+        }
+    };
+
       
     // Toggle xem trước
     const togglePreview = () => {
-        const imageString = images.map((file) => file.file).join(",");
+        const imageString = images.map((file) => file.fileName).join(",");
         setFormData({ ...formData, danhSachHinh: imageString });
         setShowPreview(!showPreview);
     };
@@ -247,8 +302,8 @@ function NewPost() {
                             className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
                         >
                             <option value="" disabled>Chọn bảo hành</option>
-                            <option value="chinhHang">Bảo hành chính hãng</option>
-                            <option value="khongBaoHanh">Không bảo hành</option>
+                            <option value="Bảo hành chính hãng">Bảo hành chính hãng</option>
+                            <option value="Không bảo hành">Không bảo hành</option>
                         </select>
                     </div>
 
@@ -269,8 +324,8 @@ function NewPost() {
                             onChange={handleChange}
                             className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
                         >
-                            <option value="moi">Mới</option>
-                            <option value="daSuDung">Đã sử dụng</option>
+                            <option value="Mới">Mới</option>
+                            <option value="Đã sử dụng">Đã sử dụng</option>
                         </select>
                     </div>
 

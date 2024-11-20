@@ -28,6 +28,8 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+
+JWT_SECRET_KEY = 'TRANCHICONG3003'
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:5173',  # Thêm địa chỉ ứng dụng React
     'http://127.0.0.1:5173'
@@ -111,6 +113,13 @@ CACHES = {
         'LOCATION': 'unique-snowflake',
     }
 }
+import os
+
+# settings.py của Django
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
 
 
 

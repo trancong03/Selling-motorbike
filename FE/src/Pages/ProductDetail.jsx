@@ -54,7 +54,7 @@ export default function productDetail() {
                                 ❮
                             </button>
                             <img
-                                src={`image/${images[currentIndex].TENFILE}`}
+                                src={`http://127.0.0.1:8000//media/images/${images[currentIndex].TENFILE}`}
                                 alt="Main"
                                 className=" w-[60vw] h-[70vh] object-cover rounded-lg"
                             />
@@ -71,7 +71,7 @@ export default function productDetail() {
                             {images.map((image, index) => (
                                 <img
                                     key={index}
-                                    src={`/image/${image.TENFILE}`}
+                                    src={`http://127.0.0.1:8000//media/images/${image.TENFILE}`}
                                     alt={`Thumbnail ${index + 1}`}
                                     className={`w-20 h-20 cursor-pointer border-2 rounded-md transition ${index === currentIndex ? "border-yellow-500" : "border-transparent"
                                         } hover:border-yellow-500`}
@@ -152,7 +152,7 @@ export default function productDetail() {
                                 {/* Seller Info */}
                                 <div className="flex items-center mb-6 space-x-4">
                                     <img
-                                        src={product.NGUOIDUNG[0].ANHDAIDIEN ? `/image/${product.NGUOIDUNG[0].ANHDAIDIEN}` : "/image/icon.png"}
+                                        src={product.NGUOIDUNG[0].ANHDAIDIEN ? `/http://127.0.0.1:8000//media/images/${product.NGUOIDUNG[0].ANHDAIDIEN}` : "/http://127.0.0.1:8000//media/images/icon.png"}
                                         alt="User avatar"
                                         className="w-12 h-12 rounded-full border-2 border-gray-300"
                                     />

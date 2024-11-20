@@ -11,13 +11,13 @@ export default function Banner() {
             disableOnInteraction: false,
           }}>
           <SwiperSlide className="flex justify-center items-center h-full w-full">
-            <img src="image/slide1.jpg" className='max-w-full max-h-full object-contain' alt="" />
+            <img src="http://127.0.0.1:8000//media/images/slide1.jpg" className='max-w-full max-h-full object-contain' alt="" />
           </SwiperSlide>
           <SwiperSlide className="flex justify-center items-center h-full w-full">
-            <img src="image/slide2.jpg" className='max-w-full max-h-full object-contain' alt="" />
+            <img src="http://127.0.0.1:8000//media/images/slide2.jpg" className='max-w-full max-h-full object-contain' alt="" />
           </SwiperSlide>
           <SwiperSlide className="flex justify-center items-center h-full w-full">
-            <img src="image/slide3.png" className='max-w-full max-h-full object-contain' alt="" />
+            <img src="http://127.0.0.1:8000//media/images/slide3.png" className='max-w-full max-h-full object-contain' alt="" />
           </SwiperSlide>
         </Swiper>
       </div>
@@ -34,12 +34,12 @@ export default function Banner() {
               modules={[FreeMode, Pagination]}
         className="mySwiper bg-slate-50 h-[20rem]"
           >
-        <SwiperSlide><img src="image/vario160.png" className='w-[15rem] h-[20rem]   ' alt="" /></SwiperSlide>
-        <SwiperSlide><img src="image/Janus-standard.webp" className='w-[15rem] h-[20rem] ' alt="" /></SwiperSlide>
-        <SwiperSlide><img src="image/EXCITER155.webp" className='w-[15rem] h-[20rem]  ' alt="" /></SwiperSlide>
-        <SwiperSlide><img src="image/vario160.png" className='w-[15rem] h-[20rem]   ' alt="" /></SwiperSlide>
-        <SwiperSlide><img src="image/vario125.png" className='w-[15rem] h-[20rem] ' alt="" /></SwiperSlide>
-        <SwiperSlide><img src="image/EXCITER155.webp" className='w-[15rem] h-[20rem]  ' alt="" /></SwiperSlide>
+        <SwiperSlide><img src="http://127.0.0.1:8000//media/images/vario160.png" className='w-[15rem] h-[20rem]   ' alt="" /></SwiperSlide>
+        <SwiperSlide><img src="http://127.0.0.1:8000//media/images/Janus-standard.webp" className='w-[15rem] h-[20rem] ' alt="" /></SwiperSlide>
+        <SwiperSlide><img src="http://127.0.0.1:8000//media/images/EXCITER155.webp" className='w-[15rem] h-[20rem]  ' alt="" /></SwiperSlide>
+        <SwiperSlide><img src="http://127.0.0.1:8000//media/images/vario160.png" className='w-[15rem] h-[20rem]   ' alt="" /></SwiperSlide>
+        <SwiperSlide><img src="http://127.0.0.1:8000//media/images/vario125.png" className='w-[15rem] h-[20rem] ' alt="" /></SwiperSlide>
+        <SwiperSlide><img src="http://127.0.0.1:8000//media/images/EXCITER155.webp" className='w-[15rem] h-[20rem]  ' alt="" /></SwiperSlide>
      
           </Swiper>
     </div>

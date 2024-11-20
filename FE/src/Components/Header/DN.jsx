@@ -40,6 +40,7 @@ const DN = ({ closeLogin, onLoginSuccess, onForgotPassword }) => {
                 throw new Error('Thông tin xác thực không hợp lệ');
             }
             const data = await response.json();
+            
             onLoginSuccess(data);
             
         } catch (err) {
@@ -127,7 +128,7 @@ const DN = ({ closeLogin, onLoginSuccess, onForgotPassword }) => {
                         <div className="overlay-panel overlay-left  bg-slate-600/50">
                             <img
                                 className="h-16  w-40"
-                                src="/image/logo.png"
+                                src="/http://127.0.0.1:8000//media/images/logo.png"
                                 alt="Logo"
                             />
                             <h1>Welcome Back!</h1>
@@ -137,7 +138,7 @@ const DN = ({ closeLogin, onLoginSuccess, onForgotPassword }) => {
                         <div className="overlay-panel overlay-right  bg-slate-500/50">
                             <img
                                 className="h-16  w-40"
-                                src="/image/logo.png"
+                                src="/http://127.0.0.1:8000//media/images/logo.png"
                                 alt="Logo"
                             />
                             <h1>Hello!</h1>

@@ -38,6 +38,9 @@ function App() {
 
   const handleLoginSuccess = (data) => {
     setUserInfo(data.user);
+    const { token } = data;
+    console.log(data);
+    localStorage.setItem('authToken', token); 
     localStorage.setItem('userInfo', JSON.stringify(data.user));
     setShowLogin(false);
   };
@@ -57,7 +60,7 @@ function App() {
     setIsForgotPasswordVisible(true);
   };
   return (
-    <CartProvider personID={userInfo.manguoidung} User ={userInfo}>
+    <CartProvider  User ={userInfo}>
       <BrowserRouter>
         <Header userInfo={userInfo} setUserInfo={setUserInfo} onLoginClick={handleLoginClick} className="fixed top-0 left-0 w-full bg-white shadow-md z-50" />
         {showLogin && (

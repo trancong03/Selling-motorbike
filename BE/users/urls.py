@@ -14,4 +14,5 @@ urlpatterns = [
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
     path('bai-viet/', post.get_all_bai_viet, name='get_all_bai_viet'),
+    path('new-post/', post.tao_bai_viet, name='tao_bai_viet'),
 ]

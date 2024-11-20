@@ -1,4 +1,24 @@
 from django.db import models
+from PIL import Image
+import os
+
+class LocalImage(models.Model):
+    image = models.ImageField(upload_to='')  # Lưu ảnh trực tiếp vào REACT_IMAGE_DIR
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.resize_image()
+
+    def resize_image(self):
+        img_path = self.image.path
+        max_width, max_height = 800, 800  # Giới hạn kích thước ảnh
+        img = Image.open(img_path)
+        if img.width > max_width or img.height > max_height:
+            img.thumbnail((max_width, max_height), Image.ANTIALIAS)
+            img.save(img_path, quality=85)  # Nén ảnh với chất lượng 85%
+
+
 
 class NguoiDung(models.Model):
     manguoidung = models.AutoField(primary_key=True)

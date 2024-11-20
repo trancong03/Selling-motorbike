@@ -5,8 +5,6 @@ import { useCart } from "../context/CardContext";
 import { useNavigate } from "react-router-dom";
 
 export default function CartItem({ Product }) {
-    console.log("nefffff" ,Product);
-    
     const defaultImage = 'default.jpg';
     const navigate = useNavigate();
     const handleViewDetails = () => {
@@ -26,7 +24,7 @@ export default function CartItem({ Product }) {
             <div className='w-[18vw] bg-white rounded-2xl ml-3 mb-5 group shadow-2xl'>
                 <div className='relative overflow-hidden flex items-center justify-center flex-col'>
                     <img
-                        src={`/image/${Product.HINHANH.length > 0 ? Product.HINHANH[0].TENFILE : defaultImage}`}
+                        src={`http://127.0.0.1:8000//media/images//${Product.HINHANH.length > 0 ? Product.HINHANH[0].TENFILE : defaultImage}`}
                         alt={Product.Name || 'Sản phẩm không có tên'}
                         className='w-auto h-[20rem] shadow-2xl'
                     />
@@ -93,7 +91,7 @@ export default function CartItem({ Product }) {
                 {Product.HINHANH.map((image, index) => (
                     <img
                         key={index}
-                        src={`/image/${image.TENFILE}`}
+                        src={`http://127.0.0.1:8000//media/images/${image.TENFILE}`}
                         alt={`${Product.Name} ${index + 1}`}
                         className='w-[50px] h-[50px] object-contain m-3 rounded-md cursor-pointer hover:opacity-80'
                     />
