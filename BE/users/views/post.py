@@ -50,7 +50,6 @@ def tao_bai_viet(request):
                     image_path = os.path.join(image_dir, image.name)
                     fs = FileSystemStorage(location=image_dir)
                     fs.save(image.name, image)
-                    # Thêm URL của hình ảnh vào danh sách
                     image_url = os.path.join(settings.MEDIA_URL, 'images', image.name)
                     image_urls.append(image_url)
                     print(image_url)
