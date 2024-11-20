@@ -73,8 +73,8 @@ const UserManagement = () => {
   const [editingUser, setEditingUser] = useState(null);
 
   useEffect(() => {
-    // Fetch users from the API
-    axios.get("http://127.0.0.1:8000/api/nguoidung/")
+    // Fetch users from the admin-api
+    axios.get("http://127.0.0.1:8000/admin-api/nguoidung/")
       .then(response => {
         setUsers(response.data);
       })
@@ -87,7 +87,7 @@ const UserManagement = () => {
   const handleDelete = (iduser) => {
     const confirmed = window.confirm("Bạn có chắc chắn muốn xóa người dùng này?");
     if (confirmed) {
-      axios.delete(`http://127.0.0.1:8000/api/nguoidung/${iduser}/`)
+      axios.delete(`http://127.0.0.1:8000/admin-api/nguoidung/${iduser}/`)
         .then(() => {
           setUsers(users.filter(user => user.iduser !== iduser));
           alert("Xóa thành công!");
@@ -100,7 +100,7 @@ const UserManagement = () => {
 
   // Function to handle save after editing
   const handleSave = (updatedUser) => {
-    axios.put(`http://127.0.0.1:8000/api/nguoidung/${updatedUser.iduser}/`, updatedUser)
+    axios.put(`http://127.0.0.1:8000/admin-api/nguoidung/${updatedUser.iduser}/`, updatedUser)
       .then(() => {
         setUsers(users.map(user => user.iduser === updatedUser.iduser ? updatedUser : user));
         setEditingUser(null);

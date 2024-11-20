@@ -37,7 +37,7 @@ const PostForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://127.0.0.1:8000/api/baiviet/', postData);
+      const response = await axios.post('http://127.0.0.1:8000/admin-api/baiviet/', postData);
       console.log('Response:', response.data);
     } catch (error) {
       console.error('Error submitting post:', error);
