@@ -127,6 +127,17 @@ function InformationAccount() {
             <h2 className="text-2xl font-bold mb-4">Hồ sơ cá nhân</h2>
             
             <div>
+                <div className='flex items-center gap-4'>
+                        <div className="mb-4 p-3 w-[30vw] border border-gray-300 rounded-md text-lg">
+                            <label className="block text-sm text-slate-400 font-bold">Mã số CCCD <span className="text-red-500">*</span></label>
+                            <input
+                                type="text"
+                                value={user.identity_card || ""}
+                                onChange={(e) => setUserInfo({ ...user, identity_card: e.target.value })}
+                                className="w-full focus:outline-none text-slate-400 font-bold"
+                            />
+                        </div>
+                    </div>
                 {/* Full Name and Phone */}
                 <div className='flex items-center justify-center gap-4'>
                     <div className="mb-4 p-3 w-[30vw] border border-gray-300 rounded-md text-lg">
