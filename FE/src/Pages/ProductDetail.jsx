@@ -81,15 +81,15 @@ export default function productDetail() {
 
                             ))}
                         </div>
-                        <div className="flex flex-col items-start w-full ml-[10%]">
-                                <h2 className=" text-xl font-bold"> Mô tả chi tiết</h2>
-                            <span className=" max-w-[90%]">
-                                    {product.MOTA}
-                                </span>
+                        <hr />
+                        <div className="flex flex-col items-start w-full mb-3 !bg-transparent ml-[10%] text-md">
+                            <h2 className="text-xl font-bold">Mô tả chi tiết</h2>
+
+                            <div className=" p-4 text-lg" dangerouslySetInnerHTML={{ __html: product.MOTA }} />
                         </div>
-                        <div className="flex flex-col items-start w-full ml-[10%]">
+                        <div className="flex flex-col items-start w-full ml-[10%] mb-5">
                             <h2 className="text-xl font-bold">Thông số kỹ thuật</h2>
-                            <div className="grid grid-cols-2 gap-y-4 gap-x-8 text-lg">
+                            <div className="grid grid-cols-2 gap-y-4 gap-x-8 text-lg p-4">
                                 <div className="flex items-center">
                                     <Car className="mr-2" />
                                     <h3 className='line-clamp-3 font-arial'>Hãng xe: {product.HANGXE || 'Sản phẩm không có tên'}</h3>
@@ -177,7 +177,7 @@ export default function productDetail() {
                                 <div className="grid grid-cols-2 gap-4 mb-6">
                                     <button className="w-full bg-green-500 hover:bg-green-600 text-white rounded-lg py-2 flex items-center justify-center">
                                         <Phone className="w-5 h-5 mr-2" />
-                                        Gọi điện
+                                        {product.NGUOIDUNG[0].SODIENTHOAI}
                                     </button>
                                     <button className="w-full border-2 border-green-500 hover:bg-green-100 text-green-500 rounded-lg py-2 flex items-center justify-center">
                                         <MessageSquare className="w-5 h-5 mr-2" />

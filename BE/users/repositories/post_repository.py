@@ -23,7 +23,48 @@ class PostRepository:
             # Log the error for debugging purposes
             logging.error(f"Error while fetching bai viet: {e}")
             return None
-    
+    @staticmethod
+    def get_all_bai_viet_by_manguoidung(manguoidung):
+        print(manguoidung)
+        query = """
+        SELECT dbo.LayBaiVietTheoID(%s) ;
+        """
+        try:
+            # Execute the query with parameters
+            query_result = execute_query(query, [manguoidung])
+            
+            # In case the query returns no data, return an empty list or appropriate message
+            if query_result is None:
+                return {"error": "No data found"}
+            
+            if isinstance(query_result, list) and len(query_result) > 0:
+                return query_result
+            else:
+                return {"error": "Invalid structure or empty result"}
+        except Exception as e:
+            # Handle exceptions (logging or raising further)
+            print(f"Error occurred: {e}")
+            return {"error": f"An error occurred: {str(e)}"}
+
+    @staticmethod
+    def get_all_bai_viet_like(manguoidung):
+        query = """
+        select dbo.LayDanhSachBaiVietYeuThich(%s)
+        """
+        try:
+            # Execute the query and retrieve results
+            query_result = execute_query(query, [manguoidung])
+            
+            # Check if the result is valid
+            if query_result and isinstance(query_result, list):
+                return query_result
+            else:
+                return None  # If no valid result found
+        
+        except Exception as e:
+            # Log the error for debugging purposes
+            logging.error(f"Error while fetching bai viet: {e}")
+            return None   
     @staticmethod
     def tao_bai_viet(
         ma_nguoi_dung, ma_gd, tieu_de, thong_tin_lien_lac, mo_ta, dia_chi_bai_viet,

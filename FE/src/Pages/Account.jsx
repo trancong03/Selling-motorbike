@@ -3,6 +3,7 @@ import { Routes, Route } from "react-router-dom"; // Import Routes và Route
 import NavigationAccount from "../Components/userUI/navigationAccount"; // Navigation component
 import ResetPassWord from "../Components/userUI/ResetPassWord"; // Reset password component
 import InfomationAccount from "../Components/userUI/InfomationAccount"; // Information account component
+import PostOfUser from "../Components/userUI/PostOfUser";
 
 export default function Account({ user, setUserInfo }) {
   return (
@@ -17,6 +18,7 @@ export default function Account({ user, setUserInfo }) {
           <Route path="/" element={<InfomationAccount user={user} setUserInfo={setUserInfo} />} />
           {/* Route cho ResetPassWord */}
           <Route path="reset-password" element={<ResetPassWord user={user} />} />
+          <Route path="user-post/" element={<PostOfUser userId={user} />} />
         </Routes>
       </div>
     </div>

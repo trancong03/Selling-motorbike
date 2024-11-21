@@ -18,6 +18,28 @@ def get_all_bai_viet(request):
             except json.JSONDecodeError:
                 return JsonResponse({"error": "Failed to decode JSON"}, status=500)
     return JsonResponse({"error": "No data found or invalid structure"}, status=404)
+def get_all_bai_viet_like(request,iduser):
+    query_result = PostService.get_all_bai_viet_like(iduser)
+    if query_result and isinstance(query_result, list):
+        json_data = query_result[0].get('', '')
+        if json_data:
+            try:
+                parsed_result = json.loads(json_data)
+                return JsonResponse(parsed_result, safe=False)
+            except json.JSONDecodeError:
+                return JsonResponse({"error": "Failed to decode JSON"}, status=500)
+    return JsonResponse({"error": "No data found or invalid structure"}, status=404)
+def get_all_bai_viet_by_manguoidung(request,iduser):
+    query_result = PostService.get_all_bai_viet_by_manguoidung(iduser)
+    if query_result and isinstance(query_result, list):
+        json_data = query_result[0].get('', '')
+        if json_data:
+            try:
+                parsed_result = json.loads(json_data)
+                return JsonResponse(parsed_result, safe=False)
+            except json.JSONDecodeError:
+                return JsonResponse({"error": "Failed to decode JSON"}, status=500)
+    return JsonResponse({"error": "No data found or invalid structure"}, status=404)
 @csrf_exempt
 def tao_bai_viet(request):
     if request.method == 'POST':
@@ -52,7 +74,6 @@ def tao_bai_viet(request):
                     fs.save(image.name, image)
                     image_url = os.path.join(settings.MEDIA_URL, 'images', image.name)
                     image_urls.append(image_url)
-                    print(image_url)
            
             # Call the service layer to handle the logic
             result = PostService.tao_bai_viet(

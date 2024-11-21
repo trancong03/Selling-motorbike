@@ -140,7 +140,7 @@ export default function NavigationAccount({ user, setUserInfo }) {
                         <a href="/account" className="block p-2 rounded">Thông tin tài khoản</a></li>
                     <li className='flex justify-start ml-3 items-center  hover:bg-gray-200 ' >
                         <ListOrdered />
-                        <a href="/orders" className="block p-2 rounded">Quản lý Tin</a></li>
+                        <a href="/account/user-post" className="block p-2 rounded">Quản lý Tin</a></li>
                     <li className='flex justify-start ml-3 items-center  hover:bg-gray-200'>
                         <FaCartPlus />
                         <a href="/account/cart" className="block p-2 rounded">Sản phẩm trong giỏ hàng</a></li>

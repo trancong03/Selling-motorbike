@@ -53,3 +53,12 @@ body {
   z-index: 100;
   color: black !important;
 }
+.scrollbar-hidden {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* Internet Explorer 10+ */
+    overflow: hidden; /* Hide the scrollbar */
+}
+
+.scrollbar-hidden::-webkit-scrollbar {
+    display: none; /* Safari and Chrome */
+}

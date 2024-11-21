@@ -8,7 +8,8 @@ import XuatXuSelect from './../Components/newpost/XuatXuSelect';
 import HangXeSelect from './../Components/newpost/HangXeSelect';
 import XemTruoc from "../Components/newpost/XemTruoc";
 import apiClient from './../../services/apiclient';
-
+import { Editor } from "@tinymce/tinymce-react";
+import { useNavigate } from 'react-router-dom';
 function NewPost() {
    
     const [showLocationSelector, setShowLocationSelector] = useState(false);
@@ -16,10 +17,7 @@ function NewPost() {
         setShowLocationSelector(!showLocationSelector);
     };
     const [showPreview, setShowPreview] = useState(false);
-
-    
     const { personID, User } = useCart();
-
     const [images, setImages] = useState([]);
     const [formData, setFormData] = useState({
         manguoidung: "",
@@ -39,6 +37,7 @@ function NewPost() {
         giaBan: "",
         danhSachHinh: "", // Sẽ chứa chuỗi ảnh
     });
+    
     const updatediachi = (diachi) => {
         setFormData({
             ...formData,
@@ -47,7 +46,6 @@ function NewPost() {
         toggleLocationSelector();
     };
     useEffect(() => {
-        console.log('Dia chi bai viet updated:', formData.diaChiBaiViet);
     }, [formData.diaChiBaiViet]);
 
     useEffect(() => {
@@ -84,7 +82,7 @@ function NewPost() {
     };
     useEffect(() => {
         // Chỉ cập nhật formData nếu có hình ảnh
-        const imageString = images.map((file) => file.fileName).join("/");
+        const imageString = images.map((file) => file.fileName).join(",");
         const fileObjects = images.map((file) => file.fileObject);
         // Cập nhật danh sách hình ảnh và file hình ảnh trong formData
         setFormData((prevFormData) => ({
@@ -93,6 +91,7 @@ function NewPost() {
             danhSachFileHinh: fileObjects,
         }));
     }, [images]);
+console.log(formData);
 
     // Xử lý khi thay đổi form
     const handleChange = (e) => {
@@ -104,6 +103,7 @@ function NewPost() {
         setFormData({ ...formData, [fieldName]: selectedValue });
         console.log("Form data:", formData);
     };
+    const navigate = useNavigate();
     // Xử lý khi submit form
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -133,7 +133,6 @@ function NewPost() {
 
             // Thêm token vào header (nếu có)
             const token = localStorage.getItem('authToken'); // Hoặc lấy token từ Context, Redux, v.v.
-            console.log(token);
             
             const response = await apiClient.post('/api/new-post/', formDataToSend, {
                 headers: {
@@ -141,8 +140,7 @@ function NewPost() {
                     'Authorization': `Bearer ${token}`, 
                 },
             });
-
-            console.log('Bài viết đã được tạo:', response.data);
+            navigate('/'); // Chuyển hướng về trang chủ
         } catch (error) {
             console.error('Lỗi khi tạo bài viết:', error.response ? error.response.data : error.message);
         }
@@ -151,13 +149,11 @@ function NewPost() {
       
     // Toggle xem trước
     const togglePreview = () => {
-        const imageString = images.map((file) => file.fileName).join(",");
-        setFormData({ ...formData, danhSachHinh: imageString });
         setShowPreview(!showPreview);
     };
+    const [footerPaymentMethods, setFooterPaymentMethods] = useState(formData.moTa); // Lưu trữ nội dung mô tả
     return (
-      
-<div>
+    <div>
             <form className="max-w-5xl mx-auto p-6 bg-white shadow-md rounded-lg "
                 onSubmit={handleSubmit}>
                 {/* Phần hình ảnh */}
@@ -351,28 +347,28 @@ function NewPost() {
                         Mô tả chi tiết <span className="text-red-500">*</span>
                     </label>
                     <div className="relative">
-                        <textarea
-                            rows="5"
+                        <Editor
+                            apiKey="4u15wmtfgj5kkf159xm91c0j8n6rbc4k4gst12ittmzuqo53"
                             value={formData.moTa}
-                            onChange={handleChange}
-                            maxLength="1500"
-                            name="moTa"
-                            id="moTa"
-                            className="w-full border border-gray-300 rounded-md p-2 resize-none focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                            required
-                            placeholder={
-                                `- Chính sách bảo hành, bảo trì, đổi trả xe
-- Địa chỉ giao nhận, đổi trả xe
-- Thời gian sử dụng xe
-- Bảo trì xe: bao lâu/ lần, tại hãng hay không?
-- Tình trạng giấy tờ`}
+                            onEditorChange={(content) =>
+                                setFormData((prev) => ({ ...prev, moTa: content }))
+                            } 
+                            init={{
+                                height: 300,
+                                menubar: false,
+                                plugins: [
+                                    
+                                ],
+                                toolbar: false,
+                                statusbar: false
+                            }}
                         />
                         <span className="absolute bottom-1 right-2 text-sm text-gray-500">
                             {formData.moTa.length}/1500
                         </span>
                     </div>
-
                 </div>
+
                 <div className="mb-6 ">
                     <label className="block font-medium mb-1">
                         Địa chỉ giao dịch <span className="text-red-500">*</span>
@@ -427,7 +423,7 @@ function NewPost() {
                        
                         className="bg-white p-6 rounded-md w-auto max-h-[90vh] overflow-y-auto"
                     >
-                        <XemTruoc product={formData} user={User} />
+                        <XemTruoc product={formData} user={User} imageReview={images} />
                         <button
                             type="button"
                             onClick={togglePreview}

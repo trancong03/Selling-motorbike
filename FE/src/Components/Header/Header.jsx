@@ -160,7 +160,6 @@ console.log(userInfo);
         <div className="px-3 py-2 h-10 w-[20vw] bg-transparent rounded-3xl flex items-center justify-start relative ">
           <nav className="relative">
             <a
-              href="#"
               onClick={() => {
                 setActiveLink("dn");
                 setIsMenuOpen(!isMenuOpen); 

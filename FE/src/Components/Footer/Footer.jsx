@@ -15,7 +15,7 @@ import {
 const Footer = () => {
   return (
     <div className="bg-black text-white">
-      <div className="flex flex-col sm:grid grid-cols-[1.5fr_1fr_1fr_1fr_1fr] gap-14 my-20 mt-40 text-sm ml-5 mr-2">
+      <div className="flex flex-col sm:grid grid-cols-[1.5fr_1fr_1fr_1fr_1fr] gap-14  text-sm ml-5 mr-2">
         <div className="mt-10">
           <img
             src="https://theciu.vn/img/logo-white.png"

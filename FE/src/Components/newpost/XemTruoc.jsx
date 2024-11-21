@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { MapPin, Clock, Star, Phone, MessageSquare, Car, Calendar, BatteryCharging, CheckCircle, Tag, Box, Shield } from 'lucide-react';
-export default function XemTruoc({ product,user }) {
+export default function XemTruoc({ product,user, imageReview }) {
     
     const images = product.danhSachHinh.split(",");
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -11,12 +11,12 @@ export default function XemTruoc({ product,user }) {
     };
 
     const nextImage = () => {
-        setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
+        setCurrentIndex((prevIndex) => (prevIndex + 1) % imageReview.length);
     };
 
     const prevImage = () => {
         setCurrentIndex((prevIndex) =>
-            prevIndex === 0 ? images.length - 1 : prevIndex - 1
+            prevIndex === 0 ? imageReview.length - 1 : prevIndex - 1
         );
     }
     if (!product) {
@@ -38,7 +38,7 @@ export default function XemTruoc({ product,user }) {
                                 ❮
                             </button>
                             <img
-                                src={`image/${images[currentIndex]}`}
+                                src={`${imageReview[currentIndex].preview}`}
                                 alt="Main"
                                 className=" w-[60vw] h-[70vh] object-cover rounded-lg"
                             />
@@ -52,10 +52,10 @@ export default function XemTruoc({ product,user }) {
 
                         {/* Các ảnh thumbnail */}
                         <div className="flex space-x-2">
-                            {images.map((image, index) => (
+                            {imageReview.map((image, index) => (
                                 <img
                                     key={index}
-                                    src={`/image/${image}`}
+                                    src={`${image.preview}`}
                                     alt={`Thumbnail ${index + 1}`}
                                     className={`w-20 h-20 cursor-pointer border-2 rounded-md transition ${index === currentIndex ? "border-yellow-500" : "border-transparent"
                                         } hover:border-yellow-500`}
@@ -65,13 +65,11 @@ export default function XemTruoc({ product,user }) {
 
                             ))}
                         </div>
-                        <div className="flex flex-col items-start w-full ml-[10%]">
-                            <h2 className=" text-xl font-bold"> Mô tả chi tiết</h2>
-                            <span>
-                                {product.moTa}
-                            </span>
+                        <div className="flex flex-col items-start w-full mb-3  ml-[10%] text-xl !bg-transparent">
+                            <div dangerouslySetInnerHTML={{ __html: product.moTa }} />
                         </div>
                         <div className="flex flex-col items-start w-full ml-[10%]">
+                            
                             <h2 className="text-xl font-bold">Thông số kỹ thuật</h2>
                             <div className="grid grid-cols-2 gap-y-6 gap-x-8 text-lg">
                                 <div className="flex items-center">

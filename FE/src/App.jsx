@@ -17,6 +17,7 @@ import { CartProvider } from "./Components/context/CardContext";
 import ProductDetail from "./Pages/ProductDetail";
 import NewPost from "./Pages/NewPost";
 import axios from "axios";
+import PostOfUser from "./Components/userUI/PostOfUser";
 
 function App() {
   const [showLogin, setShowLogin] = useState(false);
@@ -101,9 +102,10 @@ function App() {
           <Route path="/account/*" element={<Account user={userInfo} setUserInfo={setUserInfo} />}>
             <Route path="info" element={<InfomationAccount user={userInfo} setUserInfo={setUserInfo} />} />
             <Route path="reset-password" element={<ResetPassWord user={userInfo} />} />
+            <Route path="user-post/" element={<PostOfUser userId={userInfo}  />} />
           </Route>
           <Route path="/product-detail" element={<ProductDetail />} />
-          <Route path="/new-post" element={<NewPost />} />
+          <Route path="/new-post" element={<NewPost  />} />
           <Route path="*" element={<ErrorPage />} />
         </Routes>
         <Footer />
