@@ -39,7 +39,6 @@ def remove_special_characters(text):
     cleaned_text = re.sub(r'\s+', ' ', cleaned_text).strip()
     return cleaned_text
 
-
 def extract_text_from_image(img):
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     th, threshed = cv2.threshold(gray, 127, 255, cv2.THRESH_TRUNC)
