@@ -18,6 +18,8 @@ import ProductDetail from "./Pages/ProductDetail";
 import NewPost from "./Pages/NewPost";
 import axios from "axios";
 import PostOfUser from "./Components/userUI/PostOfUser";
+import AdminLogin from "./Components/adminUi/AdminLogin";
+import AdminDashboard from "./Components/adminUi/AdminDashboard";
 
 function App() {
   const [showLogin, setShowLogin] = useState(false);
@@ -81,6 +83,20 @@ function App() {
     fetchUserData(); // Gọi hàm lấy dữ liệu người dùng
   }, []);
 
+  useEffect(() => {
+    const storedUserInfo = localStorage.getItem('userInfo');
+    if (storedUserInfo) {
+      setUserInfo(JSON.parse(storedUserInfo)); // Tải thông tin từ localStorage
+    }
+  }, []);
+
+  const PrivateRoute = ({ element: Component, ...rest }) => {
+    const isAuthenticated = localStorage.getItem('admin');
+    const isAdmin = isAuthenticated && JSON.parse(isAuthenticated).is_superuser;
+    return (
+      isAdmin ? <Component {...rest} /> : <Navigate to="/Admin-Login" replace />
+    );
+  };
 
   const handleForgotPasswordClick = () => {
     setIsForgotPasswordVisible(true);
@@ -107,6 +123,8 @@ function App() {
           <Route path="/product-detail" element={<ProductDetail />} />
           <Route path="/new-post" element={<NewPost  />} />
           <Route path="*" element={<ErrorPage />} />
+          <Route path="/admin" element={<PrivateRoute element={AdminDashboard} />} />
+          <Route path="/Admin-Login" element={<AdminLogin />} />
         </Routes>
         <Footer />
       </BrowserRouter>

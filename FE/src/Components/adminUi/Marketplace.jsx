@@ -19,16 +19,16 @@ const Marketplace = () => {
   const priceRanges = ["<20000000", "20000000-40000000", "40000000-60000000", "60000000-80000000", "80000000-100000000"];
 
   useEffect(() => {
-    // Gọi API để lấy bài viết
-    fetch("http://localhost:8000/api/baiviet/")
+    // Gọi admin-api để lấy bài viết
+    fetch("http://localhost:8000/admin-api/baiviet/")
       .then((response) => response.json())
       .then((data) => {
         setPosts(data); // Lưu dữ liệu bài viết vào state
       })
       .catch((error) => console.error("Error fetching posts:", error));
 
-    // Gọi API để lấy hình ảnh
-    fetch("http://localhost:8000/api/hinhanh/")
+    // Gọi admin-api để lấy hình ảnh
+    fetch("http://localhost:8000/admin-api/hinhanh/")
       .then((response) => response.json())
       .then((data) => {
         setImages(data); // Lưu dữ liệu hình ảnh vào state

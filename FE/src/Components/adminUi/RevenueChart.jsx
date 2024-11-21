@@ -22,9 +22,9 @@ const RevenueChart = () => {
   const [totalRevenue, setTotalRevenue] = useState(0); // Thêm state để lưu tổng doanh thu
 
   useEffect(() => {
-    // Lấy dữ liệu từ API
+    // Lấy dữ liệu từ admin-api
     axios
-      .get("http://127.0.0.1:8000/api/naptientaikhoan/")
+      .get("http://127.0.0.1:8000/admin-api/naptientaikhoan/")
       .then((response) => {
         setTransactions(response.data);
         setFilteredTransactions(response.data); // Mặc định hiển thị tất cả giao dịch

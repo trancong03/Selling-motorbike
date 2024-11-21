@@ -7,7 +7,7 @@ const RevenueReport = () => {
   const [transactions, setTransactions] = useState([]);
   const [totalRevenue, setTotalRevenue] = useState(0);
 
-  // Hàm lấy dữ liệu từ API và tính tổng doanh thu
+  // Hàm lấy dữ liệu từ admin-api và tính tổng doanh thu
   const fetchTransactions = () => {
     // Kiểm tra nếu ngày bắt đầu và kết thúc được nhập vào
     if (!startDate || !endDate) {
@@ -16,7 +16,7 @@ const RevenueReport = () => {
     }
 
     axios
-      .get("http://127.0.0.1:8000/api/naptientaikhoan/")
+      .get("http://127.0.0.1:8000/admin-api/naptientaikhoan/")
       .then((response) => {
         // Lọc các giao dịch theo khoảng thời gian
         const filteredTransactions = response.data.filter((transaction) => {
