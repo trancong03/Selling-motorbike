@@ -12,7 +12,7 @@ const SystemSettings = () => {
 
     useEffect(() => {
         // Fetch the latest settings based on the highest ID
-        axios.get('http://127.0.0.1:8000/api/thuoctinhhethong/')
+        axios.get('http://127.0.0.1:8000/admin-api/thuoctinhhethong/')
             .then(response => {
                 if (response.data && response.data.length > 0) {
                     const latestSettings = response.data.sort((a, b) => b.id - a.id)[0]; // Get the latest entry based on the highest ID
@@ -37,7 +37,7 @@ const SystemSettings = () => {
             phuongthucthanhtoanfooter: footerPaymentMethods,
         };
 
-        axios.post('http://127.0.0.1:8000/api/thuoctinhhethong/', settings)
+        axios.post('http://127.0.0.1:8000/admin-api/thuoctinhhethong/', settings)
             .then(response => {
                 alert("Lưu cài đặt thành công!");
             })
@@ -79,7 +79,7 @@ const SystemSettings = () => {
             <div className="mb-6">
                 <label className="block text-gray-700 font-bold mb-2">Địa chỉ footer:</label>
                 <Editor
-                    apiKey="4u15wmtfgj5kkf159xm91c0j8n6rbc4k4gst12ittmzuqo53"
+                    admin-apiKey="4u15wmtfgj5kkf159xm91c0j8n6rbc4k4gst12ittmzuqo53"
                     value={footerAddress}
                     onEditorChange={(content) => setFooterAddress(content)}
                     init={{
@@ -100,7 +100,7 @@ const SystemSettings = () => {
             <div className="mb-6">
                 <label className="block text-gray-700 font-bold mb-2">Thành viên Footer:</label>
                 <Editor
-                    apiKey="4u15wmtfgj5kkf159xm91c0j8n6rbc4k4gst12ittmzuqo53"
+                    admin-apiKey="4u15wmtfgj5kkf159xm91c0j8n6rbc4k4gst12ittmzuqo53"
                     value={footerMembers}
                     onEditorChange={(content) => setFooterMembers(content)}
                     init={{
@@ -121,7 +121,7 @@ const SystemSettings = () => {
             <div className="mb-6">
                 <label className="block text-gray-700 font-bold mb-2">Kênh truyền thông footer:</label>
                 <Editor
-                    apiKey="4u15wmtfgj5kkf159xm91c0j8n6rbc4k4gst12ittmzuqo53"
+                    admin-apiKey="4u15wmtfgj5kkf159xm91c0j8n6rbc4k4gst12ittmzuqo53"
                     value={footerSocialChannels}
                     onEditorChange={(content) => setFooterSocialChannels(content)}
                     init={{
@@ -142,7 +142,7 @@ const SystemSettings = () => {
             <div className="mb-6">
                 <label className="block text-gray-700 font-bold mb-2">Phương thức thanh toán:</label>
                 <Editor
-                    apiKey="4u15wmtfgj5kkf159xm91c0j8n6rbc4k4gst12ittmzuqo53"
+                    admin-apiKey="4u15wmtfgj5kkf159xm91c0j8n6rbc4k4gst12ittmzuqo53"
                     value={footerPaymentMethods}
                     onEditorChange={(content) => setFooterPaymentMethods(content)}
                     init={{

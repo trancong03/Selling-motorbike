@@ -8,9 +8,9 @@ const PostManagement = () => {
   const [selectedPost, setSelectedPost] = useState(null); // State cho bài viết được chọn để hiển thị chi tiết
   const [notificationContent, setNotificationContent] = useState(''); // Nội dung thông báo
 
-  // useEffect để gọi API và lấy dữ liệu bài viết
+  // useEffect để gọi admin-api và lấy dữ liệu bài viết
   useEffect(() => {
-    fetch('http://127.0.0.1:8000/api/baiviet/')
+    fetch('http://127.0.0.1:8000/admin-api/baiviet/')
       .then((response) => {
         if (!response.ok) {
           throw new Error('Network response was not ok');
@@ -50,7 +50,7 @@ const PostManagement = () => {
     console.log(notification);
     
 
-    fetch('http://127.0.0.1:8000/api/thongbao/', {
+    fetch('http://127.0.0.1:8000/admin-api/thongbao/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
