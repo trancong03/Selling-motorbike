@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 
-const XuatXuSelect = ({ onSelect }) => {
+const XuatXuSelect = ({ onSelect,xuatXu }) => {
     const options = [
         { value: "Nhật Bản", label: "Nhật Bản" },
         { value: "Trung Quốc", label: "Trung Quốc" },
@@ -15,7 +15,7 @@ const XuatXuSelect = ({ onSelect }) => {
     ];
 
     const [isOpen, setIsOpen] = useState(false);  // Dropdown open/close state
-    const [searchTerm, setSearchTerm] = useState("");  // Search term entered by the user
+    const [searchTerm, setSearchTerm] = useState(xuatXu);  // Search term entered by the user
     const [selectedOption, setSelectedOption] = useState("");  // Selected option
     const dropdownRef = useRef(null);  // Reference for the dropdown
     const inputRef = useRef(null);  // Reference for the input
@@ -44,7 +44,9 @@ const XuatXuSelect = ({ onSelect }) => {
         setIsOpen(false);  // Close the dropdown
         onSelect(option.label);
     };
-
+    useEffect(() => {
+        setSearchTerm(xuatXu);
+    }, [xuatXu]);
     const filteredOptions = options.filter((option) =>
         option.label.toLowerCase().includes(searchTerm.toLowerCase())  // Filter options based on search term
     );

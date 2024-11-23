@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 
-const NamMuaSelect = ({ onSelect }) => {
+const NamMuaSelect = ({ onSelect,nammua }) => {
     const options = Array.from({ length: 2024 - 1980 + 1 }, (_, index) => {
         const year = 1980 + index;
         return { value: year.toString(), label: year.toString() };
@@ -37,7 +37,9 @@ const NamMuaSelect = ({ onSelect }) => {
         setIsOpen(false);  // Close the dropdown
         onSelect(option.label);
     };
-
+    useEffect(() => {
+        setSearchTerm(nammua);
+    }, [nammua]);
     const filteredOptions = options.filter((option) =>
         option.label.toLowerCase().includes(searchTerm.toLowerCase())  // Filter options based on search term
     );

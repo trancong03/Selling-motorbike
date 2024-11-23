@@ -9,54 +9,83 @@ import HangXeSelect from './../Components/newpost/HangXeSelect';
 import XemTruoc from "../Components/newpost/XemTruoc";
 import apiClient from './../../services/apiclient';
 import { Editor } from "@tinymce/tinymce-react";
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useParams } from "react-router-dom";
-
 function UpdatePost() {
-    const { productId } = useParams();
-    const [product, setProduct] = useState(null);
-    useEffect(() => {
-        const fetchProduct = async () => {
-            const response = await fetch(`/api/products/${productId}`);
-            const data = await response.json();
-            setProduct(data);
-        };
+    const [post, setPost] = useState(null);
+    const [formData, setFormData] = useState({
+        manguoidung: '',
+        magd: '',
+        tieuDe: '',
+        thongTinLienLac: '',
+        moTa: '',
+        diaChiBaiViet: '',
+        hangXe: '',
+        loaiXe: '',
+        namMua: '',
+        dungTich: '',
+        soKmDaDi: '',
+        baoHanh: '',
+        xuatXu: '',
+        tinhTrangXe: '',
+        giaBan: '',
+        danhSachHinh: '',
+    });
+    const [images, setImages] = useState([]);
+    const location = useLocation();
+    const { product } = location.state || {};
 
-        fetchProduct();
-    }, [productId]);
+    useEffect(() => {
+        if (product) {
+            const initImages = product.HINHANH.map((file) => ({
+                fileObject: null,
+                fileName: file.TENFILE,
+                preview: `http://127.0.0.1:8000//media/images/${file.TENFILE}`,
+            }));
+            setImages(initImages);
+        }
+    }, [product]);  // Cập nhật images khi product thay đổi
+
+    useEffect(() => {
+        if (!product) return;  // Nếu không có product, không thực hiện fetch
+        const fetchPost = async () => {
+            const response = await fetch(`http://127.0.0.1:8000/api/post-id/${product.MABAIVIET}`);
+            const data = await response.json();
+            setPost(data);
+        };
+        fetchPost();
+    }, [product]);
+
+    useEffect(() => {
+        if (post) {
+            const DANHSACHHINH = product.HINHANH.map((file) => file.TENFILE).join(",");
+            setFormData({
+                manguoidung: post?.manguoidung || '', 
+                magd: post?.magd || '',
+                tieuDe: post?.tieude || '',
+                thongTinLienLac: post?.thongtinlienlac || '',
+                moTa: post?.mota || '',
+                diaChiBaiViet: post?.diachibaiviet || '',
+                hangXe: post?.hangxe || '',
+                loaiXe: post?.loaixe || '',
+                namMua: post?.nammua || '',
+                dungTich: post?.dungtich || '',
+                soKmDaDi: post?.sokmdadi || '',
+                baoHanh: post?.baohanh || '',
+                xuatXu: post?.xuatxu || '',
+                tinhTrangXe: post?.tinhtrangxe || '',
+                giaBan: post?.giaban.trim() || '',
+                danhSachHinh: DANHSACHHINH,  
+            });
+        }
+    }, [post]);  
+
     const [showLocationSelector, setShowLocationSelector] = useState(false);
     const toggleLocationSelector = () => {
         setShowLocationSelector(!showLocationSelector);
     };
     const [showPreview, setShowPreview] = useState(false);
     const { personID, User } = useCart();
-    const initImages = product.HINHANH.map((file) => ({
-        fileObject: null,
-        fileName: file.TENFILE,
-        preview: `http://127.0.0.1:8000//media/images/${file.TENFILE}`,
-    }));
-    const [images, setImages] = useState(initImages);
-    setImages((prev) => [...prev, ...newImages]);
-    const DANHSACHHINH = product.HINHANH.map((file) => file.fileName).join(",");
-    const [formData, setFormData] = useState({
-        manguoidung: product.MANGUOIDUNG,
-        magd: product.MAGD,
-        tieuDe: product.TIEUDE,
-        thongTinLienLac: product.THONGTINLIENLAC,
-        moTa: product.MOTA,
-        diaChiBaiViet: product.DIACHIBAIVIET,
-        hangXe: product.HANGXE,
-        loaiXe: product.LOAIXE,
-        namMua: product.NAMMUA,
-        dungTich: product.DUNGTICH,
-        soKmDaDi: product.SOKMDADI,
-        baoHanh: product.BAOHANH,
-        xuatXu: product.XUATXU,
-        tinhTrangXe: product.TINHTRANGXE,
-        giaBan: product.GIABAN,
-        danhSachHinh: DANHSACHHINH, // Sẽ chứa chuỗi ảnh
-    });
-
     const updatediachi = (diachi) => {
         setFormData({
             ...formData,
@@ -100,37 +129,28 @@ function UpdatePost() {
 
     };
     useEffect(() => {
-        // Chỉ cập nhật formData nếu có hình ảnh
         const imageString = images.map((file) => file.fileName).join(",");
         const fileObjects = images.map((file) => file.fileObject);
-        // Cập nhật danh sách hình ảnh và file hình ảnh trong formData
         setFormData((prevFormData) => ({
             ...prevFormData,
             danhSachHinh: imageString,
             danhSachFileHinh: fileObjects,
         }));
     }, [images]);
-    console.log(formData);
 
-    // Xử lý khi thay đổi form
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
-        console.log("Form data:", formData);
     };
     const handleDropdownChange = (fieldName) => (selectedValue) => {
         setFormData({ ...formData, [fieldName]: selectedValue });
-        console.log("Form data:", formData);
     };
     const navigate = useNavigate();
     // Xử lý khi submit form
     const handleSubmit = async (e) => {
-        e.preventDefault();
         Object.keys(formData).forEach(key => {
-            console.log(key, formData[key]);
             if (Array.isArray(formData[key])) {
                 formData[key].forEach(item => {
-                    console.log(item);
                 });
             }
         });
@@ -251,7 +271,7 @@ function UpdatePost() {
 
                     {/* Hãng xe */}
                     <div>
-                        <HangXeSelect onSelect={handleDropdownChange("hangXe")} />
+                        <HangXeSelect onSelect={handleDropdownChange("hangXe")} hangxe={post?.hangxe || ''} />
                     </div>
 
                     {/* Loại xe */}
@@ -277,12 +297,12 @@ function UpdatePost() {
 
                     {/* Năm đăng ký */}
                     <div>
-                        <NamMuaSelect onSelect={handleDropdownChange("namMua")} />
+                        <NamMuaSelect onSelect={handleDropdownChange("namMua")} nammua={post?.nammua.toString() || ''} />
                     </div>
 
                     {/* Dung tích */}
                     <div>
-                        <DungTichSelect onSelect={handleDropdownChange("dungTich")} />
+                        <DungTichSelect onSelect={handleDropdownChange("dungTich")} dungtich={post?.dungtich|| ''}/>
                     </div>
 
 
@@ -321,7 +341,7 @@ function UpdatePost() {
 
                     {/* Xuất xứ */}
                     <div>
-                        <XuatXuSelect onSelect={handleDropdownChange("xuatXu")} />
+                        <XuatXuSelect onSelect={handleDropdownChange("xuatXu")} xuatXu={post?.xuatxu || ''} />
                     </div>
 
                     {/* Tình trạng xe */}

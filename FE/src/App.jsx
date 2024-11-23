@@ -123,7 +123,7 @@ function App() {
           </Route>
           <Route path="/product-detail" element={<ProductDetail />} />
           <Route path="/new-post" element={<NewPost  />} />
-          <Route path="/update-post/:productId" element={<UpdatePost />} />
+          <Route path="/update-post" element={<UpdatePost />} />
           <Route path="*" element={<ErrorPage />} />
           <Route path="/admin" element={<PrivateRoute element={AdminDashboard} />} />
           <Route path="/Admin-Login" element={<AdminLogin />} />

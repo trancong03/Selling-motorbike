@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import { MapPin, Car, Calendar, BatteryCharging, CheckCircle, Tag, Box, Shield, EllipsisVertical, DeleteIcon, Settings2 } from 'lucide-react';
 import Modal from 'react-modal';
+import { useNavigate } from 'react-router-dom';
 export default function PostItemUser({ product, userId }) {
+    const navigate = useNavigate();
     const images = product.HINHANH;
     const [currentIndex, setCurrentIndex] = useState(0);
     const [footerPaymentMethods, setFooterPaymentMethods] = useState(product.MOTA);
@@ -46,7 +48,7 @@ export default function PostItemUser({ product, userId }) {
     };
 
     const handleEdit = ({ product }) => {
-        console.log('Sửa sản phẩm', product);
+        navigate('/update-post', { state: { product } });
     };
 
     const updateMainImage = (index) => {

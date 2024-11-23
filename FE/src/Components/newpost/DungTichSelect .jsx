@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 
-const DungTichSelect = ({ onSelect }) => {
+const DungTichSelect = ({ onSelect,dungtich }) => {
+    
     const options = [
         { value: "under50", label: "Dưới 50 cc" },
         { value: "50to100", label: "50 - 100 cc" },
@@ -10,7 +11,7 @@ const DungTichSelect = ({ onSelect }) => {
     ];
 
     const [isOpen, setIsOpen] = useState(false);  // Dropdown open/close state
-    const [searchTerm, setSearchTerm] = useState("");  // Search term entered by the user
+    const [searchTerm, setSearchTerm] = useState(dungtich);  // Search term entered by the user
     const [selectedOption, setSelectedOption] = useState("");  // Selected option
     const dropdownRef = useRef(null);  // Reference for the dropdown
     const inputRef = useRef(null);  // Reference for the input
@@ -43,7 +44,9 @@ const DungTichSelect = ({ onSelect }) => {
     const filteredOptions = options.filter((option) =>
         option.label.toLowerCase().includes(searchTerm.toLowerCase())  // Filter options based on search term
     );
-
+    useEffect(() => {
+        setSearchTerm(dungtich);
+    }, [dungtich]);
     return (
         <div className="relative w-full">
             <label htmlFor="loaiXe" className="block text-sm font-medium text-gray-700">

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 
-const HangXeSelect = ({ onSelect }) => {
+const HangXeSelect = ({ onSelect,hangxe }) => {
     const options = [
         { value: "honda", label: "Honda" },
         { value: "yamaha", label: "Yamaha" },
@@ -47,7 +47,9 @@ const HangXeSelect = ({ onSelect }) => {
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
-
+    useEffect(() => {
+        setSearchTerm(hangxe);
+    }, [hangxe]);
     const handleInputChange = (e) => {
         setSearchTerm(e.target.value);  // Update search term
         setIsOpen(true);  // Open dropdown when user types
