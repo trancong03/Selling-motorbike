@@ -1,28 +1,57 @@
-import { useState } from "react";
-import { MapPin, Car, Calendar, BatteryCharging, CheckCircle, Tag, Box, Shield } from 'lucide-react';
-
-export default function PostItemUser({ product }) {
+import { useState, useEffect, useRef } from "react";
+import { MapPin, Car, Calendar, BatteryCharging, CheckCircle, Tag, Box, Shield, EllipsisVertical, DeleteIcon, Settings2 } from 'lucide-react';
+import Modal from 'react-modal';
+export default function PostItemUser({ product, userId }) {
     const images = product.HINHANH;
     const [currentIndex, setCurrentIndex] = useState(0);
-    const [footerPaymentMethods, setFooterPaymentMethods] = useState(product.MOTA); // Lưu trữ nội dung mô tả
+    const [footerPaymentMethods, setFooterPaymentMethods] = useState(product.MOTA);
+    const [openMenus, setOpenMenus] = useState({});
+
+    // Ref for the menu container
+    const menuRef = useRef(null);
+
+    // Function to toggle the menu
+    const toggleMenu = (postId) => {
+        setOpenMenus((prevState) => ({
+            ...prevState,
+            [postId]: !prevState[postId],
+        }));
+    };
+
+    // Function to handle clicks outside the menu to close it
+    const handleClickOutside = (event) => {
+        if (menuRef.current && !menuRef.current.contains(event.target)) {
+            setOpenMenus({});
+        }
+    };
+
+    useEffect(() => {
+        // Add event listener for clicks outside of the menu
+        document.addEventListener('mousedown', handleClickOutside);
+
+        // Cleanup event listener on component unmount
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
+    const handleDelete = () => {
+        const confirmed = window.confirm("Bạn có chắc chắn muốn xóa sản phẩm này?");
+        if (confirmed) {
+            console.log('Xóa');
+            // Thực hiện hành động xóa tại đây (ví dụ: gọi API để xóa sản phẩm)
+        } else {
+            console.log('Hủy bỏ xóa');
+        }
+    };
+
+    const handleEdit = ({ product }) => {
+        console.log('Sửa sản phẩm', product);
+    };
 
     const updateMainImage = (index) => {
         setCurrentIndex(index);
     };
-
-    const nextImage = () => {
-        setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
-    };
-
-    const prevImage = () => {
-        setCurrentIndex((prevIndex) =>
-            prevIndex === 0 ? images.length - 1 : prevIndex - 1
-        );
-    };
-
-    if (!product) {
-        return <p>Không tìm thấy sản phẩm.</p>;
-    }
 
     const calculateDateDifference = (date) => {
         const currentDate = new Date();
@@ -36,27 +65,41 @@ export default function PostItemUser({ product }) {
 
         return daysDifference;
     };
-    const [openMenus, setOpenMenus] = useState({});
-    const toggleMenu = (postId) => {
-        setOpenMenus((prevState) => ({
-            ...prevState,
-            [postId]: !prevState[postId],
-        }));
-    };
-    
-    const handleDelete = () => {
-        console.log('Xóa');
-    };
 
-    const handleEdit = ({ post }) => {
-        console.log(post);
-    };
+    if (!product) {
+        return <p>Không tìm thấy sản phẩm.</p>;
+    }
+    // Cấu hình Modal
+    Modal.setAppElement('#root'); // Đảm bảo rằng Modal chỉ hiển thị khi có phần tử root
 
+    const DeleteModal = ({ isOpen, onConfirm, onCancel }) => (
+        <Modal isOpen={isOpen} onRequestClose={onCancel} contentLabel="Xác nhận xóa" className="modal" overlayClassName="overlay">
+            <h2 className="text-xl font-semibold text-gray-800 mb-4">Bạn có chắc chắn muốn xóa sản phẩm này?</h2>
+            <p className="text-gray-600 mb-6">Hành động này không thể hoàn tác.</p>
+            <div className="flex justify-between">
+                <button onClick={onCancel} className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 focus:outline-none">
+                    Hủy bỏ
+                </button>
+                <button onClick={onConfirm} className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none">
+                    Xóa
+                </button>
+            </div>
+        </Modal>
+    );
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const openModal = () => setIsModalOpen(true);
+    const closeModal = () => setIsModalOpen(false);
+
+    const handleConfirmDelete = () => {
+        console.log('Xóa sản phẩm');
+        closeModal();
+    };
     return (
-        <div>
-            <div className="rounded-sm overflow-hidden bg-slate-200 max-w-full mt-3 flex items-center justify-between p-4">
+        <div className="bg-white rounded-lg shadow-md overflow-hidden !text-lg">
+            <div className="flex items-center justify-between p-4 bg-slate-200">
                 {/* Seller Info */}
-                <div className="flex items-center justify-center h-full space-x-4 relative">
+                <div className="flex items-center space-x-4">
                     <img
                         src={userId.anhdaidien ? `http://127.0.0.1:8000//media/images/${userId.anhdaidien}` : "http://127.0.0.1:8000//media/images/icon.png"}
                         alt="User avatar"
@@ -65,118 +108,117 @@ export default function PostItemUser({ product }) {
                     <div className="flex-1">
                         <div className="font-medium text-gray-700 text-lg">{userId.hoten}</div>
                         <div className="flex items-center text-sm text-gray-500">
-                            <div className="mr-4">{calculateDateDifference(post.NGAYDANG)} ngày trước</div>
+                            <div className="mr-4">{calculateDateDifference(product.NGAYDANG)} ngày trước</div>
                         </div>
                     </div>
                 </div>
-                <EllipsisVertical
-                    onClick={() => toggleMenu(post.MABAIVIET)}
-                    className="h-6 w-6  text-gray-600 hover:text-amber-500 shadow-sm hover:shadow-lg transition-all duration-200 ease-in-out cursor-pointer"
-                />
-                {openMenus[post.MABAIVIET] && (
-                    <div className="absolute right-[0vw] mt-[7%] w-40 bg-white rounded-md shadow-lg border border-gray-200 z-10 max-h-60 overflow-y-auto">
-                        <ul className="py-1">
-                            <li
-                                className="px-4 py-2 text-gray-700 hover:bg-gray-100 cursor-pointer"
-                                onClick={() => handleEdit({ post })}
-                            >
-                                Sửa
-                            </li>
-                            <li
-                                className="px-4 py-2 text-red-600 hover:bg-gray-100 cursor-pointer"
-                                onClick={handleDelete}
-                            >
-                                Xóa
-                            </li>
-                        </ul>
-                    </div>
-                )}
+
+                {/* Dropdown Menu */}
+                <div className="relative" ref={menuRef}>
+                    <EllipsisVertical
+                        onClick={() => toggleMenu(product.MABAIVIET)}
+                        className="h-6 w-6 text-gray-600 hover:text-amber-500 cursor-pointer transition duration-300 ease-in-out transform hover:scale-110"
+                    />
+                    {openMenus[product.MABAIVIET] && (
+                        
+                        <div className="absolute top-full right-1 mt-2 w-40 bg-white rounded-lg shadow-xl border border-gray-200 max-h-60 overflow-y-auto z-50">
+                            <ul className="py-0">
+                                <li
+                                    className="px-4 py-2 text-gray-800 hover:bg-slate-300 hover:text-gray-900 cursor-pointer"
+                                    onClick={() => handleEdit({ product })}
+                                >
+                                    <span className=" flex text-sm items-center justify-center gap-2"> <Settings2 /> Sửa bài viết</span>
+                                </li>
+                                <li
+                                    className="px-4 py-2 text-gray-800 hover:bg-slate-300 hover:text-red-700 cursor-pointer"
+                                    onClick={handleDelete}
+                                >
+                               
+                                    <span className=" flex text-sm items-center justify-center gap-2"> <DeleteIcon /> Xóa bài viết</span>
+                                </li>
+                            </ul>
+                        </div>
+                    )}
+                </div>
             </div>
 
-            <div className="flex flex-col items-start w-full mb-3 !bg-transparent">
-                <div dangerouslySetInnerHTML={{ __html: post.MOTA }} />
+            {/* Description */}
+            <div className="flex flex-col items-start w-full p-5">
+                <div dangerouslySetInnerHTML={{ __html: product.MOTA }} />
             </div>
-            <div className="bg-transparent flex items-start justify-between w-full ">
-                <div className="flex flex-col items-start min-w-[100%] h-auto">
-                    <div className="flex items-start">
-                        {/* Các ảnh thumbnail */}
-                        <div className="flex flex-col justify-between gap-4 h-full mr-3">
-                            {images.map((image, index) => (
-                                <img
-                                    key={index}
-                                    src={`http://127.0.0.1:8000/media/images/${image.TENFILE}`}
-                                    alt={`Thumbnail ${index + 1}`}
-                                    className={`w-20 h-20 cursor-pointer border-2 rounded-md transition ${index === currentIndex ? "border-yellow-500" : "border-transparent"
-                                        } hover:border-yellow-500`}
-                                    onClick={() => updateMainImage(index)}
-                                    onMouseEnter={() => updateMainImage(index)}  // Sự kiện cập nhật khi hover
-                                />
-                            ))}
-                        </div>
-                        <div className="relative">
-                            <button
-                                onClick={prevImage}
-                                className="absolute top-1/2 left-2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full focus:outline-none"
-                            >
-                                ❮
-                            </button>
+
+            {/* Thumbnails */}
+            <div className="flex items-start justify-between w-full mb-4 bg-slate-100/50"> {/* Added margin-bottom */}
+                <div className="flex items-start justify-start gap-4 w-full min-h-[45vh]"> {/* Changed fixed height to min-h */}
+                    <div className="flex flex-col gap-4 !w-[80px] h-[80px] m-4"> {/* Fixed size for the thumbnail container */}
+                        {images.map((image, index) => (
                             <img
-                                src={`http://127.0.0.1:8000/media/images/${images[currentIndex].TENFILE}`}
-                                alt="Main"
-                                className="w-[50vw] h-[55vh] object-cover rounded-lg"
+                                key={index}
+                                src={`http://127.0.0.1:8000/media/images/${image.TENFILE}`}
+                                alt={`Thumbnail ${index + 1}`}
+                                className={`w-full h-full cursor-pointer border-2 rounded-md transition ${index === currentIndex ? "border-yellow-500" : "border-transparent"}`}
+                                onClick={() => updateMainImage(index)}
+                                onMouseEnter={() => updateMainImage(index)}  // Update image on hover
+                                style={{ objectFit: 'cover' }}  // Ensures no stretching
                             />
-                            <button
-                                onClick={nextImage}
-                                className="absolute top-1/2 right-2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full focus:outline-none"
-                            >
-                                ❯
-                            </button>
-                        </div>
-
-
+                        ))}
                     </div>
 
-
-                    <div className="flex flex-col items-start w-full ml-[1%] mt-3">
-                        <h2 className="text-xl font-bold">Thông số kỹ thuật</h2>
-                        <div className="grid grid-cols-2 gap-y-4 gap-x-8 text-lg">
-                            <div className="flex items-center">
-                                <Car className="mr-2" />
-                                <h3 className='line-clamp-3 font-arial'>Hãng xe: {product.HANGXE || 'Sản phẩm không có tên'}</h3>
-                            </div>
-                            <div className="flex items-center">
-                                <Tag className="mr-2" />
-                                <h3 className='line-clamp-3 font-arial'>Loại xe: {product.LOAIXE || 'Sản phẩm không có tên'}</h3>
-                            </div>
-                            <div className="flex items-center">
-                                <Calendar className="mr-2" />
-                                <h3 className='line-clamp-3 font-arial'>Năm mua: {product.NAMMUA || 'Sản phẩm không có tên'}</h3>
-                            </div>
-                            <div className="flex items-center">
-                                <BatteryCharging className="mr-2" />
-                                <h3 className='line-clamp-3 font-arial'>Dung tích: {product.DUNGTICH || 'Sản phẩm không có tên'}</h3>
-                            </div>
-                            <div className="flex items-center">
-                                <MapPin className="mr-2" />
-                                <h3 className='line-clamp-3 font-arial'>Số km: {product.SOKMDADI || 'Sản phẩm không có tên'}</h3>
-                            </div>
-                            <div className="flex items-center">
-                                <CheckCircle className="mr-2" />
-                                <h3 className='line-clamp-3 font-arial'>Tình Trạng: {product.TINHTRANGXE || 'Sản phẩm không có tên'}</h3>
-                            </div>
-                            <div className="flex items-center">
-                                <Box className="mr-2" />
-                                <h3 className='line-clamp-3 font-arial'>Xuất xứ: {product.XUATXU || 'Sản phẩm không có tên'}</h3>
-                            </div>
-                            <div className="flex items-center">
-                                <Shield className="mr-2" />
-                                <h3 className='line-clamp-3 font-arial'>{product.BAOHANH || 'Sản phẩm không có tên'}</h3>
-                            </div>
-                        </div>
+                    {/* Main Image */}
+                    <div className="mt-4 flex-1">
+                        <img
+                            src={`http://127.0.0.1:8000/media/images/${images[currentIndex].TENFILE}`}
+                            alt={`Main Image`}
+                            className="w-full max-h-[70vh] rounded-md object-cover"
+                        />
                     </div>
                 </div>
             </div>
-        </div>
-        
+
+            {/* Product Details */}
+            <div className="relative flex flex-col items-start w-full mt-3 m-5"> {/* Added margin-bottom */}
+                <h2 className="text-3xl font-bold mt-3 text-red-800 mb-5">
+                    {new Intl.NumberFormat('vi-VN').format(product.GIABAN) || 'Sản phẩm không có tên'} đ
+                </h2>
+
+                <h2 className="text-xl font-bold">Thông số kỹ thuật</h2>
+                <div className="grid grid-cols-2 gap-4 text-lg w-full">
+                    <div className="flex items-center">
+                        <Car className="mr-2" />
+                        <h3 className="line-clamp-3">Hãng xe: {product.HANGXE || 'Sản phẩm không có tên'}</h3>
+                    </div>
+                    <div className="flex items-center">
+                        <Tag className="mr-2" />
+                        <h3 className="line-clamp-3">Loại xe: {product.LOAIXE || 'Sản phẩm không có tên'}</h3>
+                    </div>
+                    <div className="flex items-center">
+                        <Calendar className="mr-2" />
+                        <h3 className="line-clamp-3">Năm mua: {product.NAMMUA || 'Sản phẩm không có tên'}</h3>
+                    </div>
+                    <div className="flex items-center">
+                        <BatteryCharging className="mr-2" />
+                        <h3 className="line-clamp-3">Dung tích: {product.DUNGTICH || 'Sản phẩm không có tên'}</h3>
+                    </div>
+                    <div className="flex items-center">
+                        <MapPin className="mr-2" />
+                        <h3 className="line-clamp-3">Số km: {product.SOKMDADI || 'Sản phẩm không có tên'}</h3>
+                    </div>
+                    <div className="flex items-center">
+                        <CheckCircle className="mr-2" />
+                        <h3 className="line-clamp-3">Tình Trạng: {product.TINHTRANGXE || 'Sản phẩm không có tên'}</h3>
+                    </div>
+                    <div className="flex items-center">
+                        <Box className="mr-2" />
+                        <h3 className="line-clamp-3">Xuất xứ: {product.XUATXU || 'Sản phẩm không có tên'}</h3>
+                    </div>
+                    <div className="flex items-center">
+                        <Shield className="mr-2" />
+                        <h3 className="line-clamp-3">{product.BAOHANH || 'Sản phẩm không có tên'}</h3>
+                    </div>
+                </div>
+            </div>
+
+        </div> 
+
     );
 }

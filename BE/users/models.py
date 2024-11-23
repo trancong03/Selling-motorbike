@@ -45,21 +45,29 @@ class NguoiDung(models.Model):
 
 
 class BaiViet(models.Model):
-    mabaiviet = models.AutoField(primary_key=True)
-    maxe = models.IntegerField(null=True, blank=True)
-    manguoidung = models.ForeignKey(NguoiDung, null=True, blank=True, on_delete=models.CASCADE)
-    magd = models.CharField(max_length=10, null=True, blank=True)
-    tieude = models.CharField(max_length=75, null=True, blank=True)
-    noidung = models.TextField(null=True, blank=True)
-    thongtinlienlac = models.CharField(max_length=200, null=True, blank=True)
-    mota = models.TextField(null=True, blank=True)
-    diachibaiviet = models.TextField(null=True, blank=True)
-    giatri = models.DecimalField(max_digits=19, decimal_places=4, null=True, blank=True)
-    ngaydang = models.DateTimeField(null=True, blank=True)
-    ngayhethan = models.DateTimeField(null=True, blank=True)
+    mabaiviet = models.AutoField(primary_key=True)  # Tự động tăng, là khóa chính
+    manguoidung = models.IntegerField(null=True, blank=True)  # Sử dụng IntegerField để phù hợp với kiểu int
+    magd = models.CharField(max_length=10, null=True, blank=True)  # Trường magd kiểu char(10)
+    tieude = models.CharField(max_length=75, null=True, blank=True)  # Trường tiêu đề
+    noidung = models.TextField(null=True, blank=True)  # Trường nội dung là TextField
+    thongtinlienlac = models.CharField(max_length=200, null=True, blank=True)  # Thông tin liên lạc
+    mota = models.TextField(null=True, blank=True)  # Mô tả là TextField
+    diachibaiviet = models.CharField(max_length=200, null=True, blank=True)  # Địa chỉ bài viết
+    giatri = models.DecimalField(max_digits=19, decimal_places=4, null=True, blank=True)  # Giá trị
+    ngaydang = models.DateField(null=True, blank=True)  # Ngày đăng (sử dụng DateField thay vì DateTimeField)
+    ngayhethan = models.DateField(null=True, blank=True)  # Ngày hết hạn (sử dụng DateField)
+    hangxe = models.CharField(max_length=15, null=True, blank=True)  # Hãng xe
+    loaixe = models.CharField(max_length=25, null=True, blank=True)  # Loại xe
+    nammua = models.IntegerField(null=True, blank=True)  # Năm mua
+    dungtich = models.CharField(max_length=50, null=True, blank=True)  # Dung tích
+    sokmdadi = models.BigIntegerField(null=True, blank=True)  # Số km đã đi
+    baohanh = models.CharField(max_length=40, null=True, blank=True)  # Bảo hành
+    xuatxu = models.CharField(max_length=30, null=True, blank=True)  # Xuất xứ
+    tinhtrangxe = models.CharField(max_length=30, null=True, blank=True)  # Tình trạng xe
+    giaban = models.CharField(max_length=10, null=True, blank=True)  # Giá bán
 
     class Meta:
-        db_table = 'BAIVIET'  # Custom table name
+        db_table = 'BAIVIET'  # Tên bảng trong cơ sở dữ liệu
 
     def __str__(self):
         return self.tieude

@@ -1,51 +1,53 @@
 import React, { useState, useEffect } from 'react';
 import PostItemUser from '../ui/PostItemUser';
-import { EllipsisVertical } from 'lucide-react';
+import NoPosts from './NoPosts';
 
 export default function PostOfUser({ userId }) {
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-   
 
     useEffect(() => {
-        if (!userId.manguoidung) {
-            console.error("userId is undefined or invalid");
+        if (!userId || !userId.manguoidung) {
+            setLoading(false);
             return;
         }
+
         const fetchPosts = async () => {
             try {
                 const response = await fetch(`http://127.0.0.1:8000/api/post/${userId.manguoidung}/`);
+
+                // Kiểm tra nếu phản hồi từ API thành công
                 if (!response.ok) {
-                    throw new Error('Không thể tải bài viết');
+                    throw new Error(`API request failed with status: ${response.status}`);
                 }
+
                 const data = await response.json();
-                setPosts(data);
+
+                // Kiểm tra nếu dữ liệu không rỗng
+                if (Array.isArray(data) && data.length > 0) {
+                    setPosts(data);
+                } else {
+                    setPosts([]);  // Nếu không có bài viết, set posts là mảng rỗng
+                }
             } catch (error) {
-                setError(error.message);
+                setError(error.message);  // Cập nhật lỗi khi có lỗi
             } finally {
-                setLoading(false);
+                setLoading(false);  // Đảm bảo set loading là false khi hoàn thành
             }
         };
 
         fetchPosts();
     }, [userId]);
-
-    
-
-  
     if (loading) {
         return <div>Đang tải...</div>;
     }
-
-    if (error) {
-        return <div>Đã xảy ra lỗi: {error}</div>;
-    }
-
+    const handleCreatePost = () => {
+        window.location.href = '/new-post';
+    };
     return (
         <div>
             {posts.length === 0 ? (
-                <p>Không có bài viết nào.</p>
+                <NoPosts onCreatePost={handleCreatePost} />
             ) : (
                 <div className="max-h-screen overflow-y-auto scrollbar-hidden">
                     <ul>
@@ -54,6 +56,7 @@ export default function PostOfUser({ userId }) {
                                 <PostItemUser
                                     key={post.MABAIVIET}
                                     product={post}
+                                    userId={userId}
                                 />
                             </div>
                         ))}

@@ -20,6 +20,7 @@ import axios from "axios";
 import PostOfUser from "./Components/userUI/PostOfUser";
 import AdminLogin from "./Components/adminUi/AdminLogin";
 import AdminDashboard from "./Components/adminUi/AdminDashboard";
+import UpdatePost from "./Pages/UpdatePost";
 
 function App() {
   const [showLogin, setShowLogin] = useState(false);
@@ -122,6 +123,7 @@ function App() {
           </Route>
           <Route path="/product-detail" element={<ProductDetail />} />
           <Route path="/new-post" element={<NewPost  />} />
+          <Route path="/update-post/:productId" element={<UpdatePost />} />
           <Route path="*" element={<ErrorPage />} />
           <Route path="/admin" element={<PrivateRoute element={AdminDashboard} />} />
           <Route path="/Admin-Login" element={<AdminLogin />} />
@@ -131,6 +133,4 @@ function App() {
     </CartProvider>
   );
 }
- 
-
 export default App;

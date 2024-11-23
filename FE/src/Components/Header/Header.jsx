@@ -70,8 +70,6 @@ export default function Header({ onLoginClick, userInfo, setUserInfo,  }) {
     }
     setIsMenuOpen(false);
   };
-console.log(userInfo);
-
   return (
     <div className={`transition-all duration-300 ${isSticky ? 'fixed top-0 left-0 w-full shadow-md z-50' : ''}`}>
       <div className=" h-20 flex items-center bg-yellow-300 p-3 ">
