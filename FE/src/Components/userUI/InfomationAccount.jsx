@@ -1,27 +1,20 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import LocationSelector from '../ui/LocationSelector';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlay } from '@fortawesome/free-solid-svg-icons';
 export default function InfomationAccount({ user, setUserInfo }) {
-    // const [user, setUserInfo] = useState({
-    //     fullname: '',
-    //     email: '',
-    //     address: '',
-    //     phone: '',
-    //     identity_card: '',
-    //     gender: '',
-    //     description: '',
-    //     birthdate: '',
-    // });
+    console.log(user.ngaysinh);
+    
 
     const [selectedFile, setSelectedFile] = useState(null);
+    const [hoten, setHoten] = useState(user.hoten);
     const [selectedImage, setSelectedImage] = useState(null); // Lưu trữ URL ảnh đã chọn
-    // useEffect(() => {
-    //     const storedUserInfo = JSON.parse(localStorage.getItem('userInfo'));
-    //     if (storedUserInfo) {
-    //         setUserInfo(storedUserInfo);
-    //     }
-    // }, []);
+    useEffect(() => {
+        const storedUserInfo = JSON.parse(localStorage.getItem('userInfo'));
+        if (storedUserInfo) {
+            setUserInfo(storedUserInfo);
+        }
+    }, []);
     const handleFileChange = (event) => {
         const file = event.target.files[0]; // Lấy tệp đã chọn
         if (file) {
@@ -58,8 +51,6 @@ export default function InfomationAccount({ user, setUserInfo }) {
                 method: 'POST',
                 body: formData,
             });
-            
-            
     
             if (!response.ok) {
                 const errorDetail = await response.text(); // log as text to handle non-JSON response
@@ -68,7 +59,6 @@ export default function InfomationAccount({ user, setUserInfo }) {
             }
     
             const result = await response.json();
-            console.log(result);
             displayCCCDData(result);
         } catch (error) {
             console.error(error);
@@ -80,12 +70,12 @@ export default function InfomationAccount({ user, setUserInfo }) {
         setUserInfo((prevUser) => ({
             ...prevUser,
             socccd: data.ID || "",
-            hoten: data.Name || "",
             gioitinh: data.Gender || "",
-            ngaysinh: data.Birth || "",
+            ngaysinh: formatDate(data.Birth)|| "",
             mota: `${data.Nation || ""}, ${data.Countryside || ""}`,
             diachi: data.Address || "",
         }));
+        setHoten(data.Name || "",)
     };
     
     const formatDate = (dateString) => {
@@ -101,7 +91,7 @@ export default function InfomationAccount({ user, setUserInfo }) {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    hoten: user.hoten,
+                    hoten: hoten,
                     email: user.email,
                     diachi: user.diachi,
                     sodienthoai: user.sodienthoai,
@@ -117,14 +107,15 @@ export default function InfomationAccount({ user, setUserInfo }) {
             }
 
             const result = await response.json();
-            console.log('User updated:', result);
             localStorage.setItem('userInfo', JSON.stringify(result));
+            setUserInfo({...user, hoten: hoten })
             alert('Thông tin đã được cập nhật!');
         } catch (error) {
             console.error('Error updating user:', error);
             alert('Có lỗi xảy ra khi cập nhật thông tin!');
         }
     };
+    
   return (
       <div className='h-auto w-[60vw] mt-8'>
           <nav className="bg-gray-100 p-3 rounded font-sans w-full mb-4">
@@ -147,8 +138,8 @@ export default function InfomationAccount({ user, setUserInfo }) {
                           type="text"
                           id="name"
                           name="name"
-                          value={user.hoten || ""}
-                          onChange={(e) => setUserInfo({ ...user, hoten: e.target.value })}
+                          value={hoten || ""}
+                          onChange={(e) =>setHoten(e.target.value )}
                           className="w-full focus:outline-none text-slate-400  font-bold"
                       />
                   </div>
@@ -237,8 +228,9 @@ export default function InfomationAccount({ user, setUserInfo }) {
 
               <div className="relative">
                   <input type="date"
-                      value={formatDate(user.ngaysinh) || ""}
-                      onChange={(e) => setUserInfo({ ...user, ngaysinh: e.target.value })}
+                      value={user.ngaysinh} // Chuyển đổi từ dd/MM/yyyy sang YYYY-MM-DD khi hiển thị
+                      onChange={(e) => setUserInfo({ ...user, ngaysinh: e.target.value })} // Chuyển đổi ngược lại khi thay đổi
+                      placeholder="DD/MM/YYYY"
                       className="block w-full px-4 py-2 text-gray-500 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
 
               </div>

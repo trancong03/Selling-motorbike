@@ -25,7 +25,6 @@ class PostRepository:
             return None
     @staticmethod
     def get_all_bai_viet_by_manguoidung(manguoidung):
-        print(manguoidung)
         query = """
         SELECT dbo.LayBaiVietTheoID(%s) ;
         """
@@ -97,14 +96,14 @@ class PostRepository:
             return False
     @staticmethod
     def sua_bai_viet(
-        ma_nguoi_dung, ma_gd, tieu_de, thong_tin_lien_lac, mo_ta, dia_chi_bai_viet,
+       ma_gd, tieu_de, thong_tin_lien_lac, mo_ta, dia_chi_bai_viet,
         hang_xe, loai_xe, nam_mua, dung_tich, so_km_da_di, bao_hanh,
         xuat_xu, tinh_trang_xe, gia_ban, danh_sach_hinh
     ):
         # Câu truy vấn với các giá trị trực tiếp thay vì placeholder "?"
         query = f"""
         EXEC dbo.SuaBaiViet 
-            '{ma_nguoi_dung}', '{ma_gd}', N'{tieu_de}', '{thong_tin_lien_lac}', N'{mo_ta}', 
+             '{ma_gd}', N'{tieu_de}', '{thong_tin_lien_lac}', N'{mo_ta}', 
             N'{dia_chi_bai_viet}', '{hang_xe}', N'{loai_xe}', '{nam_mua}', '{dung_tich}', 
             '{so_km_da_di}', N'{bao_hanh}', N'{xuat_xu}', N'{tinh_trang_xe}', '{gia_ban}', '{danh_sach_hinh}';
         """

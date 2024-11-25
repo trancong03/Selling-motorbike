@@ -11,7 +11,6 @@ import apiClient from './../../services/apiclient';
 import { Editor } from "@tinymce/tinymce-react";
 import { useNavigate } from 'react-router-dom';
 function NewPost() {
-   
     const [showLocationSelector, setShowLocationSelector] = useState(false);
     const toggleLocationSelector = () => {
         setShowLocationSelector(!showLocationSelector);
@@ -91,7 +90,6 @@ function NewPost() {
             danhSachFileHinh: fileObjects,
         }));
     }, [images]);
-console.log(formData);
 
     // Xử lý khi thay đổi form
     const handleChange = (e) => {
@@ -303,7 +301,7 @@ console.log(formData);
 
                     {/* Xuất xứ */}
                     <div>
-                        <XuatXuSelect onSelect={handleDropdownChange("xuatXu")} />
+                        <XuatXuSelect onSelect={handleDropdownChange("xuatXu")} xuatXu={''} />
                     </div>
 
                     {/* Tình trạng xe */}

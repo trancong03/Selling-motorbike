@@ -104,11 +104,9 @@ def tao_bai_viet(request):
 
 @csrf_exempt
 def sua_bai_viet(request):
-    if request.method == 'PATCH':
+    if request.method == 'POST':
         try:
-            ma_bai_viet = request.POST.get('maBaiViet')  # Mã bài viết cần chỉnh sửa
-            ma_nguoi_dung = request.POST.get('manguoidung')  # Lấy mã người dùng từ token
-            # Lấy các trường văn bản từ request.POST
+            ma_bai_viet = request.POST.get('maBaiViet') # Mã bài viết cần chỉnh sửa
             tieu_de = request.POST.get('tieuDe')
             thong_tin_lien_lac = request.POST.get('thongTinLienLac')
             mo_ta = request.POST.get('moTa')
@@ -138,9 +136,9 @@ def sua_bai_viet(request):
 
             # Call the service layer to handle the logic
             result = PostService.sua_bai_viet(
-                ma_bai_viet, ma_nguoi_dung, tieu_de, thong_tin_lien_lac, mo_ta, dia_chi_bai_viet,
+                ma_bai_viet, tieu_de, thong_tin_lien_lac, mo_ta, dia_chi_bai_viet,
                 hang_xe, loai_xe, nam_mua, dung_tich, so_km_da_di, bao_hanh, xuat_xu, tinh_trang_xe, gia_ban,
-                danh_sach_hinh, image_urls
+                danh_sach_hinh, 
             )
             if result:
                 return JsonResponse({'message': 'Bài viết đã được cập nhật thành công.'}, status=200)

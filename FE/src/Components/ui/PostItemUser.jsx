@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from "react";
 import { MapPin, Car, Calendar, BatteryCharging, CheckCircle, Tag, Box, Shield, EllipsisVertical, DeleteIcon, Settings2 } from 'lucide-react';
-import Modal from 'react-modal';
 import { useNavigate } from 'react-router-dom';
 export default function PostItemUser({ product, userId }) {
     const navigate = useNavigate();
@@ -71,32 +70,7 @@ export default function PostItemUser({ product, userId }) {
     if (!product) {
         return <p>Không tìm thấy sản phẩm.</p>;
     }
-    // Cấu hình Modal
-    Modal.setAppElement('#root'); // Đảm bảo rằng Modal chỉ hiển thị khi có phần tử root
-
-    const DeleteModal = ({ isOpen, onConfirm, onCancel }) => (
-        <Modal isOpen={isOpen} onRequestClose={onCancel} contentLabel="Xác nhận xóa" className="modal" overlayClassName="overlay">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">Bạn có chắc chắn muốn xóa sản phẩm này?</h2>
-            <p className="text-gray-600 mb-6">Hành động này không thể hoàn tác.</p>
-            <div className="flex justify-between">
-                <button onClick={onCancel} className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 focus:outline-none">
-                    Hủy bỏ
-                </button>
-                <button onClick={onConfirm} className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none">
-                    Xóa
-                </button>
-            </div>
-        </Modal>
-    );
-    const [isModalOpen, setIsModalOpen] = useState(false);
-
-    const openModal = () => setIsModalOpen(true);
-    const closeModal = () => setIsModalOpen(false);
-
-    const handleConfirmDelete = () => {
-        console.log('Xóa sản phẩm');
-        closeModal();
-    };
+    
     return (
         <div className="bg-white rounded-lg shadow-md overflow-hidden !text-lg">
             <div className="flex items-center justify-between p-4 bg-slate-200">

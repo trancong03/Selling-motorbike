@@ -139,4 +139,4 @@ def scan_cccd(request):
 
     except Exception as e:
         print(f"Lỗi khi xử lý hình ảnh: {str(e)}")
-        return JsonResponse({"error": "Quét hình ảnh không thành công"}, status=500)
+        return JsonResponse({'error': f'Lỗi không xác định: {str(e)}'}, status=400)

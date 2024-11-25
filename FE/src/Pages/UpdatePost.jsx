@@ -10,11 +10,10 @@ import XemTruoc from "../Components/newpost/XemTruoc";
 import apiClient from './../../services/apiclient';
 import { Editor } from "@tinymce/tinymce-react";
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useParams } from "react-router-dom";
 function UpdatePost() {
     const [post, setPost] = useState(null);
     const [formData, setFormData] = useState({
-        manguoidung: '',
+        maBaiViet: '',
         magd: '',
         tieuDe: '',
         thongTinLienLac: '',
@@ -34,7 +33,7 @@ function UpdatePost() {
     const [images, setImages] = useState([]);
     const location = useLocation();
     const { product } = location.state || {};
-
+    
     useEffect(() => {
         if (product) {
             const initImages = product.HINHANH.map((file) => ({
@@ -58,9 +57,11 @@ function UpdatePost() {
 
     useEffect(() => {
         if (post) {
+            console.log(post);
+            
             const DANHSACHHINH = product.HINHANH.map((file) => file.TENFILE).join(",");
             setFormData({
-                manguoidung: post?.manguoidung || '', 
+                maBaiViet: post?.mabaiviet || '', 
                 magd: post?.magd || '',
                 tieuDe: post?.tieude || '',
                 thongTinLienLac: post?.thongtinlienlac || '',
@@ -74,7 +75,7 @@ function UpdatePost() {
                 baoHanh: post?.baohanh || '',
                 xuatXu: post?.xuatxu || '',
                 tinhTrangXe: post?.tinhtrangxe || '',
-                giaBan: post?.giaban.trim() || '',
+                giaBan: post?.giaban|| '',
                 danhSachHinh: DANHSACHHINH,  
             });
         }
@@ -148,43 +149,47 @@ function UpdatePost() {
     const navigate = useNavigate();
     // Xử lý khi submit form
     const handleSubmit = async (e) => {
-        Object.keys(formData).forEach(key => {
-            if (Array.isArray(formData[key])) {
-                formData[key].forEach(item => {
-                });
-            }
-        });
-
+        e.preventDefault();
         try {
             const formDataToSend = new FormData();
-
-            // Thêm các trường không phải tệp vào formData
             Object.keys(formData).forEach(key => {
-                if (key !== 'danhSachFileHinh') {
-                    formDataToSend.append(key, formData[key]);
+                if (key !== 'danhSachFileHinh' && formData[key] !== undefined && formData[key] !== null) {
+                    if (Array.isArray(formData[key])) {
+                        formDataToSend.append(key, JSON.stringify(formData[key]));
+                    } else {
+                        formDataToSend.append(key, formData[key]);
+                    }
                 }
             });
 
-            // Thêm tệp hình ảnh vào FormData
-            formData.danhSachFileHinh.forEach((file) => {
-                formDataToSend.append('danhSachFileHinh', file);
-            });
+            // Thêm danh sách tệp hình
+            if (formData.danhSachFileHinh && Array.isArray(formData.danhSachFileHinh)) {
+                formData.danhSachFileHinh.forEach(file => {
+                    if (file instanceof File) {
+                        formDataToSend.append('danhSachFileHinh[]', file);
+                    }
+                });
+            }
 
-            // Thêm token vào header (nếu có)
-            const token = localStorage.getItem('authToken'); // Hoặc lấy token từ Context, Redux, v.v.
-
-            const response = await apiClient.post('/api/new-post/', formDataToSend, {
+            // Gửi dữ liệu
+            const token = localStorage.getItem('authToken');
+            const response = await apiClient.post('/api/update-post/', formDataToSend, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     'Authorization': `Bearer ${token}`,
                 },
             });
-            navigate('/'); // Chuyển hướng về trang chủ
+            console.log('Cập nhật thành công:', response.data);
         } catch (error) {
-            console.error('Lỗi khi tạo bài viết:', error.response ? error.response.data : error.message);
+            if (error.response) {
+                console.error('Lỗi phía server:', error.response.data);
+            } else if (error.request) {
+                console.error('Không nhận được phản hồi từ server:', error.request);
+            } else {
+                console.error('Lỗi thiết lập yêu cầu:', error.message);
+            }
         }
     };
-
 
     // Toggle xem trước
     const togglePreview = () => {
