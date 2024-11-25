@@ -18,6 +18,9 @@ function NewPost() {
     const [showPreview, setShowPreview] = useState(false);
     const { personID, User } = useCart();
     const [images, setImages] = useState([]);
+    const [loaiXe,setLoaiXe] = useState([]);
+    console.log(loaiXe);
+    
     const [formData, setFormData] = useState({
         manguoidung: "",
         magd:"",
@@ -34,8 +37,12 @@ function NewPost() {
         xuatXu: "",
         tinhTrangXe: "",
         giaBan: "",
+        mauXe: "",
+        mauSac:"",
+        style:"",
         danhSachHinh: "", // Sẽ chứa chuỗi ảnh
     });
+    console.log(formData.hangXe);
     
     const updatediachi = (diachi) => {
         setFormData({
@@ -231,35 +238,61 @@ function NewPost() {
 
                     {/* Hãng xe */}
                     <div>
-                        <HangXeSelect onSelect={handleDropdownChange("hangXe")} />
+                        <HangXeSelect onSelect={handleDropdownChange("hangXe")} setLoaiXe={setLoaiXe}/>
                     </div>
 
                     {/* Loại xe */}
                     <div>
-                        <label htmlFor="loaiXe" className="block text-sm font-medium text-gray-700">
-                            Loại xe <span className="text-red-500">*</span>
+                        <label htmlFor="mauXe" className="block text-sm font-medium text-gray-700">
+                            Dòng xe <span className="text-red-500">*</span>
                         </label>
                         <select
-                            id="loaiXe"
-                            name="loaiXe"
-                            value={formData.loaiXe}
+                            id="mauXe"
+                            name="mauXe"
+                            value={formData.mauXe}
                             onChange={handleChange}
                             className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
                             required
                         >
-                            <option value="" disabled>Chọn loại xe</option>
-                            <option value="Tay ga">Tay ga</option>
-                            <option value="Xe số">Xe số</option>
-                            <option value="Xe côn/moto">Xe côn/moto</option>
+                            <option value="" disabled>Chọn dòng xe</option>
+                            {loaiXe.map((item, index) => (
+                                <option key={index} value={item}>
+                                    {item}
+                                </option>
+                            ))}
                         </select>
                     </div>
 
-
-                    {/* Năm đăng ký */}
+                    {/* Tiêu đề */}
                     <div>
-                        <NamMuaSelect onSelect={handleDropdownChange("namMua")} />
+                        <label htmlFor="mauSac" className="block text-sm font-medium text-gray-700">
+                            Màu sắc <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                            type="text"
+                            id="mauSac"
+                            name="mauSac"
+                            value={formData.mauSac}
+                            onChange={handleChange}
+                            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                            required
+                        />
                     </div>
 
+                    {/*Năm mua */}
+                    <div>
+                        <label htmlFor="soKmDaDi" className="block text-sm font-medium text-gray-700">
+                            Năm mua:
+                        </label>
+                        <input
+                            type="number"
+                            id="namMua"
+                            name="namMua"
+                            value={formData.namMua}
+                            onChange={handleChange}
+                            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                        />
+                    </div>
                     {/* Dung tích */}
                     <div>
                         <DungTichSelect onSelect={handleDropdownChange("dungTich")} />
@@ -298,7 +331,44 @@ function NewPost() {
                             <option value="Không bảo hành">Không bảo hành</option>
                         </select>
                     </div>
-
+                    {/* Bảo hành */}
+                    <div>
+                        <label htmlFor="loaiXe" className="block text-sm font-medium text-gray-700">
+                           Loại xe
+                        </label>
+                        <select
+                            id="loaiXe"
+                            name="loaiXe"
+                            value={formData.loaiXe}
+                            onChange={handleChange}
+                            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                        >
+                            <option value="" disabled>Chọn loại xe</option>
+                            <option value="1">Xe số</option>
+                            <option value="2">Xe tay ga</option>
+                            <option value="3">Xe côn </option>
+                            <option value="4">Xe phân khối lớn</option>
+                        </select>
+                    </div>
+                    {/* Bảo hành */}
+                    <div>
+                        <label htmlFor="loaiXe" className="block text-sm font-medium text-gray-700">
+                           Phong cách
+                        </label>
+                        <select
+                            id="loaiXe"
+                            name="loaiXe"
+                            value={formData.loaiXe}
+                            onChange={handleChange}
+                            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                        >
+                            <option value="" disabled>Chọn Style</option>
+                            <option value="Thể Thao">Thể Thao</option>
+                            <option value="Đặc Biệt">Đặc Biệt</option>
+                            <option value="Cao Cấp">Cao Cấp </option>
+                            <option value="Tiêu Chuẩn">Tiêu Chuẩn</option>
+                        </select>
+                    </div>
                     {/* Xuất xứ */}
                     <div>
                         <XuatXuSelect onSelect={handleDropdownChange("xuatXu")} xuatXu={''} />

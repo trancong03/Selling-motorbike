@@ -1,0 +1,64 @@
+[
+    {
+        "Brand": "Honda",
+        "Models": [
+            "SH350i",
+            "SH160i",
+            "SH125i",
+            "SH mode 125",
+            "Vario 160",
+            "Air Blade 160",
+            "Air Blade 125",
+            "Vario 125",
+            "Lead ABS",
+            "Vision"
+        ]
+    },
+    {
+        "Brand": "Yamaha",
+        "Models": [
+            "Latte",
+            "NVX 155 VVA",
+            "NVX 155 VVA Monster",
+            "Grande",
+            "Janus",
+            "Lexi 155 VVA-ABS",
+            "PG-1",
+            "Exciter 155 VVA",
+            "Exciter 155 VVA Monster",
+            "Jupiter Finn",
+            "Jupiter Fi",
+            "Sirus Fi RC Vành Đúc Mới",
+            "Sirus Fi Phanh Đĩa Mới",
+            "Sirus Fi Phanh Cơ",
+            "Sirus Fi RC Vành Đúc"
+        ]
+    },
+    {
+        "Brand": "Piaggio",
+        "Models": [
+            "Vespa Sprint Carbon 2024",
+            "Vespa GTS Super Tech 300",
+            "Vespa GTS Super Sport 150",
+            "Vespa Primavera Mickey House",
+            "Vespa GTS Classic 150",
+            "Vespa Sprint S 125 TFT",
+            "Liberty 25TH",
+            "Medley S 125",
+            "Medley S 150",
+            "Liberty S ABS 125"
+        ]
+    },
+    {
+        "Brand": "SYM",
+        "Models": [
+            "Priti 50",
+            "Shark 50",
+            "Attila 50",
+            "Passing 50",
+            "Elite 50",
+            "Elegant 50",
+            "Galaxy 50"
+        ]
+    }
+]

@@ -7,15 +7,15 @@ const NamMuaSelect = ({ onSelect, nammua }) => {
     });
 
     const [isOpen, setIsOpen] = useState(false);
-    const [searchTerm, setSearchTerm] = useState(nammua || "");
-    const [selectedOption, setSelectedOption] = useState("");
+    const [searchTerm, setSearchTerm] = useState(nammua || ""); // Khởi tạo searchTerm với nammua nếu có
+    const [selectedOption, setSelectedOption] = useState(nammua || ""); // Khởi tạo selectedOption
     const dropdownRef = useRef(null);
     const inputRef = useRef(null);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target) && inputRef.current && !inputRef.current.contains(event.target)) {
-                setIsOpen(false);
+                setIsOpen(false); // Đóng dropdown khi click ra ngoài
             }
         };
         document.addEventListener("mousedown", handleClickOutside);
@@ -24,28 +24,32 @@ const NamMuaSelect = ({ onSelect, nammua }) => {
 
     const handleInputChange = (e) => {
         const value = e.target.value;
+        setSearchTerm(value); // Cập nhật giá trị nhập vào
 
-        // Kiểm tra nếu không phải số hoặc vượt giới hạn
-        if (isNaN(value) || value < 1980 || value > 2024) return;
-
-        setSearchTerm(value);
-        setIsOpen(true);
-        onSelect(value);
+        // Kiểm tra nếu giá trị nhập vào là số và trong khoảng 1980 - 2024
+        const numericValue = parseInt(value, 10);
+        if (!isNaN(numericValue) && numericValue >= 1980 && numericValue <= 2024) {
+            setIsOpen(true); // Mở dropdown khi giá trị hợp lệ
+            onSelect(value); // Gửi giá trị tới component cha
+        } else {
+            setIsOpen(false); // Đóng dropdown khi giá trị không hợp lệ
+        }
     };
 
     const handleOptionClick = (option) => {
         setSelectedOption(option.label);
         setSearchTerm(option.label);
-        setIsOpen(false);
-        onSelect(option.label);
+        setIsOpen(false); // Đóng dropdown sau khi chọn
+        onSelect(option.label); // Gửi giá trị đã chọn tới component cha
     };
 
     useEffect(() => {
-        setSearchTerm(nammua || "");
+        setSearchTerm(nammua || ""); // Đặt lại searchTerm nếu nammua thay đổi
+        setSelectedOption(nammua || ""); // Đặt lại selectedOption nếu nammua thay đổi
     }, [nammua]);
 
     const filteredOptions = options.filter((option) =>
-        option.label.includes(searchTerm)
+        option.label.includes(searchTerm) // Lọc các tùy chọn theo giá trị nhập vào
     );
 
     return (
@@ -55,7 +59,7 @@ const NamMuaSelect = ({ onSelect, nammua }) => {
             </label>
             <input
                 ref={inputRef}
-                type="number"
+                type="text"  // Để người dùng có thể nhập tự do
                 id="namMua"
                 value={searchTerm}
                 onChange={handleInputChange}

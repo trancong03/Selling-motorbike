@@ -1,13 +1,14 @@
 import { useState, useEffect, useRef } from "react";
+import dataXE from "./dataXE.json";
 
-const HangXeSelect = ({ onSelect, hangxe }) => {
-    const options = [
-        { value: "honda", label: "Honda" },
-        { value: "yamaha", label: "Yamaha" },
-        { value: "suzuki", label: "Suzuki" },
-        { value: "kawasaki", label: "Kawasaki" },
-        { value: "piaggio", label: "Piaggio" },
-    ];
+const HangXeSelect = ({ onSelect, hangxe,setLoaiXe }) => {
+    // Sử dụng trực tiếp data từ file JSON
+    const options = dataXE.map((item) => ({
+        label: item.Brand,  // Hiển thị nhãn là tên hãng xe
+        value: item.Brand,  // Giá trị là tên hãng xe
+        models: item.Models // Thêm models vào mỗi option
+    }));
+    
 
     const [isOpen, setIsOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState(hangxe || ""); // Khởi tạo với `hangxe` hoặc trống
@@ -17,11 +18,11 @@ const HangXeSelect = ({ onSelect, hangxe }) => {
     useEffect(() => {
         // Cập nhật searchTerm khi hangxe thay đổi
         if (hangxe) {
-            const matchedOption = options.find((option) => option.value === hangxe);
-            setSearchTerm(matchedOption ? matchedOption.label : hangxe);
+            setSearchTerm(hangxe); // Cập nhật searchTerm với hangxe từ prop
         } else {
-            setSearchTerm(""); // Không có hãng xe => input trống
+            setSearchTerm(""); // Nếu không có hãng xe, reset lại input
         }
+       
     }, [hangxe]);
 
     const handleInputChange = (e) => {
@@ -33,6 +34,7 @@ const HangXeSelect = ({ onSelect, hangxe }) => {
 
     const handleOptionClick = (option) => {
         setSearchTerm(option.label); // Hiển thị tên hãng xe
+        setLoaiXe(option.models);
         setIsOpen(false); // Đóng dropdown
         onSelect(option.value); // Trả về value của hãng xe
     };

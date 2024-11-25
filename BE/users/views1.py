@@ -130,7 +130,6 @@ def scan_cccd(request):
             "Countryside": countryside_text.strip(),
             "Address": address_text.strip(),
         }
-
         # Kiểm tra nếu không trích xuất được thông tin
         if not any(result.values()):
             return JsonResponse({"error": "Không tìm thấy thông tin từ ảnh"}, status=400)
