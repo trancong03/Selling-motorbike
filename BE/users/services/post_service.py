@@ -31,3 +31,7 @@ class PostService:
     @staticmethod
     def get_post_by_id(id):
         return PostRepository.get_post_by_id(id)
+    @staticmethod
+    def xoa_bai_viet(ma_gd):
+        return PostRepository.xoa_bai_viet(ma_gd)
+   

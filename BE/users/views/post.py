@@ -153,3 +153,9 @@ def sua_bai_viet(request):
             return JsonResponse({'error': f'Lỗi không xác định: {str(e)}'}, status=400)
     else:
         return JsonResponse({'error': 'Chỉ hỗ trợ phương thức PATCH.'}, status=405)
+@csrf_exempt
+def xoa_bai_viet(request, id):
+    post = PostService.xoa_bai_viet(id)
+    if not post:
+        return JsonResponse({'error': 'Post not found'}, status=404)
+    return  JsonResponse({"message":"delete post successful"}, status=200)

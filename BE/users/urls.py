@@ -19,6 +19,7 @@ urlpatterns = [
     
     path('new-post/', post.tao_bai_viet, name='tao_bai_viet'),
     path('update-post/', post.sua_bai_viet, name='sua_bai_viet'),
+    path('delete-post/<int:id>/', post.xoa_bai_viet, name='xoa_bai_viet'),
     path('post-id/<int:id>/', post.get_post_by_id, name='get_post_by_id'),
 
     path('post-like/<int:iduser>/', post.get_all_bai_viet_like, name='get_all_bai_viet_like'),

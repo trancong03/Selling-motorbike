@@ -119,3 +119,20 @@ class PostRepository:
             logging.error(f"Lỗi khi gọi thủ tục 'SuaBaiViet': {e}", exc_info=True)
             return False
 
+    @staticmethod
+    def xoa_bai_viet(
+       ma_gd
+    ):
+        # Câu truy vấn với các giá trị trực tiếp thay vì placeholder "?"
+        query = f"""
+        EXEC dbo.XoaBaiViet '{ma_gd}';
+        """
+        try:
+            print(f"Đang thực thi câu truy vấn: {query}")
+            result = execute_query(query)
+            print("Thủ tục 'XoaBaiViet' đã thực thi thành công.")
+            return True
+        except Exception as e:
+            logging.error(f"Lỗi khi gọi thủ tục 'XoaBaiViet': {e}", exc_info=True)
+            return False
+
