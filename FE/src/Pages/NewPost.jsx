@@ -156,6 +156,58 @@ function NewPost() {
     const togglePreview = () => {
         setShowPreview(!showPreview);
     };
+
+    function getCookie(name) {
+        let value = "; " + document.cookie;
+        let parts = value.split("; " + name + "=");
+        if (parts.length === 2) return parts.pop().split(";").shift();
+        return "";
+    }
+
+    const handlePredictPrice = async () => {
+        const { hangXe, mauXe, loaiXe, mauSac, style } = formData;  // Assuming formData1 is defined
+
+       
+    
+        // Prepare the data as FormData
+        const formData1 = new FormData();
+        formData1.append('brand', hangXe);  // Access formData1 properties correctly
+        formData1.append('model', mauXe);
+        formData1.append('color', mauSac);
+        formData1.append('style', style);
+        formData1.append('type', loaiXe);
+    
+        // Get the auth token from localStorage
+        const token = localStorage.getItem('authToken');
+        console.log(token);
+        console.log(formData1.type);
+        try {
+            // Make the POST request with async/await using FormData
+            const response = await apiClient.post('/api/predict-price/', formData1, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+    
+            // Check if the request was successful
+            if (response.status === 200) {  // Axios uses status, not ok
+                const result = response.data;  // Use response.data instead of response.json()
+                console.log("Predicted price:", result.predicted_price);
+                setFormData(prevFormData => ({
+                    ...prevFormData,
+                    giaBan: result.predicted_price,
+                }));
+            } else {
+                console.error("Error:", response.status, response.statusText);
+                const errorResult = response.data;
+                console.error("Error details:", errorResult);
+            }
+        } catch (error) {
+            console.error("Request failed:", error);
+        }
+    };
+
     const [footerPaymentMethods, setFooterPaymentMethods] = useState(formData.moTa); // Lưu trữ nội dung mô tả
     return (
     <div>
@@ -352,13 +404,13 @@ function NewPost() {
                     </div>
                     {/* Bảo hành */}
                     <div>
-                        <label htmlFor="loaiXe" className="block text-sm font-medium text-gray-700">
+                        <label htmlFor="style" className="block text-sm font-medium text-gray-700">
                            Phong cách
                         </label>
                         <select
-                            id="loaiXe"
-                            name="loaiXe"
-                            value={formData.loaiXe}
+                            id="style"
+                            name="style"
+                            value={formData.style}
                             onChange={handleChange}
                             className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
                         >
@@ -398,15 +450,25 @@ function NewPost() {
                             Giá bán
                         </label>
                         <input
-                            type="number"
+                            type="text"
                             id="giaBan"
                             name="giaBan"
                             value={formData.giaBan}
                             onChange={handleChange}
                             className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
                         />
+                        
                     </div>
-
+                    <div class="container">
+                    <button
+                                    type="button"
+                                    onClick={() => handlePredictPrice()}
+                                    className="mt-4 px-4 py-2 bg-red-500 text-white rounded-md"
+                                >
+                                    Dự đoán giá
+                                </button>
+                    </div>
+                            
                 </div>
 
                 {/* Tiêu đề và mô tả */}

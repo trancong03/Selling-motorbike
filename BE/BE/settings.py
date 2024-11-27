@@ -38,7 +38,8 @@ CSRF_TRUSTED_ORIGINS = [
 
 INSTALLED_APPS = [
     # 'rest_framework',
-    # 'rest_framework_simplejwt.token_blacklist', 
+    'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist', 
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -46,6 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'users',
     'corsheaders',
+    'rest_framework',
     'CustomAdmin'
 ]
 REST_FRAMEWORK = {

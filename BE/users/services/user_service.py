@@ -50,7 +50,7 @@ class UserService:
     def save_otp(email, otp):
         """Lưu OTP vào cache với thời gian hết hạn."""
         cache.set(f'otp_{email}', otp, timeout=300)  # Lưu OTP và tự động xóa sau 5 phút
-        print(f'Giá trị OTP trong cache: { cache.get(f'otp_{email}')}')
+        print(f"Giá trị OTP trong cache: {cache.get(f'otp_{email}')}")
     @staticmethod
     def check_otp(email, otp):
         """Kiểm tra OTP đã lưu."""
