@@ -52,3 +52,8 @@ class ThuocTinhHeThongSerializer(serializers.ModelSerializer):
     class Meta:
         model = ThuocTinhHeThong
         fields = '__all__'  # Bao gồm tất cả các trường trong bảng, kể cả trường id
+
+class SystemSettingsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ThuocTinhHeThong
+        fields = '__all__'
