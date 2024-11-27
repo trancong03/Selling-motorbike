@@ -29,7 +29,7 @@ const PostDetail = () => {
       <div className="post-info">
         <h2>{post.tieude}</h2>
         <p><strong>Mã bài viết:</strong> {post.mabaiviet}</p>
-        <p><strong>Nội dung:</strong> {post.noidung}</p>
+        <p><strong>Nội dung:</strong> {post.mota}</p>
         <p><strong>Mô tả:</strong> {post.mota}</p>
         <p><strong>Địa chỉ bài viết:</strong> {post.diachibaiviet}</p>
         <p><strong>Giá trị:</strong> {post.giatri} VND</p>

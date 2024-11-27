@@ -95,9 +95,9 @@ function App() {
   const PrivateRoute = ({ element: Component, ...rest }) => {
     const isAuthenticated = localStorage.getItem('admin');
     const isAdmin = isAuthenticated && JSON.parse(isAuthenticated).is_superuser;
-    return (
-      isAdmin ? <Component {...rest} /> : <Navigate to="/Admin-Login" replace />
-    );
+  
+    // Nếu không phải admin hoặc không có thông tin đăng nhập, chuyển hướng về trang đăng nhập admin
+    return isAdmin ? <Component {...rest} /> : <Navigate to="/Admin-Login" replace />;
   };
 
   const handleForgotPasswordClick = () => {
@@ -124,7 +124,7 @@ function App() {
           </Route>
           <Route path="/product-detail" element={<ProductDetail />} />
           <Route path="/new-post" element={<ErrorBoundary><NewPost /></ErrorBoundary>} />
-          <Route path="/update-post" element={<ErrorBoundary>  <UpdatePost /> </ErrorBoundary>} />
+          <Route path="/update-post" element={<ErrorBoundary><UpdatePost /></ErrorBoundary>} />
           <Route path="*" element={<ErrorPage />} />
           <Route path="/admin" element={<PrivateRoute element={AdminDashboard} />} />
           <Route path="/Admin-Login" element={<AdminLogin />} />

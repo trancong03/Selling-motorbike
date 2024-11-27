@@ -122,8 +122,9 @@ class NapTienTaiKhoan(models.Model):
         managed = False
 
 
+
 class ThongBao(models.Model):
-    mathongbao = models.CharField(max_length=10, primary_key=True, db_column='MATHONGBAO')
+    mathongbao = models.AutoField(primary_key=True, db_column='MATHONGBAO')  # Đặt mathongbao là AutoField
     manguoidung = models.ForeignKey(NguoiDung, on_delete=models.CASCADE, db_column='MANGUOIDUNG')
     mabaiviet = models.ForeignKey(BaiViet, on_delete=models.SET_NULL, null=True, blank=True, db_column='MABAIVIET')
     tieude = models.CharField(max_length=50, null=True, blank=True, db_column='TIEUDE')
@@ -132,18 +133,18 @@ class ThongBao(models.Model):
 
     class Meta:
         db_table = 'THONGBAO'
-        managed = False
+        managed = False  # Nếu bạn đang sử dụng bảng đã có trong cơ sở dữ liệu và không muốn Django quản lý bảng này
 
 
 class ThuocTinhHeThong(models.Model):
-    logo = models.CharField(max_length=50, null=True, blank=True, db_column='Logo')
+    logo = models.ImageField(upload_to='logos/', null=True, blank=True)
     maugiaodien = models.CharField(max_length=10, null=True, blank=True, db_column='MauGiaoDien')
     diachifooter = models.TextField(null=True, blank=True, db_column='DiaChiFooter')
     thanhvienfooter = models.TextField(null=True, blank=True, db_column='ThanhVienFooter')
     kenhtruyenthongfooter = models.TextField(null=True, blank=True, db_column='KenhTruyenThongFooter')
     phuongthucthanhtoanfooter = models.TextField(null=True, blank=True, db_column='PhuongThucThanhToanFooter')
     id = models.AutoField(primary_key=True)  # Trường ID tự động tăng bắt đầu từ 1
-
+    tranggioithieu = models.TextField(null=True, blank=True, db_column='TrangGioiThieu')
     class Meta:
         db_table = 'THUOCTINHHETHONG'
         managed = False

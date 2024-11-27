@@ -1,6 +1,6 @@
 from rest_framework import viewsets
 from .models import NguoiDung, BaiViet, GoiGiaoDich, HinhAnh, Follwer, NapDayTin, NapGiaHan, NapTienTaiKhoan, ThongBao, ThuocTinhHeThong
-from .serializers import NguoiDungSerializer, BaiVietSerializer, GoiGiaoDichSerializer, GoiGiaoDichSerializer, HinhAnhSerializer, FollwerSerializer, NapDayTinSerializer, NapGiaHanSerializer, NapTienTaiKhoanSerializer, ThongBaoSerializer, ThuocTinhHeThongSerializer
+from .serializers import NguoiDungSerializer, BaiVietSerializer, GoiGiaoDichSerializer, GoiGiaoDichSerializer, HinhAnhSerializer, FollwerSerializer, NapDayTinSerializer, NapGiaHanSerializer, NapTienTaiKhoanSerializer, ThongBaoSerializer, ThuocTinhHeThongSerializer, SystemSettingsSerializer
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
@@ -52,32 +52,89 @@ class ThuocTinhHeThongViewSet(viewsets.ModelViewSet):
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
-from django.contrib.auth import authenticate
 
-class AdminLoginView(APIView):
-    def post(self, request):
-        # Lấy username và password từ request
+from django.contrib.auth.hashers import check_password, make_password
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
+from .models import NguoiDung
+from .serializers import NguoiDungSerializer
+class AdminLoginAPIView(APIView):
+    def post(self, request, *args, **kwargs):
         username = request.data.get('username')
         password = request.data.get('password')
-
-        # Kiểm tra xem username hoặc password có bị thiếu không
+        
         if not username or not password:
-            return Response({'error': 'Please provide both username and password'}, status=status.HTTP_400_BAD_REQUEST)
-
+            return Response({"detail": "Vui lòng cung cấp đầy đủ tên đăng nhập và mật khẩu"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        password = password.strip()  # cai nay khhong can cung duoc vi da co check trong ham
+        
         try:
-            # Tìm người dùng dựa trên username
-            user = NguoiDung.objects.filter(Q(username=username) & Q(password=password)).first()
+            user = NguoiDung.objects.get(username=username)
+        except NguoiDung.DoesNotExist:
+            return Response({"detail": "Người dùng không tồn tại"}, status=status.HTTP_404_NOT_FOUND)
+        
+        if not check_password(password.strip(), user.password.strip()):
+            return Response({"detail": "Sai mật khẩu"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if not user.is_superuser:
+            return Response({"detail": "Người dùng không phải admin"}, status=status.HTTP_403_FORBIDDEN)
+        
+        serializer = NguoiDungSerializer(user)
+        return Response({
+            "message": "Đăng nhập thành công",
+            "user": serializer.data
+        }, status=status.HTTP_200_OK)
+from django.utils import timezone
+class GuiThongBaoAPIView(APIView):
 
-            if user:
-                # Trả về thành công nếu tìm thấy người dùng
-                return Response({
-                    'username': user.username,
-                    'is_superuser': user.is_superuser
-                }, status=status.HTTP_200_OK)
-            else:
-                return Response({'error': 'Invalid username or password'}, status=status.HTTP_400_BAD_REQUEST)
+    def post(self, request, *args, **kwargs):
+        # Lấy dữ liệu từ request
+        bai_viet_id = request.data.get('bai_viet_id')
+        title = request.data.get('title')
+        message = request.data.get('message')
+        user_id = request.data.get('user_id')  # Giữ lại user_id
 
-        except Exception as e:
-            # Xử lý lỗi bất kỳ
-            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        # Kiểm tra xem có đủ thông tin không
+        if not title or not message or not user_id:
+            return Response({"detail": "Vui lòng cung cấp đầy đủ thông tin"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Kiểm tra xem người dùng có tồn tại hay không
+        try:
+            user = NguoiDung.objects.get(iduser=user_id)  # Kiểm tra người dùng
+        except NguoiDung.DoesNotExist:
+            return Response({"detail": "Người dùng không tồn tại"}, status=status.HTTP_404_NOT_FOUND)
+
+        # Nếu có bai_viet_id, kiểm tra bài viết có tồn tại hay không
+        bai_viet = None
+        if bai_viet_id:
+            try:
+                bai_viet = BaiViet.objects.get(mabaiviet=bai_viet_id)
+            except BaiViet.DoesNotExist:
+                return Response({"detail": "Bài viết không tồn tại"}, status=status.HTTP_404_NOT_FOUND)
+
+        # Tạo thông báo mới
+        thong_bao = ThongBao.objects.create(
+            manguoidung=user,   # Sử dụng đúng trường manguoidung
+            mabaiviet=bai_viet, # Có thể là None nếu không có bài viết
+            tieude=title,       # Sử dụng đúng trường tieude
+            noidung=message,    # Sử dụng đúng trường noidung
+            thoigiangui=timezone.now()
+        )
+        
+        # Serialize thông báo và trả về phản hồi
+        serializer = ThongBaoSerializer(thong_bao)
+        return Response({
+            "message": "Thông báo đã được gửi thành công",
+            "notification": serializer.data
+        }, status=status.HTTP_201_CREATED)
+
+@api_view(['POST'])
+def save_system_settings(request):
+    if request.method == 'POST':
+        # Lấy dữ liệu và lưu vào database
+        serializer = SystemSettingsSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -9,20 +9,22 @@ const NotificationManagement = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState(""); // Chỉ lưu id người dùng
   const [newNotification, setNewNotification] = useState({
-    tieude: "",
-    noidung: "",
+    title: "",
+    message: "",
   });
 
+  // Load danh sách thông báo
   useEffect(() => {
     axios
-      .get("http://127.0.0.1:8000/admin-api/thongbao/")
+      .get("http://127.0.0.1:8000/admin-api/thongbao/")  // API load thông báo
       .then((response) => setNotifications(response.data))
       .catch((error) => console.error("Error fetching notifications:", error));
   }, []);
 
+  // Load danh sách người dùng
   useEffect(() => {
     axios
-      .get("http://127.0.0.1:8000/admin-api/nguoidung/")
+      .get("http://127.0.0.1:8000/admin-api/nguoidung/")  // API load người dùng
       .then((response) => {
         setUsers(response.data);
         setFilteredUsers(response.data);
@@ -30,6 +32,7 @@ const NotificationManagement = () => {
       .catch((error) => console.error("Error fetching users:", error));
   }, []);
 
+  // Lọc người dùng theo tìm kiếm
   useEffect(() => {
     const lowerSearch = searchUser.toLowerCase();
     const filtered = users.filter(
@@ -40,28 +43,28 @@ const NotificationManagement = () => {
     setFilteredUsers(filtered);
   }, [searchUser, users]);
 
+  // Hàm gửi thông báo
   const handleSendNotification = () => {
     // Kiểm tra xem đã chọn người dùng chưa
-    if (!selectedUserId || !newNotification.tieude || !newNotification.noidung) {
+    if (!selectedUserId || !newNotification.title || !newNotification.message) {
       alert("Vui lòng điền đầy đủ thông tin và chọn người dùng.");
       return;
     }
 
     const payload = {
-      manguoidung: selectedUserId, // Mã người dùng
-      tieude: newNotification.tieude,
-      noidung: newNotification.noidung,
-      thoigiangui: new Date().toISOString(), // Thời gian gửi
-      mabaiviet: null, // Không cần mã bài viết
+      bai_viet_id: null, // Không cần mã bài viết
+      title: newNotification.title,
+      message: newNotification.message,
+      user_id: selectedUserId, // Mã người dùng
     };
 
     // Gửi request POST để tạo thông báo
     axios
-      .post("http://127.0.0.1:8000/admin-api/thongbao/", payload)
+      .post("http://localhost:8000/admin-api/gui-thong-bao/", payload)  // API gửi thông báo
       .then(() => {
         alert("Thông báo đã được gửi thành công.");
         setIsModalOpen(false);
-        setNewNotification({ tieude: "", noidung: "" });
+        setNewNotification({ title: "", message: "" });
         setSelectedUserId(""); // Reset người dùng đã chọn
 
         // Reload lại danh sách thông báo
@@ -71,6 +74,8 @@ const NotificationManagement = () => {
         setNotifications(response.data); // Cập nhật lại danh sách thông báo
       })
       .catch((error) => {
+        console.log(payload);
+        
         console.error("Error sending notification:", error);
         alert("Gửi thông báo thất bại.");
       });
@@ -151,9 +156,9 @@ const NotificationManagement = () => {
               <input
                 type="text"
                 className="w-full border px-3 py-2 rounded-lg"
-                value={newNotification.tieude}
+                value={newNotification.title}
                 onChange={(e) =>
-                  setNewNotification({ ...newNotification, tieude: e.target.value })
+                  setNewNotification({ ...newNotification, title: e.target.value })
                 }
               />
             </div>
@@ -162,9 +167,9 @@ const NotificationManagement = () => {
               <textarea
                 className="w-full border px-3 py-2 rounded-lg"
                 rows="4"
-                value={newNotification.noidung}
+                value={newNotification.message}
                 onChange={(e) =>
-                  setNewNotification({ ...newNotification, noidung: e.target.value })
+                  setNewNotification({ ...newNotification, message: e.target.value })
                 }
               ></textarea>
             </div>
