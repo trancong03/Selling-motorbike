@@ -83,6 +83,13 @@ class HinhAnh(models.Model):
 
     def __str__(self):
         return self.tenfile
+class YeuThich(models.Model):
+    mayt = models.AutoField(primary_key=True)
+    manguoidung = models.IntegerField(db_column='MANGUOIDUNG')  # Map với cột MANGUOIDUNG
+    mabaiviet = models.IntegerField(db_column='MABAIVIET')
+
+    class Meta:
+        db_table = 'YEUTHICH'  # Custom table name for the images
 
 
 class Xe(models.Model):

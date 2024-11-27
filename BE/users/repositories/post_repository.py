@@ -1,7 +1,7 @@
 import logging
 from ..utils.db import execute_query
 import logging
-from users.models import BaiViet
+from users.models import BaiViet,YeuThich
 
 class PostRepository:
     @staticmethod
@@ -95,6 +95,39 @@ class PostRepository:
             logging.error(f"Lỗi khi gọi thủ tục 'TaoBaiViet': {e}", exc_info=True)
             return False
     @staticmethod
+    def them_yeu_thich(
+        ma_nguoi_dung, ma_baiviet
+    ):
+        # Câu truy vấn với các giá trị trực tiếp thay vì placeholder "?"
+        query = f"""
+        EXEC dbo.ThemYeuThich  '{ma_nguoi_dung}', '{ma_baiviet}';
+        """
+        try:
+            print(f"Đang thực thi câu truy vấn: {query}")
+            result = execute_query(query)
+            print("Thủ tục 'ThemYeuThich' đã thực thi thành công.")
+            return True
+        except Exception as e:
+            logging.error(f"Lỗi khi gọi thủ tục 'ThemYeuThich': {e}", exc_info=True)
+            return False
+    @staticmethod
+    def xoa_yeu_thich(
+        ma_nguoi_dung, ma_baiviet
+    ):
+        # Câu truy vấn với các giá trị trực tiếp thay vì placeholder "?"
+        query = f"""
+        EXEC dbo.HuyYeuThich  '{ma_nguoi_dung}', '{ma_baiviet}';
+        """
+        try:
+            print(f"Đang thực thi câu truy vấn: {query}")
+            result = execute_query(query)
+            print("Thủ tục 'HuyYeuThich' đã thực thi thành công.")
+            return True
+        except Exception as e:
+            logging.error(f"Lỗi khi gọi thủ tục 'HuyYeuThich': {e}", exc_info=True)
+            return False
+ 
+    @staticmethod
     def sua_bai_viet(
        ma_gd, tieu_de, thong_tin_lien_lac, mo_ta, dia_chi_bai_viet,
         hang_xe, loai_xe, nam_mua, dung_tich, so_km_da_di, bao_hanh,
@@ -135,4 +168,23 @@ class PostRepository:
         except Exception as e:
             logging.error(f"Lỗi khi gọi thủ tục 'XoaBaiViet': {e}", exc_info=True)
             return False
+
+    @staticmethod
+    def kiem_tra_yeu_thich(ma_nguoi_dung, ma_baiviet):
+        return YeuThich.objects.filter(manguoidung=ma_nguoi_dung, mabaiviet=ma_baiviet).exists()
+    @staticmethod
+    def lay_list_yeu_thich(ma_nguoi_dung):
+        try:
+            # Sử dụng filter thay vì get để lấy nhiều đối tượng
+            yeu_thich_list = YeuThich.objects.filter(manguoidung=ma_nguoi_dung)
+            
+            # Kiểm tra nếu không có dữ liệu yêu thích
+            if not yeu_thich_list:
+                return []  # Nếu không có yêu thích, trả về danh sách rỗng
+            
+            return yeu_thich_list  # Trả về queryset của các đối tượng yêu thích
+        except Exception as e:
+            # Logging lỗi nếu có bất kỳ sự cố nào xảy ra
+            print(f"Lỗi: {str(e)}")
+            return []
 

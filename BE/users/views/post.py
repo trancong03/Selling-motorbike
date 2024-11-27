@@ -68,8 +68,6 @@ def tao_bai_viet(request):
             tinh_trang_xe = request.POST.get('tinhTrangXe')
             gia_ban = request.POST.get('giaBan')
             danh_sach_hinh = request.POST.get('danhSachHinh')  # Đây có thể là chuỗi chứa URL hoặc tên hình ảnh
-
-            # Xử lý danh sách tệp hình ảnh
             danh_file_sach_hinh = request.FILES.getlist('danhSachFileHinh')
             if danh_file_sach_hinh:
                 image_dir = os.path.join(settings.MEDIA_ROOT, 'images')
@@ -159,3 +157,61 @@ def xoa_bai_viet(request, id):
     if not post:
         return JsonResponse({'error': 'Post not found'}, status=404)
     return  JsonResponse({"message":"delete post successful"}, status=200)
+@csrf_exempt
+def them_yeu_thich(request):
+    if request.method == 'POST':
+        try:
+            # Lấy dữ liệu từ FormData
+            ma_nguoi_dung = request.POST.get('manguoidung')
+            ma_bai_viet = request.POST.get('maBaiViet')
+
+            # Kiểm tra tham số bắt buộc
+            if not ma_nguoi_dung or not ma_bai_viet:
+                return JsonResponse({'error': 'Thiếu mã người dùng hoặc mã bài viết.'}, status=400)
+
+            # Gọi service xử lý logic
+            result = PostService.them_yeu_thich(ma_nguoi_dung, ma_bai_viet)
+
+            return JsonResponse({'message': 'Thêm vào danh sách yêu thích thành công.', 'result': result}, status=200)
+        
+        except ValueError as e:
+            return JsonResponse({'error': str(e)}, status=401)
+        except Exception as e:
+            return JsonResponse({'error': f'Lỗi không xác định: {str(e)}'}, status=400)
+    else:
+        return JsonResponse({'error': 'Chỉ hỗ trợ phương thức POST.'}, status=405)
+@csrf_exempt
+def xoa_yeu_thich(request):
+    if request.method == 'POST':
+        try:
+            ma_nguoi_dung = request.POST.get('manguoidung') 
+            ma_bai_viet = request.POST.get('maBaiViet') # Mã bài viết cần chỉnh sửa
+            result = PostService.xoa_yeu_thich(ma_nguoi_dung,ma_bai_viet)
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON data.'}, status=400)
+        except ValueError as e:
+            return JsonResponse({'error': str(e)}, status=401)
+        except Exception as e:
+            return JsonResponse({'error': f'Lỗi không xác định: {str(e)}'}, status=400)
+    else:
+        return JsonResponse({'error': 'Chỉ hỗ trợ phương thức POST.'}, status=405)
+@csrf_exempt
+def kiem_tra_yeu_thich(request):
+    if request.method == 'POST':
+        try:
+            ma_nguoi_dung = request.POST.get('manguoidung') 
+            ma_bai_viet = request.POST.get('maBaiViet') 
+            result = PostService.kiem_tra_yeu_thich(ma_nguoi_dung,ma_bai_viet)
+            return JsonResponse({'isFavorite': result}, status=200)
+        except ValueError as e:
+            return JsonResponse({'error': str(e)}, status=401)
+        except Exception as e:
+            return JsonResponse({'error': f'Lỗi không xác định: {str(e)}'}, status=400)
+    else:
+        return JsonResponse({'error': 'Chỉ hỗ trợ phương thức POST.'}, status=405)
+@csrf_exempt
+def lay_list_yeu_thich(request, iduser):
+    if request.method == 'GET':
+        result = PostService.lay_list_yeu_thich(iduser)
+        return JsonResponse({'favorites': result}, status=200)
+    return JsonResponse({'error': 'Chỉ hỗ trợ phương thức GET.'}, status=405)

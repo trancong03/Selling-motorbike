@@ -1,4 +1,5 @@
 from users.repositories.post_repository import PostRepository
+from django.forms.models import model_to_dict
 class PostService:
     @staticmethod
     def get_all_bai_viet():
@@ -34,4 +35,19 @@ class PostService:
     @staticmethod
     def xoa_bai_viet(ma_gd):
         return PostRepository.xoa_bai_viet(ma_gd)
-   
+    @staticmethod
+    def them_yeu_thich( ma_nguoi_dung, ma_baiviet ):
+        return PostRepository.them_yeu_thich(ma_nguoi_dung, ma_baiviet)
+    @staticmethod
+    def xoa_yeu_thich( ma_nguoi_dung, ma_baiviet ):
+        return PostRepository.xoa_yeu_thich(ma_nguoi_dung, ma_baiviet)
+    @staticmethod
+    def kiem_tra_yeu_thich(ma_nguoi_dung, ma_baiviet):
+        return PostRepository.kiem_tra_yeu_thich(ma_nguoi_dung, ma_baiviet)
+    @staticmethod
+    def lay_list_yeu_thich(ma_nguoi_dung):  
+        try:
+            yeu_thich_list = PostRepository.lay_list_yeu_thich(ma_nguoi_dung)
+            return [model_to_dict(item, fields=['mabaiviet']) for item in yeu_thich_list]
+        except Exception as e:
+            return []

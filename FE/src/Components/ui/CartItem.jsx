@@ -44,7 +44,7 @@ export default function CartItem({ Product }) {
                                 onClick={handleToggleLike}
                             >
                                 <div className="flex items-center justify-center gap-2"
-                                    // onClick={() => { likeProduct(Product) }}
+                                    onClick={() => { likeProduct(Product) }}
                                 >
                                     <FaHeart className={`transition-colors duration-300 ${isLiked ? 'text-red-500' : 'text-white'}`} size={20} /> {/* Thay đổi màu */}
                                     <span>Thêm yêu thích</span>
