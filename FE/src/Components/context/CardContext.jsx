@@ -5,91 +5,58 @@ const CartContext = createContext();
 export const CartProvider = ({ children, User }) => {
     const personID = User? User.manguoidung :null;
     const [likeProducts, setLikeProducts] = useState([]);
+    // Fetch the liked products when personID changes
     useEffect(() => {
-        const fetchCartItems = async () => {
-            if (!personID) return; 
-           
+        const fetchLikedProducts = async () => {
+            if (!personID) return;
+
             try {
-                const response = await fetch('http://localhost:8000/api/get_product_on_like/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ person_id: personID }),
-                });
+                const response = await fetch(`http://127.0.0.1:8000/api/get-like-post/${personID}/`);
                 const result = await response.json();
-                if (result.product) {
-                    setLikeProducts(result.product);
+                if (result.favorites) {
+                    setLikeProducts(result.favorites);
                 } else {
                     console.error('Invalid response format:', result);
                 }
             } catch (error) {
-                console.error('Error fetching cart items:', error);
-            }
-
+                console.error('Error fetching liked products:', error);
+            } 
         };
-        fetchCartItems();
+
+        fetchLikedProducts();
     }, [personID]);
     
-    const likeProduct = async (item) => {
-        try {
-            const isAlreadyLiked = likeProducts.some(product => product.MABAIVIET === item.MABAIVIET);
-            const formData = new FormData();
-            formData.append('manguoidung', personID);
-            formData.append('maBaiViet', item.MABAIVIET);
-            const response = await fetch(isAlreadyLiked
-                ? 'http://127.0.0.1:8000/api/remove-like-post/'
-                : 'http://127.0.0.1:8000/api/like-post/', {
-                method: 'POST',
-                body: formData, // Sử dụng FormData
-            });
-            const result = await response.json();
-            if (result.success) {
-                if (isAlreadyLiked) {
-                    setLikeProducts(prevItems => prevItems.filter(product => product.ProductID !== item.ProductID));
-                    console.log('Product removed from likes successfully');
-                } else {
-                    setLikeProducts(prevItems => [...prevItems, item]);
-                    console.log('Product added to likes successfully');
-                }
-            } else {
-                console.log('Failed to update product likes');
-            }
-        } catch (error) {
-            console.error('Error updating product likes:', error);
-        }
+    const isProductLiked = (item) => {
+        return likeProducts.some(product => product.mabaiviet === item);
     };
 
-    const isProductLiked = async (item) => {
+    const likeProduct = async (item) => {
         try {
-            const isAlreadyLiked = likeProducts.some(product => product.MABAIVIET === item.MABAIVIET);
+            const isAlreadyLiked = isProductLiked(item.MABAIVIET); // Check if already liked from state
             const formData = new FormData();
             formData.append('manguoidung', personID);
             formData.append('maBaiViet', item.MABAIVIET);
+
             const response = await fetch(isAlreadyLiked
                 ? 'http://127.0.0.1:8000/api/remove-like-post/'
                 : 'http://127.0.0.1:8000/api/like-post/', {
                 method: 'POST',
-                body: formData, // Sử dụng FormData
+                body: formData,
             });
             const result = await response.json();
-            if (result.success) {
-                if (isAlreadyLiked) {
-                    setLikeProducts(prevItems => prevItems.filter(product => product.ProductID !== item.ProductID));
-                    console.log('Product removed from likes successfully');
-                } else {
-                    setLikeProducts(prevItems => [...prevItems, item]);
-                    console.log('Product added to likes successfully');
-                }
-            } else {
-                console.log('Failed to update product likes');
-            }
+
+                setLikeProducts(prevItems => {
+                    if (isAlreadyLiked) {
+                        return prevItems.filter(product => product.ProductID !== item.ProductID); // Remove from liked
+                    } else {
+                        return [...prevItems, item]; // Add to liked
+                    }
+                });
+                console.log(isAlreadyLiked ? 'Product removed from likes successfully' : 'Product added to likes successfully');
         } catch (error) {
             console.error('Error updating product likes:', error);
         }
     };
-   
-   
     return (
         <CartContext.Provider value={{
             personID, User,

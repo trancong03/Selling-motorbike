@@ -3,7 +3,7 @@ import "./App.css";
 import "swiper/css";
 import "swiper/css/free-mode";
 import "swiper/css/pagination";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import Footer from "./Components/Footer/Footer";
 import ErrorPage from "./Components/Footer/ErrorPage";
 import Header from "./Components/Header/Header";
@@ -46,7 +46,7 @@ function App() {
     setUserInfo(data.user);
     const { token } = data;
     console.log(data);
-    localStorage.setItem('authToken', token); 
+    localStorage.setItem('authToken', token);
     localStorage.setItem('userInfo', JSON.stringify(data.user));
     setShowLogin(false);
   };
@@ -95,7 +95,7 @@ function App() {
   const PrivateRoute = ({ element: Component, ...rest }) => {
     const isAuthenticated = localStorage.getItem('admin');
     const isAdmin = isAuthenticated && JSON.parse(isAuthenticated).is_superuser;
-  
+
     // Nếu không phải admin hoặc không có thông tin đăng nhập, chuyển hướng về trang đăng nhập admin
     return isAdmin ? <Component {...rest} /> : <Navigate to="/Admin-Login" replace />;
   };
@@ -103,10 +103,22 @@ function App() {
   const handleForgotPasswordClick = () => {
     setIsForgotPasswordVisible(true);
   };
+  const [isAdminRoute, setIsAdminRoute] = useState(false);
+
+  useEffect(() => {
+    // Kiểm tra nếu đường dẫn có chứa '/admin' hoặc '/Admin-Login'
+    const path = window.location.pathname;
+    setIsAdminRoute(path.includes('/admin') || path.includes('/Admin-Login'));
+  }, []); // Chạy một lần khi component mount
+
   return (
-    <CartProvider  User ={userInfo}>
+    <CartProvider User={userInfo}>
       <BrowserRouter>
-        <Header userInfo={userInfo} setUserInfo={setUserInfo} onLoginClick={handleLoginClick} className="fixed top-0 left-0 w-full bg-white shadow-md z-50" />
+        {/* Điều chỉnh Header chỉ hiển thị khi không phải là các route admin */}
+        {!isAdminRoute && (
+          <Header userInfo={userInfo} setUserInfo={setUserInfo} onLoginClick={handleLoginClick} className="fixed top-0 left-0 w-full bg-white shadow-md z-50" />
+        )}
+
         {showLogin && (
           <DN
             closeLogin={closeLogin}
@@ -114,13 +126,15 @@ function App() {
             onForgotPassword={handleForgotPasswordClick}
           />
         )}
+
         {isForgotPasswordVisible && <ForgotPassword closeForgotPassword={closeForgotPassword} />}
+
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/account/*" element={<Account user={userInfo} setUserInfo={setUserInfo} />}>
             <Route path="info" element={<InfomationAccount user={userInfo} setUserInfo={setUserInfo} />} />
             <Route path="reset-password" element={<ResetPassWord user={userInfo} />} />
-            <Route path="user-post/" element={<PostOfUser userId={userInfo}  />} />
+            <Route path="user-post/" element={<PostOfUser userId={userInfo} />} />
           </Route>
           <Route path="/product-detail" element={<ProductDetail />} />
           <Route path="/new-post" element={<ErrorBoundary><NewPost /></ErrorBoundary>} />
@@ -129,9 +143,10 @@ function App() {
           <Route path="/admin" element={<PrivateRoute element={AdminDashboard} />} />
           <Route path="/Admin-Login" element={<AdminLogin />} />
         </Routes>
+
         <Footer />
       </BrowserRouter>
     </CartProvider>
   );
-}
+};
 export default App;
