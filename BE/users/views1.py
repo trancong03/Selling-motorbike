@@ -29,13 +29,9 @@ def preprocess_image(img):
     return threshed
 
 def remove_special_characters(text):
-    # Replace newline and form feed characters with space
     text = text.replace("\n", " ").replace("\f", " ")
-    # Use regular expression to remove any non-alphanumeric characters (except space, periods, and slashes)
-    cleaned_text = re.sub(r'[^\w\sÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂÊÔƯéăâôêđ/.]', '', text)
-    # Remove underscores
+    cleaned_text = re.sub(r'[^\w\sÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠƯàáâãèéêìíòóôõùúăđĩũơưĂÊÔƯéăâôêđ.,/]', '', text)
     cleaned_text = cleaned_text.replace('_', '')
-    # Replace multiple spaces with a single space
     cleaned_text = re.sub(r'\s+', ' ', cleaned_text).strip()
     return cleaned_text
 
