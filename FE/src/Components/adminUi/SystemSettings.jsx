@@ -30,15 +30,23 @@ const SystemSettings = () => {
     }, []);
 
     const handleSaveSettings = () => {
-        const settings = {
-            maugiaodien: themeColor,
-            diachifooter: footerAddress,
-            thanhvienfooter: footerMembers,
-            kenhtruyenthongfooter: footerSocialChannels,
-            phuongthucthanhtoanfooter: footerPaymentMethods,
-        };
+        const formData = new FormData();
+        formData.append('maugiaodien', themeColor);
+        formData.append('diachifooter', footerAddress);
+        formData.append('thanhvienfooter', footerMembers);
+        formData.append('kenhtruyenthongfooter', footerSocialChannels);
+        formData.append('phuongthucthanhtoanfooter', footerPaymentMethods);
 
-        axios.post('http://127.0.0.1:8000/admin-api/thuoctinhhethong/', settings)
+        // Nếu có file logo, thêm vào formData
+        if (logo) {
+            formData.append('logo', logo);
+        }
+
+        axios.post('http://127.0.0.1:8000/admin-api/thuoctinhhethong/', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data', // Đảm bảo gửi đúng kiểu dữ liệu
+            },
+        })
             .then(response => {
                 alert("Lưu cài đặt thành công!");
             })
@@ -58,11 +66,11 @@ const SystemSettings = () => {
                     accept="image/*"
                     onChange={(e) => {
                         const file = e.target.files[0];
-                        if (file) setLogo(URL.createObjectURL(file));
+                        if (file) setLogo(file);
                     }}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
                 />
-                {logo && <img src={logo} alt="Logo Preview" className="mt-4 h-24 w-auto rounded-lg" />}
+                {logo && <img src={URL.createObjectURL(logo)} alt="Logo Preview" className="mt-4 h-24 w-auto rounded-lg" />}
             </div>
 
             {/* Theme Color Picker */}
@@ -80,7 +88,7 @@ const SystemSettings = () => {
             <div className="mb-6">
                 <label className="block text-gray-700 font-bold mb-2">Địa chỉ footer:</label>
                 <Editor
-                    admin-apiKey="4u15wmtfgj5kkf159xm91c0j8n6rbc4k4gst12ittmzuqo53"
+                    admin-apiKey="gltcgzof6fowyb88lc3fck7g7qv36vf2sjdv3zudygelciiw"
                     value={footerAddress}
                     onEditorChange={(content) => setFooterAddress(content)}
                     init={{
@@ -101,7 +109,7 @@ const SystemSettings = () => {
             <div className="mb-6">
                 <label className="block text-gray-700 font-bold mb-2">Thành viên Footer:</label>
                 <Editor
-                    admin-apiKey="4u15wmtfgj5kkf159xm91c0j8n6rbc4k4gst12ittmzuqo53"
+                    admin-apiKey="gltcgzof6fowyb88lc3fck7g7qv36vf2sjdv3zudygelciiw"
                     value={footerMembers}
                     onEditorChange={(content) => setFooterMembers(content)}
                     init={{
@@ -122,7 +130,7 @@ const SystemSettings = () => {
             <div className="mb-6">
                 <label className="block text-gray-700 font-bold mb-2">Kênh truyền thông footer:</label>
                 <Editor
-                    admin-apiKey="4u15wmtfgj5kkf159xm91c0j8n6rbc4k4gst12ittmzuqo53"
+                    admin-apiKey="gltcgzof6fowyb88lc3fck7g7qv36vf2sjdv3zudygelciiw"
                     value={footerSocialChannels}
                     onEditorChange={(content) => setFooterSocialChannels(content)}
                     init={{
@@ -143,7 +151,7 @@ const SystemSettings = () => {
             <div className="mb-6">
                 <label className="block text-gray-700 font-bold mb-2">Phương thức thanh toán:</label>
                 <Editor
-                    admin-apiKey="4u15wmtfgj5kkf159xm91c0j8n6rbc4k4gst12ittmzuqo53"
+                    admin-apiKey="gltcgzof6fowyb88lc3fck7g7qv36vf2sjdv3zudygelciiw"
                     value={footerPaymentMethods}
                     onEditorChange={(content) => setFooterPaymentMethods(content)}
                     init={{

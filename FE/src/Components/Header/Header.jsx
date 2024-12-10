@@ -131,7 +131,7 @@ export default function Header({ onLoginClick, userInfo, setUserInfo,  }) {
         </div>
         <div className="px-3 py-2 h-10 w-[12vw] bg-transparent rounded-3xl flex items-center justify-start  ">
           <a
-            href="#"
+            href="/account/user-post"
             onClick={() => setActiveLink("qltin")}
             className={`text-[#5b5858cc]  flex gap-2 items-center  font-arial  px-3 py-2 ${activeLink === "qltin"
               ? "text-black font-bold"
@@ -183,13 +183,13 @@ export default function Header({ onLoginClick, userInfo, setUserInfo,  }) {
                 className="absolute top-[8.5vh] mt-2 bg-white border rounded shadow-md w-60 z-50"
               >
                 <ul className="space-y-4">
-                  <li
+                  {/* <li
                     className="flex justify-start ml-3 items-center hover:bg-gray-200"
                     onClick={() => handleNavigation('/orders')}
                   >
                     <ListOrdered />
                     <a className="block p-2 rounded">Quản lý tin</a>
-                  </li>
+                  </li> */}
                   <li
                     className="flex justify-start ml-3 items-center hover:bg-gray-200"
                     onClick={() => handleNavigation('/notifications')}

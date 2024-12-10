@@ -35,12 +35,24 @@ export default function PostItemUser({ product, userId }) {
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, []);
+    const deletePost = async () => {
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/api/delete-post/${product.MABAIVIET}/`);
+            if (!response.ok) {
+                throw new Error(`API request failed with status: ${response.status}`);
+            }
+            setError(error.message);  
+        } finally {
+            setLoading(false); 
+    };
+    }
 
+    
     const handleDelete = () => {
         const confirmed = window.confirm("Bạn có chắc chắn muốn xóa sản phẩm này?");
         if (confirmed) {
-            console.log('Xóa');
-            // Thực hiện hành động xóa tại đây (ví dụ: gọi API để xóa sản phẩm)
+            deletePost();
+            window.location.reload()
         } else {
             console.log('Hủy bỏ xóa');
         }

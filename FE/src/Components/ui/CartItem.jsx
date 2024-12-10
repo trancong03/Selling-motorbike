@@ -7,18 +7,24 @@ import { useNavigate } from "react-router-dom";
 export default function CartItem({ Product }) {
     const defaultImage = 'default.jpg';
     const navigate = useNavigate();
+    const { likeProduct, isProductLiked, likeProducts } = useCart();
+    const [isLiked, setIsLiked] = useState(false);
+
+    // Cập nhật trạng thái yêu thích khi thay đổi sản phẩm
+    useEffect(() => {
+        setIsLiked(isProductLiked(Product.MABAIVIET)); // Đồng bộ trạng thái yêu thích khi sản phẩm thay đổi
+    }, [Product.MABAIVIET, likeProducts]); // Theo dõi sự thay đổi của likeProducts
+
+    // Xử lý xem chi tiết sản phẩm
     const handleViewDetails = () => {
         navigate("/product-detail", { state: { product: Product } });
     };
-    const [isLiked, setIsLiked] = useState(false);
-    const { addToCart, likeProduct, isProductLiked } = useCart();
 
+    // Xử lý thay đổi trạng thái yêu thích
     const handleToggleLike = () => {
-        setIsLiked(!isLiked);
+        likeProduct(Product); // Gọi hàm likeProduct và để nó xử lý trạng thái yêu thích
     };
-    // useEffect(() => {
-    //     setIsLiked(isProductLiked(Product.ProductID));
-    // }, [Product.ProductID, isProductLiked]);
+
     return (
         <div className="flex items-center justify-center flex-col mt-3">
             <div className='w-[18vw] bg-white rounded-2xl ml-3 mb-5 group shadow-2xl'>
@@ -36,18 +42,15 @@ export default function CartItem({ Product }) {
                             <h3 className='line-clamp-3 font-arial text-white '> Dung tích: {Product.DUNGTICH || 'Sản phẩm không có tên'}</h3>
                             <h3 className='line-clamp-3 font-arial text-white '>Số km : {Product.SOKMDADI || 'Sản phẩm không có tên'}</h3>
                             <h3 className='line-clamp-3 font-arial text-white '>{Product.BAOHANH || 'Sản phẩm không có tên'}</h3>
-                            
                         </div>
                         <div>
                             <button
                                 className='w-full h-[3rem] bg-transparent border text-white font-bold rounded-full '
-                                onClick={handleToggleLike}
+                                onClick={handleToggleLike} // Chỉ thay đổi trạng thái yêu thích tại đây
                             >
-                                <div className="flex items-center justify-center gap-2"
-                                    // onClick={() => { likeProduct(Product) }}
-                                >
-                                    <FaHeart className={`transition-colors duration-300 ${isLiked ? 'text-red-500' : 'text-white'}`} size={20} /> {/* Thay đổi màu */}
-                                    <span>Thêm yêu thích</span>
+                                <div className="flex items-center justify-center gap-2">
+                                    <FaHeart className={`transition-colors duration-300 ${isLiked ? 'text-red-500' : 'text-white'}`} size={20} />
+                                    <span>{isLiked ? 'Bỏ yêu thích' : 'Thêm yêu thích'}</span>
                                 </div>
                             </button>
                             <button
@@ -60,10 +63,9 @@ export default function CartItem({ Product }) {
                                 </div>
                             </button>
                         </div>
-
                     </div>
                 </div>
-                <h4 className='truncate  font-arial text-black font-bold text-md ml-3 mt-3'>
+                <h4 className='truncate font-arial text-black font-bold text-md ml-3 mt-3'>
                     {Product.TIEUDE || 'Sản phẩm không có tên'}
                 </h4>
                 <h4 className='truncate font-arial text-black text-md ml-3 mt-3'>
@@ -78,16 +80,13 @@ export default function CartItem({ Product }) {
                         alt="User anhdaidien"
                         className="w-5 h-5 rounded-full"
                     />
-                    <h4 className='truncate font-arial text-green-950  text-sm '>
-                        {Product.DIACHIBAIVIET.split(',').pop().trim()|| 'Sản phẩm không có tên'}
+                    <h4 className='truncate font-arial text-green-950  text-sm'>
+                        {Product.DIACHIBAIVIET.split(',').pop().trim() || 'Sản phẩm không có tên'}
                     </h4>
                 </div>
-               
-                
                 <br />
             </div>
             <div className='flex justify-center space-x-2'>
-
                 {Product.HINHANH.map((image, index) => (
                     <img
                         key={index}
@@ -98,6 +97,5 @@ export default function CartItem({ Product }) {
                 ))}
             </div>
         </div>
-
     );
 }

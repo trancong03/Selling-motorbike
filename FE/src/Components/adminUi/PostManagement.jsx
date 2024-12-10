@@ -40,17 +40,14 @@ const PostManagement = () => {
   // Hàm gửi thông báo
   const handleSendNotification = (userId, postId) => {
     const notification = {
-      mathongbao: `tb${Date.now()}`, // tạo mã thông báo đơn giản
-      tieude: 'Thông báo về bài viết',
-      noidung: notificationContent,
-      thoigiangui: new Date().toISOString(),
-      manguoidung: userId,
-      mabaiviet: postId,
+      bai_viet_id: postId,          // Sử dụng mabaiviet làm bai_viet_id
+      title: 'Thông báo về bài viết',  // Tiêu đề thông báo
+      message: notificationContent,  // Nội dung thông báo từ state
+      user_id: userId,              // Mã người dùng (người nhận thông báo)
     };
     console.log(notification);
     
-
-    fetch('http://127.0.0.1:8000/admin-api/thongbao/', {
+    fetch('http://localhost:8000/admin-api/gui-thong-bao/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -61,13 +58,12 @@ const PostManagement = () => {
         if (!response.ok) {
           throw new Error('Failed to send notification');
         }
-        alert('Notification sent successfully!');
+        alert('Thông báo đã được gửi thành công!');
         setNotificationContent(''); // Reset nội dung thông báo
       })
       .catch((error) => {
         console.error('Error sending notification:', error);
-
-        alert('Failed to send notification');
+        alert('Gửi thông báo không thành công');
       });
   };
 
@@ -126,39 +122,42 @@ const PostManagement = () => {
 
       {/* Popup hiển thị chi tiết bài viết */}
       {selectedPost && (
-  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-    <div className="bg-white rounded-lg p-6 w-1/2 max-h-[80vh] overflow-y-auto">
-      <h3 className="text-xl font-semibold mb-4">Chi tiết bài viết</h3>
-      <p><strong>Mã bài viết:</strong> {selectedPost.mabaiviet}</p>
-      <p><strong>Tiêu đề:</strong> {selectedPost.tieude || 'Không có tiêu đề'}</p>
-      <div className="max-h-[50vh] overflow-y-auto border border-gray-300 p-2 rounded">
-        <strong>Nội dung:</strong>
-        <div dangerouslySetInnerHTML={{ __html: selectedPost.noidung }} />
-      </div>
-      <p><strong>Ngày đăng:</strong> {new Date(selectedPost.ngaydang).toLocaleDateString()}</p>
-      <div className="mt-4">
-        <textarea
-          className="w-full border border-gray-300 p-2 rounded"
-          placeholder="Nhập nội dung thông báo..."
-          value={notificationContent}
-          onChange={(e) => setNotificationContent(e.target.value)}
-        />
-        <button
-          className="mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-          onClick={() => handleSendNotification(selectedPost.manguoidung, selectedPost.mabaiviet)}
-        >
-          Gửi thông báo
-        </button>
-      </div>
-      <button
-        className="mt-4 bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
-        onClick={handleCloseDetails}
-      >
-        Đóng
-      </button>
-    </div>
-  </div>
-)}
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white rounded-lg p-6 w-1/2 max-h-[80vh] overflow-y-auto">
+            <h3 className="text-xl font-semibold mb-4">Chi tiết bài viết</h3>
+            <p><strong>Mã bài viết:</strong> {selectedPost.mabaiviet}</p>
+            <p><strong>Tiêu đề:</strong> {selectedPost.tieude || 'Không có tiêu đề'}</p>
+            <div className="max-h-[50vh] overflow-y-auto border border-gray-300 p-2 rounded">
+              <strong>Nội dung:</strong>
+              <div 
+                className="content" 
+                dangerouslySetInnerHTML={{ __html: selectedPost.mota }} 
+              />
+            </div>
+            <p><strong>Ngày đăng:</strong> {new Date(selectedPost.ngaydang).toLocaleDateString()}</p>
+            <div className="mt-4">
+              <textarea
+                className="w-full border border-gray-300 p-2 rounded"
+                placeholder="Nhập nội dung thông báo..."
+                value={notificationContent}
+                onChange={(e) => setNotificationContent(e.target.value)}
+              />
+              <button
+                className="mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                onClick={() => handleSendNotification(selectedPost.manguoidung, selectedPost.mabaiviet)}
+              >
+                Gửi thông báo
+              </button>
+            </div>
+            <button
+              className="mt-4 bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+              onClick={handleCloseDetails}
+            >
+              Đóng
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
