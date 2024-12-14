@@ -7,16 +7,47 @@ from django.views.decorators.csrf import csrf_exempt
 from .user import authenticate_token
 from ..services.post_service import PostService
 from django.forms.models import model_to_dict
+from users.repositories.post_repository import PostRepository
 def get_all_bai_viet(request):
-    query_result = PostService.get_all_bai_viet()
-    if query_result and isinstance(query_result, list):
-        json_data = query_result[0].get('', '')
-        if json_data:
-            try:
-                parsed_result = json.loads(json_data)
-                return JsonResponse(parsed_result, safe=False)
-            except json.JSONDecodeError:
-                return JsonResponse({"error": "Failed to decode JSON"}, status=500)
+    # Lấy tham số page và limit từ request
+    page = int(request.GET.get("page", 1))  # Mặc định page = 1
+    limit = int(request.GET.get("limit", 20))  # Mặc định limit = 20
+    # Gọi service để lấy dữ liệu phân trang
+    query_result = PostRepository.get_all_products(page=page, limit=limit)
+    
+    if query_result:
+        try:
+            # Chuyển đổi QuerySet thành danh sách dictionary
+            products_list = list(query_result["products"].values())
+
+            # Trả về dữ liệu phân trang
+            return JsonResponse({
+                "products": products_list,
+                "total_count": query_result["total_count"],
+                "total_pages": query_result["total_pages"],
+                "current_page": query_result["current_page"],
+            }, safe=False)
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Failed to decode JSON"}, status=500)
+def get_all_product_image_by_id(request,product_id):
+    query_result = PostRepository.get_all_product_image_by_id(product_id)
+    if query_result:
+        # Chuyển đổi queryset thành danh sách dict
+        products_list = list(query_result.values())
+        try:
+            return JsonResponse(products_list, safe=False)
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Failed to decode JSON"}, status=500)
+    return JsonResponse({"error": "No data found or invalid structure"}, status=404)
+def get_user_by_id_post(request,product_id):
+    query_result = PostRepository.get_user_by_id_post(product_id)
+    if query_result:
+        # Chuyển đổi queryset thành danh sách dict
+        products_list = list(query_result.values())
+        try:
+            return JsonResponse(products_list, safe=False)
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Failed to decode JSON"}, status=500)
     return JsonResponse({"error": "No data found or invalid structure"}, status=404)
 @csrf_exempt
 def get_post_by_id(request, id):
@@ -171,9 +202,7 @@ def them_yeu_thich(request):
 
             # Gọi service xử lý logic
             result = PostService.them_yeu_thich(ma_nguoi_dung, ma_bai_viet)
-
             return JsonResponse({'message': 'Thêm vào danh sách yêu thích thành công.', 'result': result}, status=200)
-        
         except ValueError as e:
             return JsonResponse({'error': str(e)}, status=401)
         except Exception as e:
@@ -187,6 +216,10 @@ def xoa_yeu_thich(request):
             ma_nguoi_dung = request.POST.get('manguoidung') 
             ma_bai_viet = request.POST.get('maBaiViet') # Mã bài viết cần chỉnh sửa
             result = PostService.xoa_yeu_thich(ma_nguoi_dung,ma_bai_viet)
+            if result:  # Giả sử result là giá trị True hoặc False hoặc một đối tượng
+                return JsonResponse({'message': 'Xóa yêu thích thành công.'}, status=200)
+            else:
+                return JsonResponse({'error': 'Không tìm thấy dữ liệu để xóa.'}, status=404)
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid JSON data.'}, status=400)
         except ValueError as e:

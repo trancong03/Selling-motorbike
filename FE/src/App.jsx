@@ -22,6 +22,7 @@ import AdminLogin from "./Components/adminUi/AdminLogin";
 import AdminDashboard from "./Components/adminUi/AdminDashboard";
 import UpdatePost from "./Pages/UpdatePost";
 import ErrorBoundary from "./ErrorBoundary";
+import ProductLike from "./Pages/ProductLike";
 
 function App() {
   const [showLogin, setShowLogin] = useState(false);
@@ -73,7 +74,7 @@ function App() {
       if (storedUserInfo) {
         try {
           const userData = JSON.parse(storedUserInfo);
-          const user = await getUserById(userData.manguoidung);
+          const user = await getUserById(userData?.manguoidung);
           setUserInfo(user); // Cập nhật state với dữ liệu người dùng
         } catch (error) {
           console.error('Invalid JSON in localStorage', error);
@@ -132,6 +133,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/account/*" element={<Account user={userInfo} setUserInfo={setUserInfo} />}>
+            <Route path="like-product" element={<ErrorBoundary><ProductLike /></ErrorBoundary>} />
             <Route path="info" element={<InfomationAccount user={userInfo} setUserInfo={setUserInfo} />} />
             <Route path="reset-password" element={<ResetPassWord user={userInfo} />} />
             <Route path="user-post/" element={<PostOfUser userId={userInfo} />} />

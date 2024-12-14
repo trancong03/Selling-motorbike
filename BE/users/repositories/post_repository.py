@@ -1,27 +1,44 @@
 import logging
 from ..utils.db import execute_query
 import logging
-from users.models import BaiViet,YeuThich
-
+from users.models import BaiViet,YeuThich,HinhAnh,NguoiDung
+from math import ceil
 class PostRepository:
     @staticmethod
-    def get_all_bai_viet():
-        query = """
-        SELECT dbo.LayDanhSachBaiViet()
-        """
+    def get_all_products(page: int = 1, limit: int = 20) -> dict:
         try:
-            # Execute the query and retrieve results
-            query_result = execute_query(query)
-            
-            # Check if the result is valid
-            if query_result and isinstance(query_result, list):
-                return query_result
-            else:
-                return None  # If no valid result found
-        
+            # Tính toán phạm vi dữ liệu
+            offset = (page - 1) * limit 
+            products = BaiViet.objects.all()[offset:offset + limit]  # Lấy sản phẩm theo page và limit
+            total_count = BaiViet.objects.count()  # Tổng số sản phẩm
+            return {
+                "products": products,  # QuerySet các sản phẩm
+                "total_count": total_count,  # Tổng số sản phẩm
+                "total_pages": ceil(total_count / limit),  # Tổng số trang
+                "current_page": page,  # Trang hiện tại
+            }
         except Exception as e:
-            # Log the error for debugging purposes
-            logging.error(f"Error while fetching bai viet: {e}")
+            print(f"Error fetching products with pagination: {e}")
+            return {
+                "products": BaiViet.objects.none(),  # QuerySet rỗng
+                "total_count": 0,
+                "total_pages": 0,
+                "current_page": page,
+            }
+        
+    @staticmethod
+    def get_all_product_image_by_id(product_id):
+        try:
+            images = HinhAnh.objects.filter(mabaiviet=product_id)
+            return images
+        except HinhAnh.DoesNotExist:
+            return None
+    @staticmethod
+    def get_user_by_id_post(product_id):
+        try:
+            images = NguoiDung.objects.filter(manguoidung=product_id)
+            return images
+        except HinhAnh.DoesNotExist:
             return None
     @staticmethod
     def get_all_bai_viet_by_manguoidung(manguoidung):

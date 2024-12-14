@@ -74,8 +74,8 @@ class BaiViet(models.Model):
 
 
 class HinhAnh(models.Model):
-    mabaiviet = models.ForeignKey(BaiViet, on_delete=models.CASCADE)
     mahinhanh = models.AutoField(primary_key=True)
+    mabaiviet = models.IntegerField()
     tenfile = models.CharField(max_length=255)
 
     class Meta:
