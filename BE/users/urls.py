@@ -32,4 +32,5 @@ urlpatterns = [
     path('remove-like-post/', post.xoa_yeu_thich, name='them_yeu_thich'),
     path('product/<int:product_id>/', post.get_all_product_image_by_id, name='get_all_product_image_by_id'),
     path('product_user/<int:product_id>/', post.get_user_by_id_post, name='get_all_product_image_by_id'),
+    path('get_top_10_favorite_products/', post.get_top_10_favorite_products, name='get_top_10_favorite_products'),
 ]

@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
-import CartItem from './../Components/ui/CartItem';
-import ErrorBoundary from "../ErrorBoundary";
-import Top100Post from "../Components/ui/Top100Post";
+import CartItem from "./CartItem";
+import ErrorBoundary from "../../ErrorBoundary";
 
-export default function Post() {
+export default function Top100Post() {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -47,7 +46,7 @@ export default function Post() {
 
     return (
         <div className="bg-white">
-            <h1 className="text-3xl font-bold text-center p-3">Tin dành cho bạn</h1>
+            <h1 className="text-3xl font-bold text-center p-3">Tin nổi bật </h1>
             <div className="grid grid-cols-4 mr-[10%] ml-[10%] mb-[1%] ">
                 {products.map((product) => (
                     <ErrorBoundary key={product.mabaiviet}>

@@ -4,6 +4,10 @@ from django.core.files.storage import FileSystemStorage
 from django.http import JsonResponse
 import json
 from django.views.decorators.csrf import csrf_exempt
+from django.db.models import Count
+from django.utils import timezone
+from users.models import BaiViet, YeuThich
+
 from .user import authenticate_token
 from ..services.post_service import PostService
 from django.forms.models import model_to_dict
@@ -248,3 +252,22 @@ def lay_list_yeu_thich(request, iduser):
         result = PostService.lay_list_yeu_thich(iduser)
         return JsonResponse({'favorites': result}, status=200)
     return JsonResponse({'error': 'Chỉ hỗ trợ phương thức GET.'}, status=405)
+def get_top_10_favorite_products(request):
+        try:
+            favorite_counts = YeuThich.objects.values('mabaiviet') \
+                .annotate(favorite_count=Count('mabaiviet')) \
+                .order_by('-favorite_count')[:10]  # Giới hạn lấy 10 sản phẩm yêu thích nhất
+            top_10_favorite_products = []
+            for item in favorite_counts:
+                product_id = item['mabaiviet']
+                try:
+                    product = BaiViet.objects.get(mabaiviet=product_id)
+                    product_data = model_to_dict(product)
+                    product_data['favorite_count'] = item['favorite_count']  # Thêm số lượng yêu thích vào thông tin sản phẩm
+                    top_10_favorite_products.append(product_data)
+                except BaiViet.DoesNotExist:
+                    continue
+            return JsonResponse({"data": top_10_favorite_products}, safe=False, status=200)
+        except Exception as e:
+            return JsonResponse({"error": f"An error occurred: {str(e)}"}, status=500)
+        

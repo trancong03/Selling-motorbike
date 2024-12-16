@@ -54,9 +54,23 @@ const getUserByIDPost = async (product_id) => {
         return null;
     }
 };
-
+const getTop10Product = async () => {
+    try {
+        const response = await apiClient.get(`http://127.0.0.1:8000/api/get_top_10_favorite_products/`);
+        if (response.status === 200) {
+            return response.data;
+        }
+    } catch (error) {
+        if (error.response) {
+            console.error('Error:', error.response.data.error);
+        } else {
+            console.error('Network Error:', error.message);
+        }
+        return null;
+    }
+};
 export default apiClient;
 // Sử dụng default export
 export {
-    getImageProductByID, getUserByIDPost
+    getImageProductByID, getUserByIDPost, getTop10Product
 };
