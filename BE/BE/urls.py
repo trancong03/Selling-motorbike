@@ -6,7 +6,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin-api/', include('CustomAdmin.urls')),
     path('api/', include('users.urls')),  # Thêm đường dẫn tới ứng dụng 'users'
-    
+    # path('api/', include('followers.urls')),
 ]
 # Chỉ thêm khi chạy trong môi trường phát triển (dev)
 if settings.DEBUG:

@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect  } from "react";
 import { useLocation } from "react-router-dom";
-import { MapPin, Clock, Star, Phone, MessageSquare, Car, Calendar, BatteryCharging, CheckCircle, Tag, Box, Shield } from 'lucide-react';
+import axios from 'axios';
+import { MapPin, Clock, Star, Phone, MessageSquare, Car, Calendar, BatteryCharging, CheckCircle, Tag, Box, Shield, UserPlus, UserCheck } from 'lucide-react';
 export default function productDetail() {
     
     const { state } = useLocation();
@@ -8,11 +9,18 @@ export default function productDetail() {
     const images = image;
     const users = user
     const [currentIndex, setCurrentIndex] = useState(0);
+    const [followingId, setFollowingId] = useState(null);  // Set followingId initially to null
+    const [isFollowing, setIsFollowing] = useState(false);
     console.log(user);
-
-    const updateMainImage = (index) => {
-        setCurrentIndex(index);
-    };
+    useEffect(() => {
+        // Simulating fetching the followingId from an API or some other source
+        const fetchFollowingId = async () => {
+          const userId = await getUserIdFromAPI();  // Fetching the user ID from your backend or some source
+          setFollowingId(userId);
+        };
+    
+        fetchFollowingId();
+      }, []);
 
     const nextImage = () => {
         setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
@@ -39,6 +47,22 @@ export default function productDetail() {
     };
 
     const days = calculateDateDifference(product.ngaydang);
+
+    const toggleFollow = async () => {
+        if (!followingId) {
+          console.error("Following ID is required!");
+          return;
+        }
+    
+        try {
+          const response = await axios.post('http://127.0.0.1:8000/follow/', { following_id: followingId });
+          setIsFollowing(!isFollowing);
+          console.log(response.data);
+        } catch (error) {
+          console.error('Error while following/unfollowing', error);
+        }
+      };
+
     return (
         <div className ="flex items-center justify-center">
             <div className="flex  max-w-[100%] items-center justify-center">
@@ -167,7 +191,25 @@ export default function productDetail() {
                                         </div>
                                     </div>
                                 </div>
-
+                                {/* Follow Button */}
+                                <div className="flex justify-center mb-5">
+                                    <button
+                                        onClick={toggleFollow}
+                                        className={`w-full ${isFollowing ? 'bg-gray-300' : 'bg-green-500'} hover:${isFollowing ? 'bg-gray-400' : 'bg-green-600'} text-white rounded-lg py-2 flex items-center justify-center`}
+                                    >
+                                        {isFollowing ? (
+                                            <>
+                                                <UserCheck className="w-5 h-5 mr-2" />
+                                                Đang theo dõi
+                                            </>
+                                        ) : (
+                                            <>
+                                                <UserPlus className="w-5 h-5 mr-2" />
+                                                Theo dõi
+                                            </>
+                                        )}
+                                    </button>
+                                </div>
                                 {/* Action Buttons */}
                                 <div className="grid grid-cols-2 gap-4 mb-6">
                                     <button className="w-full bg-green-500 hover:bg-green-600 text-white rounded-lg py-2 flex items-center justify-center">
@@ -193,7 +235,5 @@ export default function productDetail() {
                 </div>
             </div>
         </div>
-        
-        
     );
 }

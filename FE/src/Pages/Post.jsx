@@ -97,7 +97,7 @@ export default function Post() {
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {
       const matchesLocation =
-        selectedLocation === "Toàn quốc" || product.location === selectedLocation;
+        selectedLocation === "Toàn quốc" || product.diachibaiviet.split(',').pop().trim() === selectedLocation;
       const matchesBrand =
         selectedBrand === "Hãng xe" || product.hangxe === selectedBrand;
       const matchesPrice =
@@ -108,7 +108,8 @@ export default function Post() {
   }, [products, selectedLocation, selectedBrand, rangeValues]);
 
   return (
-    <div className="bg-white">
+    <div className="bg-white mt-10">
+      <div className="border-b-2 bg-orange-500 border-orange-500 my-5 m-20 p-0.5"></div>
       <h1 className="text-3xl font-bold text-center p-3">DANH SÁCH CÁC BÀI VIẾT</h1>
 
       {/* Bộ lọc sản phẩm */}
@@ -125,8 +126,8 @@ export default function Post() {
             className="border rounded-full px-4 py-2 bg-white text-gray-700 hover:bg-gray-100"
           >
             <option value="Toàn quốc">Toàn quốc</option>
-            <option value="Hà Nội">Hà Nội</option>
-            <option value="Hồ Chí Minh">Hồ Chí Minh</option>
+            <option value="Thành phố Hà Nội">Hà Nội</option>
+            <option value="Tp Hồ Chí Minh">Hồ Chí Minh</option>
           </select>
 
           {/* Dropdown Hãng xe */}
@@ -192,7 +193,7 @@ export default function Post() {
       </div>
 
       {/* Danh sách sản phẩm */}
-      <div className="grid grid-cols-4 gap-4 p-4">
+      <div className="grid grid-cols-5 gap-5 p-5 m-5">
         {filteredProducts.map((product) => (
           <ErrorBoundary key={product.mabaiviet}>
             <CartItem Product={product} />
