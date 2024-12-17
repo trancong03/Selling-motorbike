@@ -37,7 +37,6 @@ export default function Banner() {
         </Swiper>
       </div>
       <Top100Post />
-
       <h1 className="text-3xl font-bold text-center mt-[3rem] mb-[3rem]">Tin được yêu thích nhiều nhất</h1>
       <div className="grid grid-cols-5 mr-[3%] ml-[3%] mb-[1%] ">
         {/* Kiểm tra nếu products là mảng hợp lệ */}
@@ -52,8 +51,6 @@ export default function Banner() {
                                               </p>
                                              
                                           </p>
-              
-              
                                       <CartItem Product={product} />
                                       </div>
               
