@@ -46,7 +46,7 @@ export default function Top100Post() {
 
     return (
         <div className="bg-white">
-            <h1 className="text-3xl font-bold text-center p-3 mt-10">Tin nổi bật🔥🔥 </h1>
+            <h1 className="text-3xl font-bold text-center p-3 mt-10">🔥 Tin nổi bật 🔥 </h1>
             <h1 className="text-xl font-bold text-center p-3 ">Top các sản phẩm phù hợp dành cho bạn tại motorbike Light! </h1>
             <div className="grid grid-cols-4 mr-[10%] ml-[10%] mb-[1%] gap-4">
                 {products.map((product) => (
@@ -79,7 +79,10 @@ export default function Top100Post() {
                 </div>
 
             )}
+            <div className="border-b-2 bg-orange-500 border-orange-500 my-5 m-20 p-0.5"></div>
         </div>
+        
+        
     );
 }
 

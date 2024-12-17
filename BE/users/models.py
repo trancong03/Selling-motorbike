@@ -1,6 +1,14 @@
 from django.db import models
 from PIL import Image
 import os
+from django.contrib.auth.models import User  # Nhập User ở đây
+
+class Follower(models.Model):
+    user = models.ForeignKey(User, related_name='followers', on_delete=models.CASCADE)
+    followed_user = models.ForeignKey(User, related_name='following', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.user} follows {self.followed_user}"
 
 class LocalImage(models.Model):
     image = models.ImageField(upload_to='')  # Lưu ảnh trực tiếp vào REACT_IMAGE_DIR

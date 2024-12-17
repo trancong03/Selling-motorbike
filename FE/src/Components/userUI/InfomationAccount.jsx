@@ -120,9 +120,9 @@ export default function InfomationAccount({ user, setUserInfo }) {
       <div className='h-auto w-[60vw] mt-8'>
           <nav className="bg-gray-100 p-3 rounded font-sans w-full mb-4">
               <ol className="list-reset flex text-gray-600">
-                  <li><a href="/" className="text-blue-600 hover:underline">Chợ Tốt</a></li>
+                  <li><a href="/" className="text-blue-600 hover:underline">Motobike Light</a></li>
                   <li><span className="mx-2">›</span></li>
-                  <li><a href="/profile" className="text-blue-600 hover:underline">Trang cá nhân của Chí Công Trần</a></li>
+                  <li><a href="/profile" className="text-blue-600 hover:underline">Trang cá nhân của {user.hoten}</a></li>
                   <li><span className="mx-2">›</span></li>
                   <li className="text-gray-600">Cài đặt tài khoản</li>
               </ol>

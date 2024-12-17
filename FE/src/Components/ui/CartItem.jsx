@@ -12,7 +12,7 @@ export default function CartItem({ Product }) {
     const [isLiked, setIsLiked] = useState(false);
     const [images, setImages] = useState([]); // State để lưu hình ảnh
     const [user, setUser] = useState({}); // State để lưu hình ảnh
-
+   
     useEffect(() => {
         const fetchImages = async () => {
             const result = await getImageProductByID(Product.mabaiviet); // Gọi API
@@ -33,8 +33,8 @@ export default function CartItem({ Product }) {
             }
         };
         fetchuser();
-    }, [Product.mabaiviet]); 
-    
+    }, [Product.mabaiviet]);
+
     // Cập nhật trạng thái yêu thích khi thay đổi sản phẩm
     useEffect(() => {
         setIsLiked(isProductLiked(Product.MABAIVIET)); // Đồng bộ trạng thái yêu thích khi sản phẩm thay đổi
@@ -42,16 +42,16 @@ export default function CartItem({ Product }) {
 
     // Xử lý xem chi tiết sản phẩm
     const handleViewDetails = () => {
-        navigate("/product-detail", { state: { product: Product , user: user,image:images} });
+        navigate("/product-detail", { state: { product: Product, user: user, image: images } });
     };
 
     // Xử lý thay đổi trạng thái yêu thích
     const handleToggleLike = () => {
 
-        likeProduct(Product); 
+        likeProduct(Product);
         // Gọi hàm likeProduct và để nó xử lý trạng thái yêu thích
     };
-    
+
     return (
         <div className='flex items-center justify-center flex-col mt-3 rounded-2xl'>
             <div className='w-[15vw] bg-white rounded-2xl ml-3 mb-5 group shadow-2xl'>
@@ -104,7 +104,7 @@ export default function CartItem({ Product }) {
                 </h4>
                 <div className="flex justify-start items-center gap-2 ml-3 mt-2 pb-2">
                     <img
-                        src={user? `/image/${user[0]?.anhdaidien}` : "/image/icon.png"}
+                        src={user ? `/image/${user[0]?.anhdaidien}` : "/image/icon.png"}
                         alt="User anhdaidien"
                         className="w-4 h-4 rounded-full"
                     />
