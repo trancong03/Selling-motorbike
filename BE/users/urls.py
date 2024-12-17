@@ -21,6 +21,7 @@ urlpatterns = [
     path('predict-price/', views2.predict_price, name='predict_price'),
     # path('followers/', include(router.urls)),
     # path('follow/<int:user_id>/', views3.follow_user, name='follow_user'),
+    path('follow/<int:user_id>/', views3.follow_user, name='follow_user'),
     path('bai-viet/', post.get_all_bai_viet, name='get_all_bai_viet'),
     path('new-post/', post.tao_bai_viet, name='tao_bai_viet'),
     path('update-post/', post.sua_bai_viet, name='sua_bai_viet'),
@@ -38,4 +39,6 @@ urlpatterns = [
     path('get_top_10_favorite_products/', post.get_top_10_favorite_products, name='get_top_10_favorite_products'),
     path('get_top_100_baiviet/', post.get_top_100_baiviet, name='get_top_10_favorite_products'),
      path('search_products/', post.search_products, name='search_products'),
+     path('get_all_giao_dich/', post.get_all_giao_dich, name='get_all_giao_dich'),
+     path('day-tin/', post.day_tin, name='day_tin'),  
 ]

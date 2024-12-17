@@ -3,12 +3,12 @@ from PIL import Image
 import os
 from django.contrib.auth.models import User  # Nhập User ở đây
 
-# class Follower(models.Model):
-#     user = models.ForeignKey(User, related_name='followers', on_delete=models.CASCADE)
-#     followed_user = models.ForeignKey(User, related_name='following', on_delete=models.CASCADE)
+class Follower(models.Model):
+    user = models.ForeignKey(User, related_name='followers', on_delete=models.CASCADE)
+    followed_user = models.ForeignKey(User, related_name='following', on_delete=models.CASCADE)
 
-#     def __str__(self):
-#         return f"{self.user} follows {self.followed_user}"
+    def __str__(self):
+        return f"{self.user} follows {self.followed_user}"
 
 class LocalImage(models.Model):
     image = models.ImageField(upload_to='')  # Lưu ảnh trực tiếp vào REACT_IMAGE_DIR
@@ -63,7 +63,7 @@ class BaiViet(models.Model):
     diachibaiviet = models.CharField(max_length=200, null=True, blank=True)  # Địa chỉ bài viết
     giatri = models.DecimalField(max_digits=19, decimal_places=4, null=True, blank=True)  # Giá trị
     ngaydang = models.DateField(null=True, blank=True)  # Ngày đăng (sử dụng DateField thay vì DateTimeField)
-    ngayhethan = models.DateField(null=True, blank=True)  # Ngày hết hạn (sử dụng DateField)
+    ngayhethan = models.DateField(null=True, blank=True) # Ngày hết hạn (sử dụng DateField)
     hangxe = models.CharField(max_length=15, null=True, blank=True)  # Hãng xe
     loaixe = models.CharField(max_length=25, null=True, blank=True)  # Loại xe
     nammua = models.IntegerField(null=True, blank=True)  # Năm mua
@@ -78,9 +78,7 @@ class BaiViet(models.Model):
     class Meta:
         db_table = 'BAIVIET'  # Tên bảng trong cơ sở dữ liệu
 
-    def __str__(self):
-        return self.tieude
-
+  
 
 class HinhAnh(models.Model):
     mahinhanh = models.AutoField(primary_key=True)
@@ -120,3 +118,22 @@ class Xe(models.Model):
 
     def __str__(self):
         return self.tenxe
+class GOIGIAODICH(models.Model):
+    MALOAIGIAODICH = models.CharField(max_length=255,primary_key=True)
+    TENLOAIGIAODICH = models.IntegerField()
+    SOTIEN = models.CharField(max_length=255)
+    SONGAY = models.IntegerField(max_length=255)
+
+    class Meta:
+        db_table = 'GOIGIAODICH'  # Custom table name for the images
+
+class NAPGIAHAN(models.Model):
+    MAGIAODICH = models.AutoField(primary_key=True)
+    MALOAIGIAODICH = models.CharField(max_length=255)
+    MANGUOIDUNG = models.IntegerField()
+    MABAIVIET = models.IntegerField()
+    SOTIEN = models.CharField(max_length=255)
+    NGAYGIAODICH = models.DateField(max_length=255)
+    class Meta:
+        db_table = 'NAPGIAHAN'  # Custom table name for the images
+

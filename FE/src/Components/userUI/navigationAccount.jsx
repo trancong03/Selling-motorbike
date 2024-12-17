@@ -117,9 +117,9 @@ export default function NavigationAccount({ user, setUserInfo }) {
                 <div className="mt-3 pl-4 shadow-sm p-4">
                     <h2 className="text-xl font-semibold">{user.hoten}</h2>
                     <div className="flex items-center">
-                        <span className="text-yellow-500 text-lg">★★★★☆</span>
-                        <span className="ml-2 text-lg">(1 nhận xét)</span>
-                        <span className="ml-2 text-blue-500">Đã xác thực</span>
+                        <div>
+                            {user.sodu}
+                        </div>
                     </div>
                     <div className='pt-3 pb-3 text-slate-500 text-lg'>
                         <h1>Người theo dõi : <b>0</b> |  Đang theo dõi:  <b>0</b></h1>

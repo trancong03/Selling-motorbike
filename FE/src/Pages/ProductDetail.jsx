@@ -1,26 +1,18 @@
-import { useState, useEffect  } from "react";
+import { useState } from "react";
 import { useLocation } from "react-router-dom";
-import axios from 'axios';
 import { MapPin, Clock, Star, Phone, MessageSquare, Car, Calendar, BatteryCharging, CheckCircle, Tag, Box, Shield, UserPlus, UserCheck } from 'lucide-react';
+import axios from "axios";
 export default function productDetail() {
-    
+
     const { state } = useLocation();
     const { product, user, image } = state || {}; // Lấy product từ state
     const images = image;
-    const users = user
+    const users = user[0]
     const [currentIndex, setCurrentIndex] = useState(0);
-    const [followingId, setFollowingId] = useState(null);  // Set followingId initially to null
-    const [isFollowing, setIsFollowing] = useState(false);
-    console.log(user);
-    useEffect(() => {
-        // Simulating fetching the followingId from an API or some other source
-        const fetchFollowingId = async () => {
-          const userId = await getUserIdFromAPI();  // Fetching the user ID from your backend or some source
-          setFollowingId(userId);
-        };
-    
-        fetchFollowingId();
-      }, []);
+
+    const updateMainImage = (index) => {
+        setCurrentIndex(index);
+    };
 
     const nextImage = () => {
         setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
@@ -47,24 +39,18 @@ export default function productDetail() {
     };
 
     const days = calculateDateDifference(product.ngaydang);
-
+    const [isFollowing, setIsFollowing] = useState(false);
     const toggleFollow = async () => {
-        if (!followingId) {
-          console.error("Following ID is required!");
-          return;
-        }
-    
         try {
-          const response = await axios.post('http://127.0.0.1:8000/follow/', { following_id: followingId });
-          setIsFollowing(!isFollowing);
-          console.log(response.data);
+            const response = await axios.get(`http://127.0.0.1:8000/api/follow/${users.manguoidung}`);
+            setIsFollowing(!isFollowing);
+            console.log(response.data);
         } catch (error) {
-          console.error('Error while following/unfollowing', error);
+            console.error('Error while following/unfollowing', error);
         }
-      };
-
+    };
     return (
-        <div className ="flex items-center justify-center">
+        <div className="flex items-center justify-center">
             <div className="flex  max-w-[100%] items-center justify-center">
                 <div className="bg-gray-100 flex items-center justify-center w-3/5 min-h-screen ">
                     <div className="flex flex-col items-center space-y-4 min-w-[100%]">
@@ -166,7 +152,7 @@ export default function productDetail() {
                                     <Clock className="w-5 h-5 mr-3 text-gray-600" />
                                     <span className="text-sm">{days} ngày trước</span>
                                 </div>
-                           </div>
+                            </div>
                             <div className="rounded-lg overflow-hidden bg-white p-6 min-w-full mt-3">
                                 {/* Seller Info */}
                                 <div className="flex items-center mb-6 space-x-4">
@@ -228,12 +214,14 @@ export default function productDetail() {
                                     <div className="font-medium text-green-600">Xe chính chủ</div>
                                 </div>
                             </div>
-                            
+
                         </div>
                     </div>
 
                 </div>
             </div>
         </div>
+
+
     );
 }

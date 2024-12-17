@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from "react";
-import { MapPin, Car, Calendar, BatteryCharging, CheckCircle, Tag, Box, Shield, EllipsisVertical, DeleteIcon, Settings2 } from 'lucide-react';
+import { MapPin, Car, Calendar, BatteryCharging, CheckCircle, Tag, Box, Shield, EllipsisVertical, DeleteIcon, Settings2, ArrowDownToDot, User } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import ExtendPostComponent from './ExtendPostComponent ';
+import ErrorBoundary from './../../ErrorBoundary';
 export default function PostItemUser({ product, userId }) {
     const navigate = useNavigate();
     const images = product.HINHANH;
@@ -18,7 +20,6 @@ export default function PostItemUser({ product, userId }) {
             [postId]: !prevState[postId],
         }));
     };
-
     // Function to handle clicks outside the menu to close it
     const handleClickOutside = (event) => {
         if (menuRef.current && !menuRef.current.contains(event.target)) {
@@ -82,7 +83,41 @@ export default function PostItemUser({ product, userId }) {
     if (!product) {
         return <p>Không tìm thấy sản phẩm.</p>;
     }
-    
+    const [showExtendComponent, setShowExtendComponent] = useState(false);
+
+    const handleExtend = async ({ product, selectedVoucher }) => {
+        console.log(`Gia hạn bài viết: ${product.MABAIVIET} ${selectedVoucher}`);
+        try {
+            const response = await fetch('http://127.0.0.1:8000/api/day-tin/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    MANGUOIDUNG: product.MANGUOIDUNG, // Mã người dùng
+                    MALOAIGIAODICH: selectedVoucher,  // Mã loại giao dịch (voucher)
+                    MABAIVIET: product.MABAIVIET,     // Mã bài viết
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json(); // Xử lý kết quả từ server
+            console.log('Gia hạn thành công:', data);
+
+            // Ẩn component sau khi gia hạn thành công
+            setShowExtendComponent(false);
+            window.location.reload();
+        } catch (error) {
+            console.error('Lỗi khi gọi API gia hạn:', error);
+        }
+    };
+
+    const handleclose = ({ product }) => {
+        setShowExtendComponent(false); // Ẩn component sau khi gia hạn
+    };
     return (
         <div className="bg-white rounded-lg shadow-md overflow-hidden !text-lg">
             <div className="flex items-center justify-between p-4 bg-slate-200">
@@ -97,7 +132,14 @@ export default function PostItemUser({ product, userId }) {
                         <div className="font-medium text-gray-700 text-lg">{userId.hoten}</div>
                         <div className="flex items-center text-sm text-gray-500">
                             <div className="mr-4">{calculateDateDifference(product.NGAYDANG)} ngày trước</div>
+                            {product.status && product.status === 1 ? null : (
+                                <h1 className="ml-4 text-red-500 font-bold bg-red-100 px-2 py-1 rounded">
+                                    Đã hết hạn
+                                </h1>
+                            )}
                         </div>
+
+
                     </div>
                 </div>
 
@@ -108,25 +150,37 @@ export default function PostItemUser({ product, userId }) {
                         className="h-6 w-6 text-gray-600 hover:text-amber-500 cursor-pointer transition duration-300 ease-in-out transform hover:scale-110"
                     />
                     {openMenus[product.MABAIVIET] && (
-                        
-                        <div className="absolute top-full right-1 mt-2 w-40 bg-white rounded-lg shadow-xl border border-gray-200 max-h-60 overflow-y-auto z-50">
-                            <ul className="py-0">
+                        <div className="absolute top-full right-1 mt-2 w-44 bg-white rounded-lg shadow-xl border border-gray-200 max-h-60 overflow-y-auto z-50">
+                            <ul className="py-0 items-start flex justify-center flex-col">
                                 <li
                                     className="px-4 py-2 text-gray-800 hover:bg-slate-300 hover:text-gray-900 cursor-pointer"
                                     onClick={() => handleEdit({ product })}
                                 >
-                                    <span className=" flex text-sm items-center justify-center gap-2"> <Settings2 /> Sửa bài viết</span>
+                                    <span className="flex text-sm items-center justify-center gap-2"> <Settings2 /> Sửa bài viết</span>
                                 </li>
                                 <li
                                     className="px-4 py-2 text-gray-800 hover:bg-slate-300 hover:text-red-700 cursor-pointer"
                                     onClick={handleDelete}
                                 >
-                               
-                                    <span className=" flex text-sm items-center justify-center gap-2"> <DeleteIcon /> Xóa bài viết</span>
+                                    <span className="flex text-sm items-center justify-center gap-2"> <DeleteIcon /> Xóa bài viết</span>
                                 </li>
+                                {product.status !== 1 && (
+                                    <li
+                                        className="px-4 py-2 text-gray-800 hover:bg-slate-300 hover:text-green-700 cursor-pointer"
+                                        onClick={() => setShowExtendComponent(true)} // Khi nhấn, hiển thị component absolute
+                                    >
+                                        <span className="flex text-sm items-center justify-center gap-2">
+                                            <ArrowDownToDot /> Gia hạn bài viết
+                                        </span>
+                                    </li>
+                                )}
+
+                                
+
                             </ul>
                         </div>
                     )}
+
                 </div>
             </div>
 
@@ -205,6 +259,19 @@ export default function PostItemUser({ product, userId }) {
                     </div>
                 </div>
             </div>
+            {showExtendComponent && (
+                <div className="absolute z-100 top-0 left-0 w-70% h-90%">
+                    <ErrorBoundary>
+                        <ExtendPostComponent
+                            product={product}
+                            userId ={userId}
+                            onExtend={handleExtend}
+                            onClose={handleclose}
+                        />
+                    </ErrorBoundary>
+                   
+                </div>
+            )}
 
         </div> 
 

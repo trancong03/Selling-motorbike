@@ -6,10 +6,10 @@ import json  # To parse JSON data from request
 from django.views.decorators.csrf import csrf_exempt
 # Load the model and LabelEncoders (Make sure to use raw strings for paths or forward slashes)
 try:
-    model = joblib.load(r'C:\Users\Admin\Documents\GitHub\Selling-motorbike\BE\media\new_decision_tree_model_1.pkl')
+    model = joblib.load(r'E:\_2025_HK1\DoAnChuyenNganh\Selling-motorbike\Selling-motorbike\BE\media\new_decision_tree_model_1.pkl')
 except Exception as e:
     print(f"Error loading model: {e}")
-label_encoders = joblib.load(r'C:\Users\Admin\Documents\GitHub\Selling-motorbike\BE\media\new_label_encoders_1.pkl')
+label_encoders = joblib.load(r'E:\_2025_HK1\DoAnChuyenNganh\Selling-motorbike\Selling-motorbike\BE\media\new_label_encoders_1.pkl')
 @csrf_exempt
 def predict_price(request):
     if request.method == 'POST':
