@@ -42,6 +42,7 @@ function NewPost() {
         style:"",
         danhSachHinh: "", // Sẽ chứa chuỗi ảnh
     });
+
     console.log(formData.hangXe);
     
     const updatediachi = (diachi) => {
@@ -123,7 +124,6 @@ function NewPost() {
 
         try {
             const formDataToSend = new FormData();
-
             // Thêm các trường không phải tệp vào formData
             Object.keys(formData).forEach(key => {
                 if (key !== 'danhSachFileHinh') {
@@ -459,7 +459,7 @@ function NewPost() {
                         />
                         
                     </div>
-                    <div class="container">
+                    <div className="container">
                     <button
                                     type="button"
                                     onClick={() => handlePredictPrice()}

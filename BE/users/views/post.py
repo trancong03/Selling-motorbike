@@ -4,10 +4,15 @@ from django.core.files.storage import FileSystemStorage
 from django.http import JsonResponse
 import json
 from django.views.decorators.csrf import csrf_exempt
+from django.db.models import Count
+from django.utils import timezone
+from users.models import BaiViet, YeuThich
+from django.core.paginator import Paginator
 from .user import authenticate_token
 from ..services.post_service import PostService
 from django.forms.models import model_to_dict
 from users.repositories.post_repository import PostRepository
+from django.db.models import Q
 def get_all_bai_viet(request):
     # Lấy tham số page và limit từ request
     page = int(request.GET.get("page", 1))  # Mặc định page = 1
@@ -248,3 +253,63 @@ def lay_list_yeu_thich(request, iduser):
         result = PostService.lay_list_yeu_thich(iduser)
         return JsonResponse({'favorites': result}, status=200)
     return JsonResponse({'error': 'Chỉ hỗ trợ phương thức GET.'}, status=405)
+def get_top_10_favorite_products(request):
+        try:
+            favorite_counts = YeuThich.objects.values('mabaiviet') \
+                .annotate(favorite_count=Count('mabaiviet')) \
+                .order_by('-favorite_count')[:10]  # Giới hạn lấy 10 sản phẩm yêu thích nhất
+            top_10_favorite_products = []
+            for item in favorite_counts:
+                product_id = item['mabaiviet']
+                try:
+                    product = BaiViet.objects.get(mabaiviet=product_id)
+                    product_data = model_to_dict(product)
+                    product_data['favorite_count'] = item['favorite_count']  # Thêm số lượng yêu thích vào thông tin sản phẩm
+                    top_10_favorite_products.append(product_data)
+                except BaiViet.DoesNotExist:
+                    continue
+            return JsonResponse({"data": top_10_favorite_products}, safe=False, status=200)
+        except Exception as e:
+            return JsonResponse({"error": f"An error occurred: {str(e)}"}, status=500)
+        
+def get_top_100_baiviet(request):
+    page = int(request.GET.get('page', 1))  # Trang hiện tại
+    limit = int(request.GET.get('limit', 12))  # Số lượng bài viết mỗi trang
+
+    # Lấy tất cả bài viết và sắp xếp giảm dần theo giatri
+    queryset = BaiViet.objects.order_by('-giatri')
+    
+    # Phân trang
+    paginator = Paginator(queryset, limit)
+    try:
+        paginated_baiviet = paginator.page(page)
+    except:
+        return JsonResponse({'error': 'Page not found'}, status=404)
+
+    # Chuẩn bị dữ liệu trả về
+    result = []
+    for index, baiviet in enumerate(paginated_baiviet, start=(page - 1) * limit + 1):
+        baiviet = model_to_dict(baiviet)
+        result.append({
+            'top': index,
+            'baiviet': baiviet,
+            
+        })
+
+    return JsonResponse({
+        'products': result,
+        'total_count': paginator.count,
+        'total_pages': paginator.num_pages,
+        'current_page': page
+    }, safe=False)
+@csrf_exempt
+def search_products(request):
+    query = request.GET.get('q', '')  # Get the search query from the request
+    filter_conditions = Q()
+    if query:
+        keywords = query.split()
+        for keyword in keywords:
+            filter_conditions |= Q(tieude__icontains=keyword) | Q(hangxe__icontains=keyword) | Q(dungtich__icontains=keyword)
+    products = BaiViet.objects.filter(filter_conditions)[:20]
+    products_list = list(products.values())  # Convert the query results to a list
+    return JsonResponse(products_list, safe=False)

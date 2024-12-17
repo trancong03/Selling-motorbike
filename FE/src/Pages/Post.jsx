@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef, useMemo } from "react";
 import axios from "axios";
 import CartItem from "./../Components/ui/CartItem";
 import ErrorBoundary from "../ErrorBoundary";
+import Top100Post from "../Components/ui/Top100Post";
 
 export default function Post() {
   const [products, setProducts] = useState([]);
@@ -86,7 +87,7 @@ export default function Post() {
   useEffect(() => {
     fetchProducts(1);
   }, []);
-
+  
   // Tải thêm sản phẩm
   const loadMoreProducts = () => {
     fetchProducts(currentPage + 1);

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Banner from "../Components/Header/Banner";
 import axios from 'axios';
-import CartItem from './../Components/ui/CartItem';
 import Post from "./Post";
+import Top100Post from "../Components/ui/Top100Post";
 
 export default function Home() {
   const [listPost, setListPost] = useState([]);

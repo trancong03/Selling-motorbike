@@ -3,6 +3,7 @@ from ..utils.db import execute_query
 import logging
 from users.models import BaiViet,YeuThich,HinhAnh,NguoiDung
 from math import ceil
+
 class PostRepository:
     @staticmethod
     def get_all_products(page: int = 1, limit: int = 20) -> dict:
@@ -204,4 +205,4 @@ class PostRepository:
             # Logging lỗi nếu có bất kỳ sự cố nào xảy ra
             print(f"Lỗi: {str(e)}")
             return []
-
+    
