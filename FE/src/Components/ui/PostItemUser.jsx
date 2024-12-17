@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { MapPin, Car, Calendar, BatteryCharging, CheckCircle, Tag, Box, Shield, EllipsisVertical, DeleteIcon, Settings2, ArrowDownToDot } from 'lucide-react';
+import { MapPin, Car, Calendar, BatteryCharging, CheckCircle, Tag, Box, Shield, EllipsisVertical, DeleteIcon, Settings2, ArrowDownToDot, User } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import ExtendPostComponent from './ExtendPostComponent ';
 import ErrorBoundary from './../../ErrorBoundary';
@@ -20,7 +20,6 @@ export default function PostItemUser({ product, userId }) {
             [postId]: !prevState[postId],
         }));
     };
-
     // Function to handle clicks outside the menu to close it
     const handleClickOutside = (event) => {
         if (menuRef.current && !menuRef.current.contains(event.target)) {
@@ -86,10 +85,36 @@ export default function PostItemUser({ product, userId }) {
     }
     const [showExtendComponent, setShowExtendComponent] = useState(false);
 
-    const handleExtend = ({ product, selectedVoucher }) => {
+    const handleExtend = async ({ product, selectedVoucher }) => {
         console.log(`Gia hạn bài viết: ${product.MABAIVIET} ${selectedVoucher}`);
-        setShowExtendComponent(false); // Ẩn component sau khi gia hạn
+        try {
+            const response = await fetch('http://127.0.0.1:8000/api/day-tin/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    MANGUOIDUNG: product.MANGUOIDUNG, // Mã người dùng
+                    MALOAIGIAODICH: selectedVoucher,  // Mã loại giao dịch (voucher)
+                    MABAIVIET: product.MABAIVIET,     // Mã bài viết
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json(); // Xử lý kết quả từ server
+            console.log('Gia hạn thành công:', data);
+
+            // Ẩn component sau khi gia hạn thành công
+            setShowExtendComponent(false);
+            window.location.reload();
+        } catch (error) {
+            console.error('Lỗi khi gọi API gia hạn:', error);
+        }
     };
+
     const handleclose = ({ product }) => {
         setShowExtendComponent(false); // Ẩn component sau khi gia hạn
     };
@@ -239,6 +264,7 @@ export default function PostItemUser({ product, userId }) {
                     <ErrorBoundary>
                         <ExtendPostComponent
                             product={product}
+                            userId ={userId}
                             onExtend={handleExtend}
                             onClose={handleclose}
                         />

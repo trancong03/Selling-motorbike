@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 import os
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
@@ -6,13 +7,14 @@ import json
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Count
 from django.utils import timezone
-from users.models import BaiViet, YeuThich,GOIGIAODICH
+from users.models import BaiViet, YeuThich,GOIGIAODICH,NguoiDung,NAPGIAHAN
 from django.core.paginator import Paginator
 from .user import authenticate_token
 from ..services.post_service import PostService
 from django.forms.models import model_to_dict
 from users.repositories.post_repository import PostRepository
 from django.db.models import Q
+from django.utils.timezone import now
 def get_all_bai_viet(request):
     # Lấy tham số page và limit từ request
     page = int(request.GET.get("page", 1))  # Mặc định page = 1
@@ -319,3 +321,70 @@ def get_all_giao_dich(request):
         return JsonResponse(query_result, safe=False)  # Trả về dữ liệu dưới dạng JSON
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
+from django.utils.dateparse import parse_date
+
+@csrf_exempt
+def day_tin(request):
+    try:
+        if request.method != 'POST':
+            return JsonResponse({"error": "Phương thức không hợp lệ. Chỉ chấp nhận POST."}, status=405)
+
+        # Parse JSON data from request body
+        data = json.loads(request.body.decode('utf-8'))
+        manguoidung = data.get('MANGUOIDUNG')
+        maloaigiaodich = data.get('MALOAIGIAODICH')
+        mabaiviet = data.get('MABAIVIET')
+
+        # Validate required fields
+        if not all([manguoidung, maloaigiaodich, mabaiviet]):
+            return JsonResponse({"error": "Thiếu dữ liệu đầu vào. Vui lòng cung cấp đầy đủ thông tin."}, status=400)
+
+        # Fetch user
+        try:
+            nguoidung = NguoiDung.objects.get(manguoidung=manguoidung)
+        except NguoiDung.DoesNotExist:
+            return JsonResponse({"error": "Người dùng không tồn tại."}, status=404)
+
+        # Fetch package information
+        try:
+            goigiaodich = GOIGIAODICH.objects.get(MALOAIGIAODICH=maloaigiaodich)
+            sotien = float(goigiaodich.SOTIEN)  # Lấy số tiền từ gói giao dịch
+        except GOIGIAODICH.DoesNotExist:
+            return JsonResponse({"error": "Mã loại giao dịch không hợp lệ."}, status=404)
+
+        # Ensure user's balance is a float
+        nguoidung_sodu = float(nguoidung.sodu)
+
+        # Check sufficient balance
+        if nguoidung_sodu < sotien:
+            return JsonResponse({"error": "Số dư không đủ để thực hiện giao dịch."}, status=400)
+
+        # Deduct money from user account
+        nguoidung_sodu -= sotien
+        nguoidung.sodu = nguoidung_sodu
+        nguoidung.save()
+
+        
+        # Record transaction
+        ngay_hien_tai = now().date()
+        giao_dich = NAPGIAHAN.objects.create(
+            MALOAIGIAODICH=maloaigiaodich,
+            MANGUOIDUNG=manguoidung,
+            MABAIVIET=mabaiviet,
+            SOTIEN=str(sotien),
+            NGAYGIAODICH=ngay_hien_tai,
+        )
+        try:
+            baiviet = BaiViet.objects.get(mabaiviet=mabaiviet)  # Kiểm tra bài viết bằng khóa chính
+            ngay_hien_tai = now().date()
+            ngay_het_han = ngay_hien_tai + timedelta(days=goigiaodich.SONGAY)
+            print(ngay_het_han)
+            BaiViet.objects.filter(mabaiviet=mabaiviet).update(ngayhethan=ngay_het_han)
+        except BaiViet.DoesNotExist:
+            return JsonResponse({"error": "Bài viết không tồn tại."}, status=404)
+        
+        return JsonResponse({
+            "message": "Đẩy tin thành công."
+        }, status=200)
+    except Exception as e:
+        return JsonResponse({"error": f"Lỗi hệ thống: {str(e)}"}, status=500)
