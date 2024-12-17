@@ -10,7 +10,7 @@ class PostRepository:
         try:
             # Tính toán phạm vi dữ liệu
             offset = (page - 1) * limit 
-            products = BaiViet.objects.all()[offset:offset + limit]  # Lấy sản phẩm theo page và limit
+            products = BaiViet.objects.filter(status = 1)[offset:offset + limit]  # Lấy sản phẩm theo page và limit
             total_count = BaiViet.objects.count()  # Tổng số sản phẩm
             return {
                 "products": products,  # QuerySet các sản phẩm

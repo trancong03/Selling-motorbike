@@ -6,7 +6,7 @@ import json
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Count
 from django.utils import timezone
-from users.models import BaiViet, YeuThich
+from users.models import BaiViet, YeuThich,GOIGIAODICH
 from django.core.paginator import Paginator
 from .user import authenticate_token
 from ..services.post_service import PostService
@@ -313,3 +313,9 @@ def search_products(request):
     products = BaiViet.objects.filter(filter_conditions)[:20]
     products_list = list(products.values())  # Convert the query results to a list
     return JsonResponse(products_list, safe=False)
+def get_all_giao_dich(request):
+    try:
+        query_result = list(GOIGIAODICH.objects.values())  # Chuyển đổi thành list và lấy dữ liệu bằng values()
+        return JsonResponse(query_result, safe=False)  # Trả về dữ liệu dưới dạng JSON
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)

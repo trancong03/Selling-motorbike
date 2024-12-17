@@ -35,4 +35,5 @@ urlpatterns = [
     path('get_top_10_favorite_products/', post.get_top_10_favorite_products, name='get_top_10_favorite_products'),
     path('get_top_100_baiviet/', post.get_top_100_baiviet, name='get_top_10_favorite_products'),
      path('search_products/', post.search_products, name='search_products'),
+     path('get_all_giao_dich/', post.get_all_giao_dich, name='get_all_giao_dich'),
 ]

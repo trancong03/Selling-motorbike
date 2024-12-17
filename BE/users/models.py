@@ -112,3 +112,12 @@ class Xe(models.Model):
 
     def __str__(self):
         return self.tenxe
+class GOIGIAODICH(models.Model):
+    MALOAIGIAODICH = models.CharField(max_length=255,primary_key=True)
+    TENLOAIGIAODICH = models.IntegerField()
+    SOTIEN = models.CharField(max_length=255)
+    SONGAY = models.IntegerField(max_length=255)
+
+    class Meta:
+        db_table = 'GOIGIAODICH'  # Custom table name for the images
+
