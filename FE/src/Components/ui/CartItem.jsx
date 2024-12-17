@@ -50,7 +50,6 @@ export default function CartItem({ Product }) {
         likeProduct(Product); 
         // Gọi hàm likeProduct và để nó xử lý trạng thái yêu thích
     };
-    console.log(user[0]);
     
     return (
         <div className="flex items-center justify-center flex-col mt-3 rounded-2xl">

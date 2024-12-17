@@ -22,7 +22,7 @@ export default function Banner() {
         </Swiper>
       </div>
 
-      <h1 className="text-3xl font-bold text-center mt-[3rem] mb-[3rem]">Sản phẩm nổi bật</h1>
+      <h1 className="text-3xl font-bold text-center mt-[3rem] mb-[3rem]">TOP TRENDING</h1>
 
           <Swiper
               slidesPerView={3}
