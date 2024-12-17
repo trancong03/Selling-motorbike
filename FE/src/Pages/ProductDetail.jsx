@@ -1,17 +1,26 @@
-import { useState } from "react";
+import { useState, useEffect  } from "react";
 import { useLocation } from "react-router-dom";
-import { MapPin, Clock, Star, Phone, MessageSquare, Car, Calendar, BatteryCharging, CheckCircle, Tag, Box, Shield } from 'lucide-react';
+import axios from 'axios';
+import { MapPin, Clock, Star, Phone, MessageSquare, Car, Calendar, BatteryCharging, CheckCircle, Tag, Box, Shield, UserPlus, UserCheck } from 'lucide-react';
 export default function productDetail() {
     
     const { state } = useLocation();
-    const { product } = state || {}; // Lấy product từ state
-    const images = product.HINHANH
+    const { product, user, image } = state || {}; // Lấy product từ state
+    const images = image;
+    const users = user
     const [currentIndex, setCurrentIndex] = useState(0);
-    console.log(product);
-
-    const updateMainImage = (index) => {
-        setCurrentIndex(index);
-    };
+    const [followingId, setFollowingId] = useState(null);  // Set followingId initially to null
+    const [isFollowing, setIsFollowing] = useState(false);
+    console.log(user);
+    useEffect(() => {
+        // Simulating fetching the followingId from an API or some other source
+        const fetchFollowingId = async () => {
+          const userId = await getUserIdFromAPI();  // Fetching the user ID from your backend or some source
+          setFollowingId(userId);
+        };
+    
+        fetchFollowingId();
+      }, []);
 
     const nextImage = () => {
         setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
@@ -28,18 +37,32 @@ export default function productDetail() {
     const calculateDateDifference = (date) => {
         const currentDate = new Date();
         const targetDate = new Date(date);
-
         // Make sure the targetDate is valid
         if (isNaN(targetDate)) {
             throw new Error('Invalid date format');
         }
-
         const timeDifference = currentDate - targetDate;
         const daysDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
-
         return daysDifference;
     };
-    const days = calculateDateDifference(product.NGAYDANG);
+
+    const days = calculateDateDifference(product.ngaydang);
+
+    const toggleFollow = async () => {
+        if (!followingId) {
+          console.error("Following ID is required!");
+          return;
+        }
+    
+        try {
+          const response = await axios.post('http://127.0.0.1:8000/follow/', { following_id: followingId });
+          setIsFollowing(!isFollowing);
+          console.log(response.data);
+        } catch (error) {
+          console.error('Error while following/unfollowing', error);
+        }
+      };
+
     return (
         <div className ="flex items-center justify-center">
             <div className="flex  max-w-[100%] items-center justify-center">
@@ -54,7 +77,7 @@ export default function productDetail() {
                                 ❮
                             </button>
                             <img
-                                src={`http://127.0.0.1:8000//media/images/${images[currentIndex].TENFILE}`}
+                                src={`http://127.0.0.1:8000//media/images/${images[currentIndex].tenfile}`}
                                 alt="Main"
                                 className=" w-[60vw] h-[70vh] object-cover rounded-lg"
                             />
@@ -71,7 +94,7 @@ export default function productDetail() {
                             {images.map((image, index) => (
                                 <img
                                     key={index}
-                                    src={`http://127.0.0.1:8000//media/images/${image.TENFILE}`}
+                                    src={`http://127.0.0.1:8000//media/images/${image.tenfile}`}
                                     alt={`Thumbnail ${index + 1}`}
                                     className={`w-20 h-20 cursor-pointer border-2 rounded-md transition ${index === currentIndex ? "border-yellow-500" : "border-transparent"
                                         } hover:border-yellow-500`}
@@ -85,7 +108,7 @@ export default function productDetail() {
                         <div className="flex flex-col items-start w-full mb-3 !bg-transparent ml-[10%] text-md">
                             <h2 className="text-xl font-bold">Mô tả chi tiết</h2>
 
-                            <div className=" p-4 text-lg" dangerouslySetInnerHTML={{ __html: product.MOTA }} />
+                            <div className=" p-4 text-lg" dangerouslySetInnerHTML={{ __html: product.mota }} />
                         </div>
                         <div className="flex flex-col items-start w-full ml-[10%] mb-5">
                             <h2 className="text-xl font-bold">Thông số kỹ thuật</h2>
@@ -96,19 +119,19 @@ export default function productDetail() {
                                 </div>
                                 <div className="flex items-center">
                                     <Tag className="mr-2" />
-                                    <h3 className='line-clamp-3 font-arial'>Loại xe: {product.LOAIXE || 'Sản phẩm không có tên'}</h3>
+                                    <h3 className='line-clamp-3 font-arial'>Loại xe: {product.loaixe || 'Sản phẩm không có tên'}</h3>
                                 </div>
                                 <div className="flex items-center">
                                     <Calendar className="mr-2" />
-                                    <h3 className='line-clamp-3 font-arial'>Năm mua: {product.NAMMUA || 'Sản phẩm không có tên'}</h3>
+                                    <h3 className='line-clamp-3 font-arial'>Năm mua: {product.nammua || 'Sản phẩm không có tên'}</h3>
                                 </div>
                                 <div className="flex items-center">
                                     <BatteryCharging className="mr-2" />
-                                    <h3 className='line-clamp-3 font-arial'>Dung tích: {product.DUNGTICH || 'Sản phẩm không có tên'}</h3>
+                                    <h3 className='line-clamp-3 font-arial'>Dung tích: {product.dungtich || 'Sản phẩm không có tên'}</h3>
                                 </div>
                                 <div className="flex items-center">
                                     <MapPin className="mr-2" />
-                                    <h3 className='line-clamp-3 font-arial'>Số km: {product.SOKMDADI || 'Sản phẩm không có tên'}</h3>
+                                    <h3 className='line-clamp-3 font-arial'>Số km: {product.sokmdadi || 'Sản phẩm không có tên'}</h3>
                                 </div>
                                 <div className="flex items-center">
                                     <CheckCircle className="mr-2" />
@@ -116,19 +139,15 @@ export default function productDetail() {
                                 </div>
                                 <div className="flex items-center">
                                     <Box className="mr-2" />
-                                    <h3 className='line-clamp-3 font-arial'>Xuất xứ: {product.XUATXU || 'Sản phẩm không có tên'}</h3>
+                                    <h3 className='line-clamp-3 font-arial'>Xuất xứ: {product.xuatxu || 'Sản phẩm không có tên'}</h3>
                                 </div>
                                 <div className="flex items-center">
                                     <Shield className="mr-2" />
                                     <h3 className='line-clamp-3 font-arial'>{product.BAOHANH || 'Sản phẩm không có tên'}</h3>
                                 </div>
                             </div>
-
                         </div>
-
-                       
                     </div>
-                    
                 </div>
                 <div className="flex items-start justify-start w-2/5 min-h-full ml-3">
                     <div className="max-w-lg rounded-lg overflow-hidden">
@@ -136,11 +155,11 @@ export default function productDetail() {
                             <div className="rounded-lg overflow-hidden bg-white p-6 min-w-full">
                                 <h2 className="text-2xl font-semibold text-gray-800 mb-10">{product.TIEUDE}</h2>
                                 <div className="text-3xl font-bold text-red-600 mb-4">
-                                    {product.GIABAN}
+                                    {product.giaban}
                                 </div>
                                 <div className="flex items-center text-gray-600 mb-4">
                                     <MapPin className="w-5 h-5 mr-3 text-gray-600" />
-                                    <span className="text-sm">{product.NGUOIDUNG[0].DIACHI}</span>
+                                    <span className="text-sm">{users?.diachi}</span>
                                 </div>
 
                                 <div className="flex items-center text-gray-600 mb-4">
@@ -152,12 +171,12 @@ export default function productDetail() {
                                 {/* Seller Info */}
                                 <div className="flex items-center mb-6 space-x-4">
                                     <img
-                                        src={product.NGUOIDUNG[0].ANHDAIDIEN ? `http://127.0.0.1:8000//media/images/${product.NGUOIDUNG[0].ANHDAIDIEN}` : "/http://127.0.0.1:8000//media/images/icon.png"}
+                                        src={users?.anhdaidien ? `http://127.0.0.1:8000//media/images/${users?.anhdaidien}` : "/http://127.0.0.1:8000//media/images/icon.png"}
                                         alt="User avatar"
                                         className="w-12 h-12 rounded-full border-2 border-gray-300"
                                     />
                                     <div className="flex-1">
-                                        <div className="font-medium text-gray-700">{product.NGUOIDUNG[0].HOTEN}</div>
+                                        <div className="font-medium text-gray-700">{users?.hoten}</div>
                                         <div className="flex items-center text-sm text-yellow-500">
                                             <Star className="w-4 h-4 mr-1" />
                                             <span>4.6 (14)</span>
@@ -172,12 +191,30 @@ export default function productDetail() {
                                         </div>
                                     </div>
                                 </div>
-
+                                {/* Follow Button */}
+                                <div className="flex justify-center mb-5">
+                                    <button
+                                        onClick={toggleFollow}
+                                        className={`w-full ${isFollowing ? 'bg-gray-300' : 'bg-green-500'} hover:${isFollowing ? 'bg-gray-400' : 'bg-green-600'} text-white rounded-lg py-2 flex items-center justify-center`}
+                                    >
+                                        {isFollowing ? (
+                                            <>
+                                                <UserCheck className="w-5 h-5 mr-2" />
+                                                Đang theo dõi
+                                            </>
+                                        ) : (
+                                            <>
+                                                <UserPlus className="w-5 h-5 mr-2" />
+                                                Theo dõi
+                                            </>
+                                        )}
+                                    </button>
+                                </div>
                                 {/* Action Buttons */}
                                 <div className="grid grid-cols-2 gap-4 mb-6">
                                     <button className="w-full bg-green-500 hover:bg-green-600 text-white rounded-lg py-2 flex items-center justify-center">
                                         <Phone className="w-5 h-5 mr-2" />
-                                        {product.NGUOIDUNG[0].SODIENTHOAI}
+                                        {users?.sodienthoai}
                                     </button>
                                     <button className="w-full border-2 border-green-500 hover:bg-green-100 text-green-500 rounded-lg py-2 flex items-center justify-center">
                                         <MessageSquare className="w-5 h-5 mr-2" />
@@ -198,7 +235,5 @@ export default function productDetail() {
                 </div>
             </div>
         </div>
-        
-        
     );
 }

@@ -25,6 +25,8 @@ import ErrorBoundary from "./ErrorBoundary";
 import IntroductionSection from "./Components/IntroductionSection";
 import PaymentForm from "./Pages/PaymentForm";
 import ResultPage from "./Components/ResultPage";
+import ProductLike from "./Pages/ProductLike";
+import SearchProduct from './Components/product/SearchProduct';
 
 function App() {
   const [showLogin, setShowLogin] = useState(false);
@@ -76,7 +78,7 @@ function App() {
       if (storedUserInfo) {
         try {
           const userData = JSON.parse(storedUserInfo);
-          const user = await getUserById(userData.manguoidung);
+          const user = await getUserById(userData?.manguoidung);
           setUserInfo(user); // Cập nhật state với dữ liệu người dùng
         } catch (error) {
           console.error('Invalid JSON in localStorage', error);
@@ -137,20 +139,21 @@ function App() {
           <Route path="/payment" element={<PaymentForm />} />
           <Route path="/payment-result" element={<ResultPage/>} />
           <Route path="/account/*" element={<Account user={userInfo} setUserInfo={setUserInfo} />}>
+            <Route path="like-product" element={<ErrorBoundary><ProductLike /></ErrorBoundary>} />
             <Route path="info" element={<InfomationAccount user={userInfo} setUserInfo={setUserInfo} />} />
             <Route path="reset-password" element={<ResetPassWord user={userInfo} />} />
             <Route path="user-post/" element={<PostOfUser userId={userInfo} />} />
             
           </Route>
           <Route path="/product-detail" element={<ProductDetail />} />
-          <Route path="/new-post" element={<ErrorBoundary><NewPost /></ErrorBoundary>} />
+          <Route path="/search-product/" element={<SearchProduct />} />
+            <Route path="/new-post" element={<ErrorBoundary><NewPost /></ErrorBoundary>} />
           <Route path="/update-post" element={<ErrorBoundary><UpdatePost /></ErrorBoundary>} />
           <Route path="*" element={<ErrorPage />} />
           <Route path="/admin" element={<PrivateRoute element={AdminDashboard} />} />
           <Route path="/Admin-Login" element={<AdminLogin />} />
           <Route path="/introduction" element={<IntroductionSection />} />
         </Routes>
-
         <Footer />
       </BrowserRouter>
     </CartProvider>

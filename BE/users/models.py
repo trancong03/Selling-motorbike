@@ -1,6 +1,14 @@
 from django.db import models
 from PIL import Image
 import os
+from django.contrib.auth.models import User  # Nhập User ở đây
+
+# class Follower(models.Model):
+#     user = models.ForeignKey(User, related_name='followers', on_delete=models.CASCADE)
+#     followed_user = models.ForeignKey(User, related_name='following', on_delete=models.CASCADE)
+
+#     def __str__(self):
+#         return f"{self.user} follows {self.followed_user}"
 
 class LocalImage(models.Model):
     image = models.ImageField(upload_to='')  # Lưu ảnh trực tiếp vào REACT_IMAGE_DIR
@@ -65,6 +73,7 @@ class BaiViet(models.Model):
     xuatxu = models.CharField(max_length=30, null=True, blank=True)  # Xuất xứ
     tinhtrangxe = models.CharField(max_length=30, null=True, blank=True)  # Tình trạng xe
     giaban = models.CharField(max_length=10, null=True, blank=True)  # Giá bán
+    status = models.IntegerField()
 
     class Meta:
         db_table = 'BAIVIET'  # Tên bảng trong cơ sở dữ liệu
@@ -74,8 +83,8 @@ class BaiViet(models.Model):
 
 
 class HinhAnh(models.Model):
-    mabaiviet = models.ForeignKey(BaiViet, on_delete=models.CASCADE)
     mahinhanh = models.AutoField(primary_key=True)
+    mabaiviet = models.IntegerField()
     tenfile = models.CharField(max_length=255)
 
     class Meta:
@@ -90,7 +99,6 @@ class YeuThich(models.Model):
 
     class Meta:
         db_table = 'YEUTHICH'  # Custom table name for the images
-
 
 class Xe(models.Model):
     maxe = models.AutoField(primary_key=True)

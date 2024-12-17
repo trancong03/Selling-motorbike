@@ -22,5 +22,68 @@ apiClient.interceptors.request.use(
         return Promise.reject(error);
     }
 );
-
+// Hàm getUserById
+const getImageProductByID = async (product_id) => {
+    try {
+        const response = await apiClient.get(`http://127.0.0.1:8000/api/product/${product_id}/`);
+        if (response.status === 200) {
+            return response.data;
+        }
+    } catch (error) {
+        if (error.response) {
+            console.error('Error:', error.response.data.error);
+        } else {
+            console.error('Network Error:', error.message);
+        }
+        return null;
+    }
+};
+// Hàm getUserById
+const getUserByIDPost = async (product_id) => {
+    try {
+        const response = await apiClient.get(`http://127.0.0.1:8000/api/product_user/${product_id}/`);
+        if (response.status === 200) {
+            return response.data;
+        }
+    } catch (error) {
+        if (error.response) {
+            console.error('Error:', error.response.data.error);
+        } else {
+            console.error('Network Error:', error.message);
+        }
+        return null;
+    }
+};
+const getTop10Product = async () => {
+    try {
+        const response = await apiClient.get(`http://127.0.0.1:8000/api/get_top_10_favorite_products/`);
+        if (response.status === 200) {
+            return response.data;
+        }
+    } catch (error) {
+        if (error.response) {
+            console.error('Error:', error.response.data.error);
+        } else {
+            console.error('Network Error:', error.message);
+        }
+        return null;
+    }
+};
+const searchProducts = async (query) => {
+    try {
+        // Mã hóa từ khóa tìm kiếm trước khi gửi yêu cầu
+        const encodedQuery = encodeURIComponent(query);
+        // Gửi yêu cầu GET tới API
+        const response = await axios.get(`http://127.0.0.1:8000/api/search_products/?q=${encodedQuery}`);
+        // Cập nhật danh sách sản phẩm
+        return (response.data);
+    } catch (err) {
+        // Xử lý lỗi
+        console.error(err);
+    }
+};
 export default apiClient;
+// Sử dụng default export
+export {
+    getImageProductByID, getUserByIDPost, getTop10Product, searchProducts
+};

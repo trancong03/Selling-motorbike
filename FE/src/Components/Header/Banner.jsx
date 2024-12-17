@@ -1,7 +1,22 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { FreeMode, Pagination, Autoplay } from 'swiper/modules';
+import { getTop10Product } from '../../../services/apiclient';
+import ErrorBoundary from '../../ErrorBoundary';
+import ErrorPage from '../Footer/ErrorPage';
+import CartItem from '../ui/CartItem';
+import Top100Post from '../ui/Top100Post';
+import { Heart } from 'lucide-react';
 export default function Banner() {
+  const [products, setProducts] = useState([]);
+  useEffect(() => {
+    getTop10Product().then(respone => {
+      setProducts(respone);
+    }).catch(error => {
+      console.error("Error fetching products:", error);
+      setProducts([]); // Xử lý khi có lỗi
+    });
+  }, []);
   return (
     <div>
       <div className='h-[60vh] w-full'>
@@ -21,27 +36,33 @@ export default function Banner() {
           </SwiperSlide>
         </Swiper>
       </div>
-
-      <h1 className="text-3xl font-bold text-center mt-[3rem] mb-[3rem]">Sản phẩm nổi bật</h1>
-
-          <Swiper
-              slidesPerView={3}
-              spaceBetween={30}
-              freeMode={true}
-              pagination={{
-                  clickable: true,
-              }}
-              modules={[FreeMode, Pagination]}
-        className="mySwiper bg-slate-50 h-[20rem]"
-          >
-        <SwiperSlide><img src="http://127.0.0.1:8000//media/images/vario160.png" className='w-[15rem] h-[20rem]   ' alt="" /></SwiperSlide>
-        <SwiperSlide><img src="http://127.0.0.1:8000//media/images/Janus-standard.webp" className='w-[15rem] h-[20rem] ' alt="" /></SwiperSlide>
-        <SwiperSlide><img src="http://127.0.0.1:8000//media/images/EXCITER155.webp" className='w-[15rem] h-[20rem]  ' alt="" /></SwiperSlide>
-        <SwiperSlide><img src="http://127.0.0.1:8000//media/images/vario160.png" className='w-[15rem] h-[20rem]   ' alt="" /></SwiperSlide>
-        <SwiperSlide><img src="http://127.0.0.1:8000//media/images/vario125.png" className='w-[15rem] h-[20rem] ' alt="" /></SwiperSlide>
-        <SwiperSlide><img src="http://127.0.0.1:8000//media/images/EXCITER155.webp" className='w-[15rem] h-[20rem]  ' alt="" /></SwiperSlide>
-     
-          </Swiper>
+      <Top100Post />
+      <h1 className="text-3xl font-bold text-center mt-[3rem] mb-[3rem]">Tin được yêu thích nhiều nhất</h1>
+      <div className="grid grid-cols-5 mr-[3%] ml-[3%] mb-[1%] ">
+        {/* Kiểm tra nếu products là mảng hợp lệ */}
+        {Array.isArray(products.data) ? (
+          products.data.map((product) => (
+            <ErrorBoundary key={product.product_id}>
+               <div className="relative">
+                                          <p className="absolute top-2 z-10 right-8 bg-gradient-to-r text-black text-sm font-extrabold rounded-full px-3 py-1 shadow-lg flex items-center space-x-2 transform scale-110 hover:scale-125 transition duration-300">
+                                              <p className="flex items-center justify-center text-lg">
+                                                  <Heart/>
+                                                <h1>{product.favorite_count}</h1>
+                                              </p>
+                                             
+                                          </p>
+                                      <CartItem Product={product} />
+                                      </div>
+              
+            </ErrorBoundary>
+          ))
+        ) : (
+          <div className="w-[80vw]">
+            <p className="text-center   text-gray-500">Không tìm thấy sản phẩm nào phù hợp .</p>
+            <ErrorPage />
+          </div>
+        )}
+      </div>
     </div>
   )
 }

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Banner from "../Components/Header/Banner";
 import axios from 'axios';
-import CartItem from './../Components/ui/CartItem';
+import Post from "./Post";
+import Top100Post from "../Components/ui/Top100Post";
 
 export default function Home() {
   const [listPost, setListPost] = useState([]);
@@ -24,16 +25,7 @@ export default function Home() {
   return (
     <div className=" bg-white">
       <Banner />
-      <div className="grid grid-cols-4 m-[5%]">
-        {listPost.map((product) => {
-          return (
-            <CartItem 
-              key={product.MABAIVIET}
-              Product ={product}
-            />
-          );
-        })}
-      </div>
+      <Post/>
 
     </div>
   );
