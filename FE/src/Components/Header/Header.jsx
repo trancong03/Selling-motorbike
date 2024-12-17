@@ -70,6 +70,14 @@ export default function Header({ onLoginClick, userInfo, setUserInfo,  }) {
     }
     setIsMenuOpen(false);
   };
+  const [query, setQuery] = useState('');
+  // Hàm tìm kiếm và điều hướng
+  const handleSearch = () => {
+    if (query.trim()) {
+      // Điều hướng đến trang tìm kiếm và truyền tham số search-query
+      navigate(`/search-product?search-query=${encodeURIComponent(query)}`);
+    }
+  };
   return (
     <div className={`transition-all duration-300 ${isSticky ? 'fixed top-0 left-0 w-full shadow-md z-50' : ''}`}>
       <div className=" h-20 flex items-center bg-yellow-300 p-3 ">
@@ -85,9 +93,10 @@ export default function Header({ onLoginClick, userInfo, setUserInfo,  }) {
             className="ml-2 w-[20vw] bg-transparent focus:outline-none placeholder-gray-500 text-gray-700"
             type="text"
             placeholder="Tìm sản phẩm..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)} // Cập nhật giá trị khi người dùng thay đổi
           />
-          
-          <button>
+          <button onClick={handleSearch}>
             <Search />
           </button>
         </div>

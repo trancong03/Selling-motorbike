@@ -15,7 +15,7 @@ export default function Top100Post() {
         setLoading(true);
         try {
             const response = await axios.get(
-                `http://127.0.0.1:8000/api/bai-viet/?page=${page}&limit=12`
+                `http://127.0.0.1:8000/api/get_top_100_baiviet/?page=${page}&limit=2`
             );
             if (page === 1) {
                 setProducts(response.data.products); // Khi trang đầu tiên, ghi đè lên danh sách sản phẩm
@@ -46,15 +46,27 @@ export default function Top100Post() {
 
     return (
         <div className="bg-white">
-            <h1 className="text-3xl font-bold text-center p-3">Tin nổi bật </h1>
-            <div className="grid grid-cols-4 mr-[10%] ml-[10%] mb-[1%] ">
+            <h1 className="text-3xl font-bold text-center p-3 mt-10">Tin nổi bật🔥🔥 </h1>
+            <h1 className="text-xl font-bold text-center p-3 ">Top các sản phẩm phù hợp dành cho bạn tại motorbike Light! </h1>
+            <div className="grid grid-cols-4 mr-[10%] ml-[10%] mb-[1%] gap-4">
                 {products.map((product) => (
-                    <ErrorBoundary key={product.mabaiviet}>
-                        <CartItem Product={product} />
+                    <ErrorBoundary key={product.baiviet.mabaiviet}>
+                        <div className="relative">
+                            <p className="absolute top-2 z-10 right-8 bg-gradient-to-r text-red-600 text-sm font-extrabold rounded-full px-3 py-1 shadow-lg flex items-center space-x-2 transform scale-110 hover:scale-125 transition duration-300">
+                                <p className="flex items-center justify-center">
+                                    <h1 className="w-5 h-5 text-lg">🔥</h1>
+                                    <h1>{product.top}</h1>
+                                </p>
+                               
+                            </p>
+
+
+                            <CartItem Product={product.baiviet} />
+                        </div>
                     </ErrorBoundary>
                 ))}
-
             </div>
+
             {products.length < totalCount && (
                 <div className="text-center mb-3 flex items-center justify-center w-100%">
                     <button

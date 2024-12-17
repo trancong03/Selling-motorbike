@@ -34,6 +34,7 @@ export default function CartItem({ Product }) {
         };
         fetchuser();
     }, [Product.mabaiviet]); 
+    
     // Cập nhật trạng thái yêu thích khi thay đổi sản phẩm
     useEffect(() => {
         setIsLiked(isProductLiked(Product.MABAIVIET)); // Đồng bộ trạng thái yêu thích khi sản phẩm thay đổi
@@ -103,7 +104,7 @@ export default function CartItem({ Product }) {
                 </h4>
                 <div className="flex justify-start items-center gap-2 ml-3 mt-2 pb-2">
                     <img
-                        src={user?.anhdaidien ? `/image/${user.anhdaidien}` : "/image/icon.png"}
+                        src={user? `/image/${user[0]?.anhdaidien}` : "/image/icon.png"}
                         alt="User anhdaidien"
                         className="w-4 h-4 rounded-full"
                     />

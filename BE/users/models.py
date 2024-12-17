@@ -65,6 +65,7 @@ class BaiViet(models.Model):
     xuatxu = models.CharField(max_length=30, null=True, blank=True)  # Xuất xứ
     tinhtrangxe = models.CharField(max_length=30, null=True, blank=True)  # Tình trạng xe
     giaban = models.CharField(max_length=10, null=True, blank=True)  # Giá bán
+    status = models.IntegerField()
 
     class Meta:
         db_table = 'BAIVIET'  # Tên bảng trong cơ sở dữ liệu
@@ -90,7 +91,6 @@ class YeuThich(models.Model):
 
     class Meta:
         db_table = 'YEUTHICH'  # Custom table name for the images
-
 
 class Xe(models.Model):
     maxe = models.AutoField(primary_key=True)

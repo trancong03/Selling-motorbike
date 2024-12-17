@@ -23,6 +23,7 @@ import AdminDashboard from "./Components/adminUi/AdminDashboard";
 import UpdatePost from "./Pages/UpdatePost";
 import ErrorBoundary from "./ErrorBoundary";
 import ProductLike from "./Pages/ProductLike";
+import SearchProduct from './Components/product/SearchProduct';
 
 function App() {
   const [showLogin, setShowLogin] = useState(false);
@@ -139,13 +140,13 @@ function App() {
             <Route path="user-post/" element={<PostOfUser userId={userInfo} />} />
           </Route>
           <Route path="/product-detail" element={<ProductDetail />} />
-          <Route path="/new-post" element={<ErrorBoundary><NewPost /></ErrorBoundary>} />
+          <Route path="/search-product/" element={<SearchProduct />} />
+            <Route path="/new-post" element={<ErrorBoundary><NewPost /></ErrorBoundary>} />
           <Route path="/update-post" element={<ErrorBoundary><UpdatePost /></ErrorBoundary>} />
           <Route path="*" element={<ErrorPage />} />
           <Route path="/admin" element={<PrivateRoute element={AdminDashboard} />} />
           <Route path="/Admin-Login" element={<AdminLogin />} />
         </Routes>
-
         <Footer />
       </BrowserRouter>
     </CartProvider>

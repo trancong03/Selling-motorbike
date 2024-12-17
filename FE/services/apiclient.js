@@ -69,8 +69,21 @@ const getTop10Product = async () => {
         return null;
     }
 };
+const searchProducts = async (query) => {
+    try {
+        // Mã hóa từ khóa tìm kiếm trước khi gửi yêu cầu
+        const encodedQuery = encodeURIComponent(query);
+        // Gửi yêu cầu GET tới API
+        const response = await axios.get(`http://127.0.0.1:8000/api/search_products/?q=${encodedQuery}`);
+        // Cập nhật danh sách sản phẩm
+        return (response.data);
+    } catch (err) {
+        // Xử lý lỗi
+        console.error(err);
+    }
+};
 export default apiClient;
 // Sử dụng default export
 export {
-    getImageProductByID, getUserByIDPost, getTop10Product
+    getImageProductByID, getUserByIDPost, getTop10Product, searchProducts
 };

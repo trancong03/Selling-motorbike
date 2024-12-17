@@ -6,16 +6,10 @@ import ErrorBoundary from '../../ErrorBoundary';
 import ErrorPage from '../Footer/ErrorPage';
 import CartItem from '../ui/CartItem';
 import Top100Post from '../ui/Top100Post';
+import { Heart } from 'lucide-react';
 export default function Banner() {
-  const [collection, setCollection] = useState([]);
   const [products, setProducts] = useState([]);
   useEffect(() => {
-    // getColection().then(response => {
-    //   setCollection(response); // Giả sử API trả về dữ liệu trong `data`
-    // }).catch(error => {
-    //   console.error("Error fetching products:", error);
-    //   setCollection([]); // Xử lý khi có lỗi
-    // });
     getTop10Product().then(respone => {
       setProducts(respone);
     }).catch(error => {
@@ -50,14 +44,25 @@ export default function Banner() {
         {Array.isArray(products.data) ? (
           products.data.map((product) => (
             <ErrorBoundary key={product.product_id}>
-              <CartItem Product={product} />
+               <div className="relative">
+                                          <p className="absolute top-2 z-10 right-8 bg-gradient-to-r text-black text-sm font-extrabold rounded-full px-3 py-1 shadow-lg flex items-center space-x-2 transform scale-110 hover:scale-125 transition duration-300">
+                                              <p className="flex items-center justify-center text-lg">
+                                                  <Heart/>
+                                                <h1>{product.favorite_count}</h1>
+                                              </p>
+                                             
+                                          </p>
+              
+              
+                                      <CartItem Product={product} />
+                                      </div>
+              
             </ErrorBoundary>
           ))
         ) : (
           <div className="w-[80vw]">
             <p className="text-center   text-gray-500">Không tìm thấy sản phẩm nào phù hợp .</p>
             <ErrorPage />
-
           </div>
         )}
       </div>
