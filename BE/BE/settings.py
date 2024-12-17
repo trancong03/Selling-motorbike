@@ -48,7 +48,8 @@ INSTALLED_APPS = [
     'users',
     'corsheaders',
     'rest_framework',
-    'CustomAdmin'
+    'CustomAdmin',
+    'payment'
 ]
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -65,6 +66,7 @@ SIMPLE_JWT = {
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
 }
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '7340-14-161-13-253.ngrok-free.app']
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',

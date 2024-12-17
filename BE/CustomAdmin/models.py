@@ -112,7 +112,7 @@ class NapGiaHan(models.Model):
 
 
 class NapTienTaiKhoan(models.Model):
-    magiaodich = models.CharField(max_length=10, primary_key=True, db_column='MAGIAODICH')
+    magiaodich = models.CharField(max_length=50, primary_key=True, db_column='MAGIAODICH')
     manguoidung = models.ForeignKey(NguoiDung, on_delete=models.CASCADE, db_column='MANGUOIDUNG')
     sotiennap = models.DecimalField(max_digits=19, decimal_places=4, null=True, blank=True, db_column='SOTIENNAP')
     thoigiannap = models.DateTimeField(null=True, blank=True, db_column='THOIGIANNAP')
