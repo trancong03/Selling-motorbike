@@ -1,0 +1,60 @@
+/* CSS cho ResultPage */
+.result-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(to right, #4facfe, #00f2fe);
+    font-family: "Arial", sans-serif;
+  }
+  
+  .result-container {
+    text-align: center;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    background: white;
+    max-width: 400px;
+    width: 100%;
+    animation: fadeIn 0.8s ease-in-out;
+  }
+  
+  .result-container.success {
+    border: 2px solid #4caf50;
+  }
+  
+  .result-container.failure {
+    border: 2px solid #f44336;
+  }
+  
+  .result-title {
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+    color: #333;
+  }
+  
+  .result-message {
+    font-size: 1rem;
+    margin-bottom: 20px;
+    color: #555;
+  }
+  
+  .result-btn {
+    display: inline-block;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: bold;
+    background-color: #007bff;
+    color: white;
+    transition: background-color 0.3s ease;
+  }
+  
+  .result-btn:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Animation */
+  @key
+  

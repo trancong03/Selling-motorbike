@@ -22,6 +22,9 @@ import AdminLogin from "./Components/adminUi/AdminLogin";
 import AdminDashboard from "./Components/adminUi/AdminDashboard";
 import UpdatePost from "./Pages/UpdatePost";
 import ErrorBoundary from "./ErrorBoundary";
+import IntroductionSection from "./Components/IntroductionSection";
+import PaymentForm from "./Pages/PaymentForm";
+import ResultPage from "./Components/ResultPage";
 
 function App() {
   const [showLogin, setShowLogin] = useState(false);
@@ -131,10 +134,13 @@ function App() {
 
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/payment" element={<PaymentForm />} />
+          <Route path="/payment-result" element={<ResultPage/>} />
           <Route path="/account/*" element={<Account user={userInfo} setUserInfo={setUserInfo} />}>
             <Route path="info" element={<InfomationAccount user={userInfo} setUserInfo={setUserInfo} />} />
             <Route path="reset-password" element={<ResetPassWord user={userInfo} />} />
             <Route path="user-post/" element={<PostOfUser userId={userInfo} />} />
+            
           </Route>
           <Route path="/product-detail" element={<ProductDetail />} />
           <Route path="/new-post" element={<ErrorBoundary><NewPost /></ErrorBoundary>} />
@@ -142,6 +148,7 @@ function App() {
           <Route path="*" element={<ErrorPage />} />
           <Route path="/admin" element={<PrivateRoute element={AdminDashboard} />} />
           <Route path="/Admin-Login" element={<AdminLogin />} />
+          <Route path="/introduction" element={<IntroductionSection />} />
         </Routes>
 
         <Footer />

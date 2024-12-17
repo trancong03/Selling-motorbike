@@ -1,0 +1,80 @@
+/* CSS cho PaymentForm */
+.payment-form-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #6e8efb, #a777e3);
+    font-family: "Arial", sans-serif;
+  }
+  
+  .payment-form {
+    background: white;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+  }
+  
+  .form-title {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  .form-label {
+    font-size: 1rem;
+    margin-bottom: 10px;
+    display: block;
+    color: #555;
+    text-align: left;
+  }
+  
+  .form-input {
+    width: 100%;
+    padding: 10px 15px;
+    font-size: 1rem;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+  }
+  
+  .form-input:focus {
+    border-color: #6e8efb;
+    outline: none;
+    box-shadow: 0 0 5px rgba(110, 142, 251, 0.5);
+  }
+  
+  .form-button {
+    background-color: #6e8efb;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .form-button:hover {
+    background-color: #5a76d4;
+  }
+  
+  @media (max-width: 768px) {
+    .payment-form {
+      padding: 30px;
+    }
+  
+    .form-title {
+      font-size: 1.5rem;
+    }
+  
+    .form-button {
+      font-size: 0.9rem;
+      padding: 8px 15px;
+    }
+  }
+  
