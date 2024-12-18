@@ -1,42 +1,49 @@
 import { BellRing, FilePenIcon, HomeIcon, NotebookText, Heart, LogOut, Search, ShoppingCart as ShoppingCartIcon, Info, ListOrdered, Wallet  } from "lucide-react";
 import React, { useState, useEffect, useRef } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom'; // Đảm bảo bạn import useNavigate
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
-export default function Header({ onLoginClick, userInfo, setUserInfo,  }) {
+
+export default function Header({ onLoginClick, userInfo, setUserInfo }) {
   const [isSticky, setIsSticky] = useState(false);
   const [activeLink, setActiveLink] = useState("home");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef(null);
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // Khai báo useNavigate để điều hướng
+
+  // Hàm điều hướng khi click vào "Giới Thiệu"
+  const handleAboutUsClick = () => {
+    navigate('/aboutus'); // Điều hướng đến trang AboutUs
+    setIsMenuOpen(false); // Đóng menu nếu menu đang mở
+  };
 
   const handleSettingsClick = () => {
-    if ( userInfo == null || !userInfo){
+    if (userInfo == null || !userInfo) {
       onLoginClick();
-    }
-    else{
+    } else {
       navigate('/account');
     }
   };
+
   const handleDangTinClick = () => {
     if (userInfo == null || !userInfo) {
       onLoginClick();
-    }
-    else {
+    } else {
       navigate('/new-post');
     }
   };
-    useEffect(() => {
-      const handleClickOutside = (event) => {
-        if (menuRef.current && !menuRef.current.contains(event.target)) {
-          setIsMenuOpen(false);
-        }
-      };
-      document.addEventListener("mousedown", handleClickOutside);
-      return () => {
-        document.removeEventListener("mousedown", handleClickOutside);
-      };
-    }, [menuRef]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setIsMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [menuRef]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -51,17 +58,19 @@ export default function Header({ onLoginClick, userInfo, setUserInfo,  }) {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
+
   const handleAuthClick = () => {
-    if (userInfo!=null||userInfo) {
+    if (userInfo != null || userInfo) {
       setUserInfo(null);
-      localStorage.removeItem('userInfo'); 
+      localStorage.removeItem('userInfo');
       navigate('/');
     }
-    if (userInfo == null ) {
+    if (userInfo == null) {
       onLoginClick();
     }
     setIsMenuOpen(false); // Đóng menu
   };
+
   const handleNavigation = (path) => {
     if (!userInfo || !userInfo.hoten) {
       onLoginClick();
@@ -70,14 +79,15 @@ export default function Header({ onLoginClick, userInfo, setUserInfo,  }) {
     }
     setIsMenuOpen(false);
   };
+
   const [query, setQuery] = useState('');
-  // Hàm tìm kiếm và điều hướng
+  
   const handleSearch = () => {
     if (query.trim()) {
-      // Điều hướng đến trang tìm kiếm và truyền tham số search-query
       navigate(`/search-product?search-query=${encodeURIComponent(query)}`);
     }
   };
+
   return (
     <div className={`transition-all duration-300 ${isSticky ? 'fixed top-0 left-0 w-full shadow-md z-50' : ''}`}>
       <div className=" h-20 flex items-center bg-yellow-300 p-3 ">
@@ -94,7 +104,7 @@ export default function Header({ onLoginClick, userInfo, setUserInfo,  }) {
             type="text"
             placeholder="Tìm sản phẩm..."
             value={query}
-            onChange={(e) => setQuery(e.target.value)} // Cập nhật giá trị khi người dùng thay đổi
+            onChange={(e) => setQuery(e.target.value)} 
           />
           <button onClick={handleSearch}>
             <Search />
@@ -121,9 +131,6 @@ export default function Header({ onLoginClick, userInfo, setUserInfo,  }) {
           >
             <BellRing />
           </a>
-        
-          <div className="flex space-x-4 mb-2 h-10 gap-8 justify-start">
-          </div>
         </div>
         <div className="px-3 py-2 h-10 w-[12vw] bg-transparent rounded-3xl flex items-center justify-start  ">
           <a
@@ -152,17 +159,13 @@ export default function Header({ onLoginClick, userInfo, setUserInfo,  }) {
           </a>
         </div>
         <div className="px-3 py-2 h-10 w-[10vw] bg-transparent rounded-3xl flex items-center justify-start  ">
-          <a
-            href="#"
-            onClick={() => setActiveLink("aboutus")}
-            className={`text-[#5b5858cc]  flex gap-2 items-center font-arial  px-3 py-2 ${activeLink === "aboutus"
-              ? "text-black font-bold"
-              : "hover:text-black"
-              }`}
-          >
-            Giới Thiệu
-          </a>
-
+        <a
+          onClick={handleAboutUsClick} // Sử dụng onClick để điều hướng mà không cần href
+          className={`text-[#5b5858cc] flex gap-2 items-center font-arial px-3 py-2 ${activeLink === "aboutus" ? "text-black font-bold" : "hover:text-black"}`}
+          style={{cursor: 'pointer'}} // Thêm kiểu con trỏ khi hover
+        >
+          Giới Thiệu
+        </a>
         </div>
         <div className="px-3 py-2 h-10 w-[20vw] bg-transparent rounded-3xl flex items-center justify-start relative ">
           <nav className="relative">
@@ -176,7 +179,6 @@ export default function Header({ onLoginClick, userInfo, setUserInfo,  }) {
                 : "hover:text-black"
                 }`}
             >
-            
               <img
                 src={userInfo && userInfo.anhdaidien ? `http://127.0.0.1:8000//media/images/${userInfo.anhdaidien}` : "http://127.0.0.1:8000//media/images/icon.png"}
                 alt="User anhdaidien"
@@ -184,21 +186,12 @@ export default function Header({ onLoginClick, userInfo, setUserInfo,  }) {
               />
               {userInfo?.hoten || "Tài khoản"}
             </a>
-
-            {/* Menu con bên dưới */}
             {isMenuOpen && (
               <div
                 ref={menuRef}
                 className="absolute top-[8.5vh] mt-2 bg-white border rounded shadow-md w-60 z-50"
               >
                 <ul className="space-y-4">
-                  {/* <li
-                    className="flex justify-start ml-3 items-center hover:bg-gray-200"
-                    onClick={() => handleNavigation('/orders')}
-                  >
-                    <ListOrdered />
-                    <a className="block p-2 rounded">Quản lý tin</a>
-                  </li> */}
                   <li
                     className="flex justify-start ml-3 items-center hover:bg-gray-200"
                     onClick={() => handleNavigation('/notifications')}
@@ -220,20 +213,6 @@ export default function Header({ onLoginClick, userInfo, setUserInfo,  }) {
                     <Info />
                     <a className="block p-2 rounded">Thông tin tài khoản</a>
                   </li>
-                  {/* <li
-                    className="flex justify-start ml-3 items-center hover:bg-gray-200"
-                    onClick={() => handleNavigation('/address')}
-                  >
-                    <FontAwesomeIcon icon={faLocationDot} />
-                    <a className="block p-2 rounded">Số địa chỉ</a>
-                  </li>
-                  <li
-                    className="flex justify-start ml-3 items-center hover:bg-gray-200"
-                    onClick={() => handleNavigation('/vouchers')}
-                  >
-                    <Wallet />
-                    <a className="block p-2 rounded">Ví voucher</a>
-                  </li> */}
                   <li
                     className="flex justify-start ml-3 items-center hover:bg-gray-200"
                     onClick={handleAuthClick}
@@ -246,17 +225,12 @@ export default function Header({ onLoginClick, userInfo, setUserInfo,  }) {
                 </ul>
               </div>
             )}
-
           </nav>
         </div>
         <div className="px-3 py-2 h-10 w-[10vw] text-white bg-orange-500 rounded-xl flex items-center justify-start  ">
-          <button className="cursor-pointer flex gap-2 items-center" onClick={handleDangTinClick}>
-            <FilePenIcon />
-            <h4>Bán Xe</h4>
-          </button>
+          <button className="text-white" onClick={handleDangTinClick}>Đăng Tin</button>
         </div>
-     </div>
-      
+      </div>
     </div>
   );
 }
