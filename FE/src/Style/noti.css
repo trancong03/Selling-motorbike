@@ -1,0 +1,94 @@
+.notification-dropdown {
+    background-color: #ffffff;
+    border-radius: 12px; /* More rounded corners for modern look */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+    padding: 15px;
+    width: 300px; /* Slightly wider for better readability */
+    overflow: hidden;
+    animation: slideDown 0.3s ease-out;
+    
+  }
+  
+  @keyframes slideDown {
+    from {
+      transform: translateY(-20px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  
+  .notification-dropdown ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .notification-dropdown li {
+    background-color: #f8f8f8; /* Light gray background for each notification */
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    margin-bottom: 10px; /* Spacing between notifications */
+    padding: 15px 20px;
+    transition: all 0.3s ease;
+  }
+  
+  .notification-dropdown li:last-child {
+    margin-bottom: 0; /* No margin for the last notification */
+  }
+  
+  .notification-dropdown li:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  }
+  
+  .notification-dropdown .notification-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 8px;
+  }
+  
+  .notification-dropdown .notification-content {
+    font-size: 14px;
+    color: #7f8c8d;
+    margin-bottom: 6px;
+  }
+  
+  .notification-dropdown .notification-time {
+    font-size: 12px;
+    color: #bdc3c7;
+  }
+  
+  .notification-dropdown .no-notifications {
+    text-align: center;
+    padding: 20px 0;
+    color: #7f8c8d;
+    font-style: italic;
+  }
+  
+  .notification-dropdown::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: 20px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent #ffffff transparent;
+  }
+  
+  @keyframes slideUp {
+    from {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    to {
+      transform: translateY(-20px);
+      opacity: 0;
+    }
+  }
+  .notification-dropdown.closing {
+    animation: slideUp 0.3s ease-out;
+  }

@@ -1,21 +1,17 @@
-import { BellRing, FilePenIcon, HomeIcon, NotebookText, Heart, LogOut, Search, ShoppingCart as ShoppingCartIcon, Info, ListOrdered, Wallet  } from "lucide-react";
+import { BellRing, FilePenIcon, HomeIcon, NotebookText, Heart, LogOut, Search, ShoppingCart as ShoppingCartIcon, Info, ListOrdered, Wallet } from "lucide-react";
 import React, { useState, useEffect, useRef } from "react";
-import { useNavigate } from 'react-router-dom'; // Đảm bảo bạn import useNavigate
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
-
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import "../../Style/noti.css"
 export default function Header({ onLoginClick, userInfo, setUserInfo }) {
   const [isSticky, setIsSticky] = useState(false);
   const [activeLink, setActiveLink] = useState("home");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+  const [notifications, setNotifications] = useState([]); // State chứa thông báo
+  const [isAnimatingClose, setIsAnimatingClose] = useState(false);
   const menuRef = useRef(null);
-  const navigate = useNavigate(); // Khai báo useNavigate để điều hướng
-
-  // Hàm điều hướng khi click vào "Giới Thiệu"
-  const handleAboutUsClick = () => {
-    navigate('/aboutus'); // Điều hướng đến trang AboutUs
-    setIsMenuOpen(false); // Đóng menu nếu menu đang mở
-  };
+  const navigate = useNavigate();
 
   const handleSettingsClick = () => {
     if (userInfo == null || !userInfo) {
@@ -37,6 +33,7 @@ export default function Header({ onLoginClick, userInfo, setUserInfo }) {
     const handleClickOutside = (event) => {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
         setIsMenuOpen(false);
+        setIsNotificationOpen(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -59,6 +56,28 @@ export default function Header({ onLoginClick, userInfo, setUserInfo }) {
     };
   }, []);
 
+  const fetchNotifications = async () => {
+    try {
+      const response = await axios.get('http://127.0.0.1:8000/api/notifications');
+      setNotifications(response.data); // Cập nhật state với dữ liệu thông báo
+    } catch (error) {
+      console.error('Lỗi khi tải thông báo:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchNotifications(); // Gọi API để lấy thông báo khi component được render
+  }, []);
+  useEffect(() => {
+    if (userInfo && userInfo.manguoidung) {
+      fetch(`http://localhost:8000/admin-api/thongbaonguoidung/${userInfo.manguoidung}/`)
+        .then(response => response.json())
+        .then(data => setNotifications(data))
+        .catch(error => console.error('Error fetching notifications:', error));
+    }
+  }, [userInfo]);
+  
+
   const handleAuthClick = () => {
     if (userInfo != null || userInfo) {
       setUserInfo(null);
@@ -68,23 +87,80 @@ export default function Header({ onLoginClick, userInfo, setUserInfo }) {
     if (userInfo == null) {
       onLoginClick();
     }
-    setIsMenuOpen(false); // Đóng menu
+    setIsMenuOpen(false);
   };
 
   const handleNavigation = (path) => {
     if (!userInfo || !userInfo.hoten) {
       onLoginClick();
     } else {
-      navigate(path); // Điều hướng đến trang đích
+      navigate(path);
     }
     setIsMenuOpen(false);
   };
 
   const [query, setQuery] = useState('');
-  
+
   const handleSearch = () => {
     if (query.trim()) {
       navigate(`/search-product?search-query=${encodeURIComponent(query)}`);
+    }
+  };
+  const formatDateTime = (dateTimeString) => {
+    const date = new Date(dateTimeString);
+    return date.toLocaleString('vi-VN', { // 'vi-VN' for Vietnamese locale, adjust if needed
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
+  const renderNotificationDropdown = () => {
+    const classes = `notification-dropdown absolute top-[8.5vh] mt-2 bg-white border rounded shadow-md w-60 z-50 ${isAnimatingClose ? 'closing' : ''}`;
+    
+    return (
+      <div 
+        ref={menuRef}
+        className={classes}
+        onAnimationEnd={() => {
+          if (isAnimatingClose) {
+            setIsNotificationOpen(false);
+            setIsAnimatingClose(false);
+          }
+        }}
+      >
+        {notifications.length > 0 ? (
+          <ul className="space-y-4">
+          {notifications.map(notification => (
+            <li key={notification.mathongbao} className="p-2 border-b last:border-b-0">
+              <div className="text-sm font-bold notification-title">{notification.tieude}</div>
+              <div className="text-xs notification-content">{notification.noidung}</div>
+              <div className="text-xs text-gray-500 notification-time">{formatDateTime(notification.thoigiangui)}</div>
+            </li>
+          ))}
+        </ul>
+        ) : (
+          <p className="p-2 text-sm">Không có thông báo</p>
+        )}
+      </div>
+    );
+  };
+
+
+  const handleNotificationClick = (e) => {
+    e.preventDefault();
+    if (isNotificationOpen) {
+      // If already open, start closing animation
+      setIsAnimatingClose(true);
+      setTimeout(() => {
+        setIsNotificationOpen(false);
+        setIsAnimatingClose(false);
+      }, 300); // Match the animation duration
+    } else {
+      setActiveLink("BellRing");
+      setIsNotificationOpen(true);
     }
   };
 
@@ -93,7 +169,7 @@ export default function Header({ onLoginClick, userInfo, setUserInfo }) {
       <div className=" h-20 flex items-center bg-yellow-300 p-3 ">
         <div className=" mr-5">
           <img
-            className="h-16  w-40"
+            className="h-16 w-40"
             src="http://127.0.0.1:8000//media/images/logo.png"
             alt="Logo"
           />
@@ -101,10 +177,10 @@ export default function Header({ onLoginClick, userInfo, setUserInfo }) {
         <div className="hidden lg:flex items-center justify-between py-2 rounded-xl h-[5vh] w-[30vw] bg-[#f3f3f3]">
           <input
             className="ml-2 w-[20vw] bg-transparent focus:outline-none placeholder-gray-500 text-gray-700"
-            type="text"
+            type="text" 
             placeholder="Tìm sản phẩm..."
             value={query}
-            onChange={(e) => setQuery(e.target.value)} 
+            onChange={(e) => setQuery(e.target.value)}
           />
           <button onClick={handleSearch}>
             <Search />
@@ -114,70 +190,58 @@ export default function Header({ onLoginClick, userInfo, setUserInfo }) {
           <a
             href="#"
             onClick={() => setActiveLink("heart")}
-            className={`text-[#5b5858cc]  flex gap-2 items-center  font-arial  px-3 py-2 ${activeLink === "heart"
-              ? "text-black font-bold"
-              : "hover:text-black"
-              }`}
+            className={`text-[#5b5858cc]  flex gap-2 items-center  font-arial  px-3 py-2 ${activeLink === "heart" ? "text-black font-bold" : "hover:text-black"}`}
           >
             <Heart />
           </a>
           <a
             href="#"
-            onClick={() => setActiveLink("BellRing")}
-            className={`text-[#5b5858cc]  flex gap-2 items-center  font-arial  px-3 py-2 ${activeLink === "BellRing"
-              ? "text-black font-bold"
-              : "hover:text-black"
-              }`}
+            onClick={handleNotificationClick}
+            className={`text-[#5b5858cc]  flex gap-2 items-center  font-arial  px-3 py-2 ${activeLink === "BellRing" ? "text-black font-bold" : "hover:text-black"}`}
           >
             <BellRing />
           </a>
+          {isNotificationOpen && renderNotificationDropdown()}
+          
+          
         </div>
-        <div className="px-3 py-2 h-10 w-[12vw] bg-transparent rounded-3xl flex items-center justify-start  ">
+        <div className="px-3 py-2 h-10 w-[12vw] bg-transparent rounded-3xl flex items-center justify-start">
           <a
             href="/"
             onClick={() => setActiveLink("home")}
-            className={`text-[#5b5858cc]  flex gap-2 items-center  font-arial  px-3 py-2 ${activeLink === "home"
-              ? "text-black font-bold"
-              : "hover:text-black"
-              }`}
+            className={`text-[#5b5858cc]  flex gap-2 items-center  font-arial  px-3 py-2 ${activeLink === "home" ? "text-black font-bold" : "hover:text-black"}`}
           >
-            <HomeIcon/>
+            <HomeIcon />
             Trang Chủ
           </a>
         </div>
-        <div className="px-3 py-2 h-10 w-[12vw] bg-transparent rounded-3xl flex items-center justify-start  ">
+        <div className="px-3 py-2 h-10 w-[12vw] bg-transparent rounded-3xl flex items-center justify-start">
           <a
             href="/account/user-post"
             onClick={() => setActiveLink("qltin")}
-            className={`text-[#5b5858cc]  flex gap-2 items-center  font-arial  px-3 py-2 ${activeLink === "qltin"
-              ? "text-black font-bold"
-              : "hover:text-black "
-              }`}
+            className={`text-[#5b5858cc]  flex gap-2 items-center  font-arial  px-3 py-2 ${activeLink === "qltin" ? "text-black font-bold" : "hover:text-black"}`}
           >
             <NotebookText />
             Quản lý tin
           </a>
         </div>
-        <div className="px-3 py-2 h-10 w-[10vw] bg-transparent rounded-3xl flex items-center justify-start  ">
-        <a
-          onClick={handleAboutUsClick} // Sử dụng onClick để điều hướng mà không cần href
-          className={`text-[#5b5858cc] flex gap-2 items-center font-arial px-3 py-2 ${activeLink === "aboutus" ? "text-black font-bold" : "hover:text-black"}`}
-          style={{cursor: 'pointer'}} // Thêm kiểu con trỏ khi hover
-        >
-          Giới Thiệu
-        </a>
+        <div className="px-3 py-2 h-10 w-[10vw] bg-transparent rounded-3xl flex items-center justify-start">
+          <a
+            href="#"
+            onClick={() => setActiveLink("aboutus")}
+            className={`text-[#5b5858cc]  flex gap-2 items-center font-arial  px-3 py-2 ${activeLink === "aboutus" ? "text-black font-bold" : "hover:text-black"}`}
+          >
+            Giới Thiệu
+          </a>
         </div>
-        <div className="px-3 py-2 h-10 w-[20vw] bg-transparent rounded-3xl flex items-center justify-start relative ">
+        <div className="px-3 py-2 h-10 w-[20vw] bg-transparent rounded-3xl flex items-center justify-start relative">
           <nav className="relative">
             <a
               onClick={() => {
                 setActiveLink("dn");
-                setIsMenuOpen(!isMenuOpen); 
+                setIsMenuOpen(!isMenuOpen);
               }}
-              className={`text-[#5b5858cc] flex gap-2 items-center font-arial px-3 py-2 ${activeLink === "dn"
-                ? "text-black font-bold"
-                : "hover:text-black"
-                }`}
+              className={`text-[#5b5858cc] flex gap-2 items-center font-arial px-3 py-2 ${activeLink === "dn" ? "text-black font-bold" : "hover:text-black"}`}
             >
               <img
                 src={userInfo && userInfo.anhdaidien ? `http://127.0.0.1:8000//media/images/${userInfo.anhdaidien}` : "http://127.0.0.1:8000//media/images/icon.png"}
@@ -186,11 +250,9 @@ export default function Header({ onLoginClick, userInfo, setUserInfo }) {
               />
               {userInfo?.hoten || "Tài khoản"}
             </a>
+
             {isMenuOpen && (
-              <div
-                ref={menuRef}
-                className="absolute top-[8.5vh] mt-2 bg-white border rounded shadow-md w-60 z-50"
-              >
+              <div ref={menuRef} className="absolute top-[8.5vh] mt-2 bg-white border rounded shadow-md w-60 z-50">
                 <ul className="space-y-4">
                   <li
                     className="flex justify-start ml-3 items-center hover:bg-gray-200"
@@ -227,8 +289,11 @@ export default function Header({ onLoginClick, userInfo, setUserInfo }) {
             )}
           </nav>
         </div>
-        <div className="px-3 py-2 h-10 w-[10vw] text-white bg-orange-500 rounded-xl flex items-center justify-start  ">
-          <button className="text-white" onClick={handleDangTinClick}>Đăng Tin</button>
+        <div className="px-3 py-2 h-10 w-[10vw] text-white bg-orange-500 rounded-xl flex items-center justify-start">
+          <button className="cursor-pointer flex gap-2 items-center" onClick={handleDangTinClick}>
+            <FilePenIcon />
+            <h4>Bán Xe</h4>
+          </button>
         </div>
       </div>
     </div>
