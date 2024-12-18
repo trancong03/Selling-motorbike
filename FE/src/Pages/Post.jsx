@@ -130,10 +130,15 @@ export default function Post() {
   }, []);
 
   return (
-    <div className="bg-white mt-10">
+    <div className="bg-white mt-10 m-10">
       <div className="border-b-2 bg-orange-500 border-orange-500 my-5 m-20 p-0.5"></div>
-      <h1 className="text-3xl font-bold text-center p-3">DANH SÁCH CÁC BÀI VIẾT</h1>
-
+      <div className="flex items-center justify-center p-5">
+      <div 
+          className="p-4 rounded-full shadow-md w-3/4 bg-gradient-to-r from-yellow-400 to-orange-500"
+        >
+          <h1 className="text-3xl font-bold text-center">DANH SÁCH CÁC BÀI VIẾT</h1>
+        </div>
+      </div>
       <div className="text-center mb-3 flex items-center justify-center w-100%">
         <div className="flex items-center gap-4 p-4 border-b bg-white relative">
           <button className="flex items-center gap-2 text-gray-700 hover:text-black">
@@ -215,7 +220,7 @@ export default function Post() {
         </div>
       </div>
 
-      <div className="grid grid-cols-5 gap-5 p-5 m-5">
+      <div className="grid grid-cols-5 gap-1 p-1 m-1">
         {filteredProducts.map((product) => (
           <ErrorBoundary key={product.mabaiviet}>
             <CartItem Product={product} />

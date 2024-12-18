@@ -50,8 +50,13 @@ export default function Top100Post() {
 
     return (
         <div className="bg-white">
-            <h1 className="text-3xl font-bold text-center p-3 mt-10">🔥 Tin nổi bật 🔥 </h1>
-            <h1 className="text-xl font-bold text-center p-3 ">Top các sản phẩm phù hợp dành cho bạn tại motorbike Light! </h1>
+            <div className="flex items-center justify-center p-5 mt-10 mb-10">
+            <div className="w-3/4 p-4 rounded-full shadow-md bg-gradient-to-r from-yellow-400 to-orange-500">
+                <h1 className="text-6xl font-bold text-center p-2">🔥 Tin nổi bật 🔥</h1>
+                <h1 className="text-1xl font-bold text-center p-2">Top các sản phẩm phù hợp dành cho bạn tại motorbike Light!</h1>
+            </div>
+            </div>
+
             <div className="grid grid-cols-4 mr-[10%] ml-[10%] mb-[1%] gap-4">
                 {products.map((product) => (
                     <ErrorBoundary key={product.baiviet.mabaiviet}>

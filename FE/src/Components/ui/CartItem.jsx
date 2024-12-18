@@ -55,7 +55,7 @@ export default function CartItem({ Product }) {
     
     return (
         <div className='flex items-center justify-center flex-col mt-3 rounded-2xl'>
-            <div className='w-[15vw] bg-white rounded-2xl ml-3 mb-5 group shadow-2xl'>
+            <div className='w-[15vw] bg-white rounded-2xl ml-2 mb-5 group shadow-2xl'>
                 <div className='relative overflow-hidden flex items-center justify-center flex-col'>
                     <img
                         src={`http://127.0.0.1:8000/media/images/${images?.length > 0 ? images[0].tenfile : defaultImage}`}
@@ -82,7 +82,7 @@ export default function CartItem({ Product }) {
                                 </div>
                             </button>
                             <button
-                                className="w-[10rem] h-[2.5rem] bg-[#1D7E20] text-white font-bold rounded-full mt-3"
+                                className="w-[10rem] h-[2.5rem] bg-[#F97316] text-white font-bold rounded-full mt-3"
                                 onClick={handleViewDetails}
                             >
                                 <div className="flex items-center justify-center gap-2">

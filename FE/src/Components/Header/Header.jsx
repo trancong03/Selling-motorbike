@@ -91,7 +91,7 @@ console.log(userInfo);
 
   return (
     <div className={`transition-all duration-300 ${isSticky ? 'fixed top-0 left-0 w-full shadow-md z-50' : ''}`}>
-      <div className=" h-20 flex items-center bg-yellow-300 p-3 ">
+      <div className=" h-20 flex items-center bg-gradient-to-r from-orange-400 to-yellow-400 p-3 ">
         <div className=" mr-5">
           <img
             className="h-16  w-40"

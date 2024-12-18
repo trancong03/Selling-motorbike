@@ -131,7 +131,7 @@ export default function PostItemUser({ product, userId }) {
         setShowExtendComponent(false); // Ẩn component sau khi gia hạn
     };
     return (
-        <div className="bg-white rounded-lg shadow-md overflow-hidden !text-lg">
+        <div className="ml-[150px] bg-white rounded-lg shadow-md overflow-hidden !text-lg w-[70%]">
             <div className="flex items-center justify-between p-4 bg-slate-200">
                 {/* Seller Info */}
                 <div className="flex items-center space-x-4">
@@ -197,7 +197,7 @@ export default function PostItemUser({ product, userId }) {
             </div>
 
             {/* Description */}
-            <div className="flex flex-col items-start w-full p-5">
+            <div className="flex flex-col items-start w-full p-5 text-sm">
                 <div dangerouslySetInnerHTML={{ __html: product.MOTA }} />
             </div>
 
@@ -219,11 +219,11 @@ export default function PostItemUser({ product, userId }) {
                     </div>
 
                     {/* Main Image */}
-                    <div className="mt-4 flex-1">
+                    <div className="mt-4 flex-1 mr-10">
                         <img
                             src={`http://127.0.0.1:8000/media/images/${images[currentIndex].TENFILE}`}
                             alt={`Main Image`}
-                            className="w-full max-h-[70vh] rounded-md object-cover"
+                            className="w-[80%] max-h-[50vh] rounded-md object-cover"
                         />
                     </div>
                 </div>
@@ -235,8 +235,8 @@ export default function PostItemUser({ product, userId }) {
                     {new Intl.NumberFormat('vi-VN').format(product.GIABAN) || 'Sản phẩm không có tên'} đ
                 </h2>
 
-                <h2 className="text-xl font-bold">Thông số kỹ thuật</h2>
-                <div className="grid grid-cols-2 gap-4 text-lg w-full">
+                <h2 className="text-xl font-bold mb-3">Thông số kỹ thuật</h2>
+                <div className="grid grid-cols-2 gap-4 text-sm w-full">
                     <div className="flex items-center">
                         <Car className="mr-2" />
                         <h3 className="line-clamp-3">Hãng xe: {product.HANGXE || 'Sản phẩm không có tên'}</h3>
