@@ -117,9 +117,12 @@ export default function NavigationAccount({ user, setUserInfo }) {
                 <div className="mt-3 pl-4 shadow-sm p-4">
                     <h2 className="text-xl font-semibold">{user.hoten}</h2>
                     <div className="flex items-center">
-                        <div>
-                            {user.sodu}
-                        </div>
+                    <div className="flex items-center mt-2">
+                        <span className="text-lg text-gray-600 mr-2">Số dư:</span>
+                        <span className="text-xl font-semibold text-green-600 bg-green-100 rounded px-2 py-1">
+                            {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Math.floor(user.sodu) || 0)}
+                        </span>
+                    </div>
                     </div>
                     <div className='pt-3 pb-3 text-slate-500 text-lg'>
                         <h1>Người theo dõi : <b>0</b> |  Đang theo dõi:  <b>0</b></h1>

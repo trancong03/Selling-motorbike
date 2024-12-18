@@ -37,7 +37,19 @@ export default function Banner() {
         </Swiper>
       </div>
       <Top100Post />
-      <h1 className="text-3xl font-bold text-center mt-[3rem] mb-[3rem]">Tin được yêu thích nhiều nhất</h1>
+      <div className="flex items-center justify-center p-5">
+        <div 
+          className="p-4 rounded-full shadow-md w-3/4 h-[4rem] bg-gradient-to-r from-orange-500 to-yellow-400 flex items-center justify-center"
+        >
+          <h1 
+            className="text-3xl font-bold text-center uppercase"
+          >
+            TIN ĐƯỢC YÊU THÍCH NHIỀU NHẤT
+          </h1>
+        </div>
+      </div>
+
+
       <div className="grid grid-cols-5 mr-[3%] ml-[3%] mb-[1%] ">
         {/* Kiểm tra nếu products là mảng hợp lệ */}
         {Array.isArray(products.data) ? (
