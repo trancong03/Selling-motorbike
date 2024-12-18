@@ -50,8 +50,8 @@ export default function productDetail() {
         }
     };
     return (
-        <div className="flex items-center justify-center">
-            <div className="flex  max-w-[100%] items-center justify-center">
+        <div className="flex items-center bg-white justify-center">
+            <div className="flex  max-w-[100%] items-center justify-center bg-slate-50 pt-10 pb-10 mt-10">
                 <div className="bg-gray-100 flex items-center justify-center w-3/5 min-h-screen ">
                     <div className="flex flex-col items-center space-y-4 min-w-[100%]">
                         {/* Ảnh chính */}
@@ -135,14 +135,17 @@ export default function productDetail() {
                         </div>
                     </div>
                 </div>
-                <div className="flex items-start justify-start w-2/5 min-h-full ml-3">
+                <div className="flex items-start justify-start w-3/7 min-h-full ml-3 mt-[-670px]">
                     <div className="max-w-lg rounded-lg overflow-hidden">
                         <div className="p-6">
-                            <div className="rounded-lg overflow-hidden bg-white p-6 min-w-full">
-                                <h2 className="text-2xl font-semibold text-gray-800 mb-10">{product.TIEUDE}</h2>
-                                <div className="text-3xl font-bold text-red-600 mb-4">
-                                    {product.giaban}
+                            <div className="rounded-lg bg-white p-3 min-w-full">
+                                <h2 className="text-2xl font-semibold text-gray-800 mb-10">
+                                    {product.TIEUDE}
+                                </h2>
+                                <div className="text-3xl font-bold text-red-600 mb-3">
+                                    Giá: {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.giaban)}
                                 </div>
+
                                 <div className="flex items-center text-gray-600 mb-4">
                                     <MapPin className="w-5 h-5 mr-3 text-gray-600" />
                                     <span className="text-sm">{users?.diachi}</span>
