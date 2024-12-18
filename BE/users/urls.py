@@ -42,4 +42,6 @@ urlpatterns = [
      path('search_products/', post.search_products, name='search_products'),
      path('get_all_giao_dich/', post.get_all_giao_dich, name='get_all_giao_dich'),
      path('day-tin/', post.day_tin, name='day_tin'),  
+    path('toggle-favorite/<str:username>/<int:product_id>/', post.toggle_favorite, name='toggle_favorite'),
+    path('favorite-products/<int:username>/', post.get_favorite_products, name='get_favorite_products'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

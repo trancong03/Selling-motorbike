@@ -47,7 +47,6 @@ export default function Top100Post() {
         const nextPage = currentPage + 1;
         fetchProducts(nextPage);
     };
-    console.log(currentPage);
 
     return (
         <div className="bg-white">
@@ -57,15 +56,12 @@ export default function Top100Post() {
                 {products.map((product) => (
                     <ErrorBoundary key={product.baiviet.mabaiviet}>
                         <div className="relative">
-                            <p className="absolute top-2 z-10 right-8 bg-gradient-to-r text-red-600 text-sm font-extrabold rounded-full px-3 py-1 shadow-lg flex items-center space-x-2 transform scale-110 hover:scale-125 transition duration-300">
-                                <p className="flex items-center justify-center">
+                            <div className="absolute top-2 z-10 right-8 bg-gradient-to-r text-red-600 text-sm font-extrabold rounded-full px-3 py-1 shadow-lg flex items-center space-x-2 transform scale-110 hover:scale-125 transition duration-300">
+                                <div className="flex items-center justify-center">
                                     <h1 className="w-5 h-5 text-lg">🔥</h1>
                                     <h1>{product.top}</h1>
-                                </p>
-                               
-                            </p>
-
-
+                                </div>
+                            </div>
                             <CartItem Product={product.baiviet} />
                         </div>
                     </ErrorBoundary>

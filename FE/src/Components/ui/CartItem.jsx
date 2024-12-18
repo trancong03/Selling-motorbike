@@ -8,7 +8,7 @@ import { getImageProductByID, getUserByIDPost } from "../../../services/apiclien
 export default function CartItem({ Product }) {
     const defaultImage = 'default.jpg';
     const navigate = useNavigate();
-    const { likeProduct, isProductLiked, likeProducts } = useCart();
+    const { isProductLiked, handleAddLikeProduct } = useCart();
     const [isLiked, setIsLiked] = useState(false);
     const [images, setImages] = useState([]); // State để lưu hình ảnh
     const [user, setUser] = useState({}); // State để lưu hình ảnh
@@ -37,8 +37,9 @@ export default function CartItem({ Product }) {
 
     // Cập nhật trạng thái yêu thích khi thay đổi sản phẩm
     useEffect(() => {
-        setIsLiked(isProductLiked(Product.MABAIVIET)); // Đồng bộ trạng thái yêu thích khi sản phẩm thay đổi
-    }, [Product.MABAIVIET, isProductLiked]); // Theo dõi sự thay đổi của likeProducts
+        const likedStatus = isProductLiked(Product.mabaiviet);
+        setIsLiked(likedStatus); // Đồng bộ trạng thái yêu thích khi sản phẩm thay đổi
+    }, [Product.mabaiviet, isProductLiked]); // Theo dõi sự thay đổi của likeProducts
 
     // Xử lý xem chi tiết sản phẩm
     const handleViewDetails = () => {
@@ -47,11 +48,11 @@ export default function CartItem({ Product }) {
 
     // Xử lý thay đổi trạng thái yêu thích
     const handleToggleLike = () => {
-
-        likeProduct(Product);
+        const username = JSON.parse(localStorage.getItem('userInfo'))?.manguoidung || null;
+        handleAddLikeProduct(username, Product.mabaiviet);
         // Gọi hàm likeProduct và để nó xử lý trạng thái yêu thích
     };
-
+    
     return (
         <div className='flex items-center justify-center flex-col mt-3 rounded-2xl'>
             <div className='w-[15vw] bg-white rounded-2xl ml-3 mb-5 group shadow-2xl'>

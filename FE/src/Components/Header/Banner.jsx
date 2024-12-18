@@ -44,13 +44,13 @@ export default function Banner() {
           products.data.map((product) => (
             <ErrorBoundary key={product.mabaiviet}>
                <div className="relative">
-                                          <p className="absolute top-2 z-10 right-8 bg-gradient-to-r text-black text-sm font-extrabold rounded-full px-3 py-1 shadow-lg flex items-center space-x-2 transform scale-110 hover:scale-125 transition duration-300">
-                                              <p className="flex items-center justify-center text-lg">
+                                          <div className="absolute top-2 z-10 right-8 bg-gradient-to-r text-black text-sm font-extrabold rounded-full px-3 py-1 shadow-lg flex items-center space-x-2 transform scale-110 hover:scale-125 transition duration-300">
+                                              <div className="flex items-center justify-center text-lg">
                                                   <Heart/>
                                                 <h1>{product.favorite_count}</h1>
-                                              </p>
+                                              </div>
                                              
-                                          </p>
+                                          </div>
                                       <CartItem Product={product} />
                                       </div>
               

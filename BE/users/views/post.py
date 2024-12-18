@@ -385,3 +385,52 @@ def day_tin(request):
         }, status=200)
     except Exception as e:
         return JsonResponse({"error": f"Lỗi hệ thống: {str(e)}"}, status=500)
+@csrf_exempt
+def get_favorite_products(request, username):
+    try:
+        # Lấy tất cả các đối tượng FavoriteProduct của người dùng
+        favorite_products = YeuThich.objects.filter(manguoidung=username)
+
+        # Kiểm tra nếu không có sản phẩm yêu thích nào
+        if not favorite_products.exists():
+            return JsonResponse({"data": []}, status=200)  # Trả về danh sách rỗng nếu không có sản phẩm yêu thích
+
+        # Tạo danh sách chứa các sản phẩm yêu thích
+        products_list = []
+        for favorite in favorite_products:
+            product_id = favorite.mabaiviet  # Truy cập sản phẩm yêu thích qua trường product
+            if product_id:  # Kiểm tra nếu sản phẩm tồn tại
+                try:
+                    # Lấy thông tin sản phẩm
+                    product = BaiViet.objects.get(mabaiviet=product_id)
+                    # Chuyển đối tượng Product thành dictionary chứa tất cả các thuộc tính
+                    product_data = model_to_dict(product)
+                    products_list.append(product_data)
+                except BaiViet.DoesNotExist:
+                    # Nếu sản phẩm không tồn tại, bỏ qua
+                    continue
+        return JsonResponse({"data": products_list}, safe=False, status=200)
+    except Exception as e:
+        # Xử lý lỗi chung
+        return JsonResponse({"error": f"An error occurred: {str(e)}"}, status=500)
+
+@csrf_exempt
+def toggle_favorite(request, username, product_id):
+    try:
+        # Kiểm tra xem sản phẩm có tồn tại không
+        favorite = YeuThich.objects.filter(manguoidung=username, mabaiviet=product_id)
+
+        if favorite.exists():
+            # Nếu sản phẩm đã có trong danh sách yêu thích, xóa nó
+            favorite.delete()
+            return JsonResponse({"message": "Product removed from favorites."}, status=200)
+        else:
+            # Nếu sản phẩm chưa có trong danh sách yêu thích, thêm nó
+            YeuThich.objects.create(manguoidung=username, mabaiviet=product_id)
+            return JsonResponse({"message": "Product added to favorites."}, status=200)
+
+    except YeuThich.DoesNotExist:
+        return JsonResponse({"error": "Product not found."}, status=404)
+    except Exception as e:
+        # Xử lý lỗi chung
+        return JsonResponse({"error": f"An error occurred: {str(e)}"}, status=500)

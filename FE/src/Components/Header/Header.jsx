@@ -58,18 +58,19 @@ export default function Header({ onLoginClick, userInfo, setUserInfo }) {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
-
+  
   const handleAuthClick = () => {
-    if (userInfo != null || userInfo) {
+    if (userInfo != null) {
       setUserInfo(null);
-      localStorage.removeItem('userInfo');
-      navigate('/');
-    }
-    if (userInfo == null) {
-      onLoginClick();
+      localStorage.removeItem('userInfo'); // Xóa thông tin người dùng khỏi localStorage
+      navigate('/'); // Điều hướng về trang chính
+    } else {
+      onLoginClick(); // Gọi hàm đăng nhập khi không có thông tin người dùng
     }
     setIsMenuOpen(false); // Đóng menu
   };
+
+console.log(userInfo);
 
   const handleNavigation = (path) => {
     if (!userInfo || !userInfo.hoten) {
@@ -112,11 +113,11 @@ export default function Header({ onLoginClick, userInfo, setUserInfo }) {
         </div>
         <div className="ml-3 flex gap-4 justify-center items-center">
           <a
-            href="#"
-            onClick={() => setActiveLink("heart")}
-            className={`text-[#5b5858cc]  flex gap-2 items-center  font-arial  px-3 py-2 ${activeLink === "heart"
-              ? "text-black font-bold"
-              : "hover:text-black"
+            onClick={() => {
+              setActiveLink("heart"); // Đánh dấu liên kết đang hoạt động
+              handleNavigation('/account/like-product'); // Xử lý điều hướng
+            }}
+            className={`text-[#5b5858cc] flex gap-2 items-center font-arial px-3 py-2 ${activeLink === "heart" ? "text-black font-bold" : "hover:text-black"
               }`}
           >
             <Heart />
@@ -147,8 +148,9 @@ export default function Header({ onLoginClick, userInfo, setUserInfo }) {
         </div>
         <div className="px-3 py-2 h-10 w-[12vw] bg-transparent rounded-3xl flex items-center justify-start  ">
           <a
-            href="/account/user-post"
-            onClick={() => setActiveLink("qltin")}
+            onClick={() => {setActiveLink("qltin")
+              handleNavigation('/account/user-post');
+            }}
             className={`text-[#5b5858cc]  flex gap-2 items-center  font-arial  px-3 py-2 ${activeLink === "qltin"
               ? "text-black font-bold"
               : "hover:text-black "
@@ -192,20 +194,6 @@ export default function Header({ onLoginClick, userInfo, setUserInfo }) {
                 className="absolute top-[8.5vh] mt-2 bg-white border rounded shadow-md w-60 z-50"
               >
                 <ul className="space-y-4">
-                  <li
-                    className="flex justify-start ml-3 items-center hover:bg-gray-200"
-                    onClick={() => handleNavigation('/notifications')}
-                  >
-                    <BellRing />
-                    <a className="block p-2 rounded">Thông báo</a>
-                  </li>
-                  <li
-                    className="flex justify-start ml-3 items-center hover:bg-gray-200"
-                    onClick={() => handleNavigation('/favorites')}
-                  >
-                    <Heart />
-                    <a className="block p-2 rounded">Tin yêu thích</a>
-                  </li>
                   <li
                     className="flex justify-start ml-3 items-center hover:bg-gray-200"
                     onClick={() => handleNavigation('/account')}

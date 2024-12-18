@@ -82,8 +82,24 @@ const searchProducts = async (query) => {
         console.error(err);
     }
 };
+const getLikeProduct = async (username) => {
+    try {
+        const response = await axios.get(`http://127.0.0.1:8000/api/favorite-products/${username}/`);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching cart data:', error);
+    }
+};
+const handleLikeProduct = async (username, product_id) => {
+    try {
+        const response = await axios.post(`http://127.0.0.1:8000/api/toggle-favorite/${username}/${product_id}/`)
+        console.log('Thêm vào giỏ hàng thành công:', response.data);
+    } catch (error) {
+        console.error('Lỗi khi thêm vào giỏ hàng:', error);
+    }
+};
 export default apiClient;
 // Sử dụng default export
 export {
-    getImageProductByID, getUserByIDPost, getTop10Product, searchProducts
+    getImageProductByID, getUserByIDPost, getTop10Product, searchProducts, getLikeProduct, handleLikeProduct
 };

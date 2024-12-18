@@ -51,7 +51,6 @@ function App() {
   const handleLoginSuccess = (data) => {
     setUserInfo(data.user);
     const { token } = data;
-    console.log(data);
     localStorage.setItem('authToken', token);
     localStorage.setItem('userInfo', JSON.stringify(data.user));
     setShowLogin(false);
@@ -118,7 +117,7 @@ function App() {
   }, []); // Chạy một lần khi component mount
 
   return (
-    <CartProvider User={userInfo}>
+    <CartProvider User={userInfo} onLoginClick={handleLoginClick} >
       <BrowserRouter>
         {/* Điều chỉnh Header chỉ hiển thị khi không phải là các route admin */}
         {!isAdminRoute && (
