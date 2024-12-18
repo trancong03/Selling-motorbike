@@ -1,3 +1,8 @@
+
+
+
+
+
 import React, { useState, useEffect } from "react";
 import { FaUsers, FaChartLine, FaNewspaper, FaExchangeAlt, FaFilter, FaBell, FaHeadset, FaCog, FaLock, FaSignOutAlt } from "react-icons/fa";
 import UserManagement from "./UserManagement";
@@ -8,17 +13,16 @@ import RevenueChart from "./RevenueChart";
 import TransactionManagement from "./TransactionManagement";
 import SystemSettings from "./SystemSettings.jsx";
 import { Navigate } from "react-router-dom";
+import "../../Style/admin.css";
 
 const AdminDashboard = () => {
   const [activeView, setActiveView] = useState("users");
   const [selectedUser, setSelectedUser] = useState(null);
-  const [notifications, setNotifications] = useState([]); // State để lưu các thông báo đã gửi
+  const [notifications, setNotifications] = useState([]);
 
-  // Kiểm tra đăng nhập
   useEffect(() => {
     const isAuthenticated = localStorage.getItem('admin');
     if (!isAuthenticated) {
-      // Nếu không có thông tin admin trong localStorage, chuyển hướng về trang đăng nhập
       window.location.href = '/Admin-Login';
     }
   }, []);
@@ -41,20 +45,25 @@ const AdminDashboard = () => {
     setNotifications([...notifications, newNotification]);
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('admin');
+    window.location.href = '/Admin-Login';
+  };
+
   const renderView = () => {
     switch (activeView) {
       case "users":
-        return <UserManagement setSelectedUser={setSelectedUser} />;
+        return <div className="dashboard-container"><UserManagement setSelectedUser={setSelectedUser} /></div>;
       case "posts":
-        return <PostManagement handleSendNotification={handleSendNotification} />;
+        return <div className="dashboard-container"><PostManagement handleSendNotification={handleSendNotification} /></div>;
       case "transactions":
-        return <TransactionManagement />;
+        return <div className="dashboard-container"><TransactionManagement /></div>;
       case "notifications":
-        return <NotificationManagement notifications={notifications} />;
+        return <div className="dashboard-container"><NotificationManagement notifications={notifications} /></div>;
       case "revenue":
-        return <RevenueChart />;
+        return <div className="dashboard-container"><RevenueChart /></div>;
       case "settings":
-        return <SystemSettings />;
+        return <div className="dashboard-container"><SystemSettings /></div>;
       case "logout":
         handleLogout();  // Gọi hàm đăng xuất
         return <Navigate to="/Admin-Login" />;  // Dùng React Router để chuyển hướng
@@ -65,61 +74,45 @@ const AdminDashboard = () => {
 
   return (
     <div className="flex h-screen bg-gray-100">
-      <div className="w-64 bg-white shadow-md">
+      <div className="w-64 sidebar shadow-md">
         <div className="p-4">
-          <h2 className="text-2xl font-semibold text-gray-800">Admin Dashboard</h2>
+          <h2 className="text-2xl font-semibold">Admin Dashboard</h2>
         </div>
         <nav className="mt-4">
-        {sidebarItems.map((item, index) => (
-        <button
-          key={index}
-          className={`w-full text-left px-4 py-2 flex items-center space-x-2 hover:bg-gray-200 ${activeView === item.view ? 'bg-gray-200' : ''}`}
-          onClick={() => {
-            if (item.view === "logout") {
-              handleLogout();  // Gọi hàm đăng xuất khi nhấn "Đăng xuất"
-            } else {
-              setActiveView(item.view);
-            }
-          }}
-        >
-          <item.icon className="text-gray-600" />
-          <span>{item.text}</span>
-        </button>
-      ))}
+          {sidebarItems.map((item, index) => (
+            <button
+              key={index}
+              className={`w-full text-left px-4 py-2 flex items-center space-x-2 ${activeView === item.view ? 'active' : ''}`}
+              onClick={() => setActiveView(item.view === "logout" ? handleLogout() : item.view)}
+            >
+              <item.icon className="fa-icon" />
+              <span>{item.text}</span>
+            </button>
+          ))}
         </nav>
       </div>
-      <div className="flex-1 p-10 overflow-auto">
-        <h1 className="text-3xl font-bold mb-6">{sidebarItems.find(item => item.view === activeView)?.text}</h1>
+      <div className="flex-1 p-10 overflow-auto dashboard-content">
+        <h1 className="text-3xl font-bold mb-6 dashboard-title">{sidebarItems.find(item => item.view === activeView)?.text}</h1>
         {renderView()}
       </div>
       {selectedUser && (
-        <UserInfoModal user={selectedUser} onClose={() => setSelectedUser(null)} />
+        <div className="modal-overlay fixed inset-0 flex items-center justify-center z-50">
+          <div className="modal-content p-6">
+            <h2 className="text-xl font-semibold mb-4">User Info</h2>
+            <p><strong>Username:</strong> {selectedUser.username}</p>
+            <p><strong>Full Name:</strong> {selectedUser.fullname}</p>
+            <p><strong>Birthdate:</strong> {selectedUser.birthdate}</p>
+            <button
+              onClick={() => setSelectedUser(null)}
+              className="modal-close-btn mt-4 px-4 py-2 rounded-lg"
+            >
+              Close
+            </button>
+          </div>
+        </div>
       )}
     </div>
   );
 };
-const handleLogout = () => {
-  // Xóa thông tin admin khỏi localStorage
-  localStorage.removeItem('admin');
-  
-  // Chuyển hướng về trang đăng nhập
-  window.location.href = '/Admin-Login';
-};
-const UserInfoModal = ({ user, onClose }) => (
-  <div className="fixed inset-0 flex items-center justify-center z-50">
-    <div className="bg-white p-6 rounded-lg shadow-lg">
-      <h2 className="text-xl font-semibold mb-4">User Info</h2>
-      <p><strong>Username:</strong> {user.username}</p>
-      <p><strong>Full Name:</strong> {user.fullname}</p>
-      <p><strong>Birthdate:</strong> {user.birthdate}</p>
-      <button
-        onClick={onClose}
-        className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg"
-      >
-        Close
-      </button>
-    </div>
-  </div>
-);
 
 export default AdminDashboard;

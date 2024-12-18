@@ -17,11 +17,15 @@ export default function Top100Post() {
             const response = await axios.get(
                 `http://127.0.0.1:8000/api/get_top_100_baiviet/?page=${page}&limit=2`
             );
-            if (page === 1) {
-                setProducts(response.data.products); // Khi trang đầu tiên, ghi đè lên danh sách sản phẩm
-            } else {
-                setProducts((prev) => [...prev, ...response.data.products]); // Ghép thêm sản phẩm mới nếu không phải trang đầu tiên
-            }
+
+            setProducts((prev) => {
+                // Kiểm tra nếu page === 1 thì ghi đè sản phẩm, ngược lại thêm mới
+                if (page === 1) {
+                    return response.data.products;
+                }
+                return [...prev, ...response.data.products];
+            });
+
             setTotalCount(response.data.total_count); // Lưu tổng số sản phẩm
             setCurrentPage(page); // Cập nhật trang hiện tại
         } catch (err) {
@@ -43,6 +47,7 @@ export default function Top100Post() {
         const nextPage = currentPage + 1;
         fetchProducts(nextPage);
     };
+    console.log(currentPage);
 
     return (
         <div className="bg-white">

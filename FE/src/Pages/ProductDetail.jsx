@@ -63,7 +63,7 @@ export default function productDetail() {
                                 ❮
                             </button>
                             <img
-                                src={`http://127.0.0.1:8000//media/images/${images[currentIndex].tenfile}`}
+                                src={`http://127.0.0.1:8000/media/images/${images[currentIndex].tenfile}`}
                                 alt="Main"
                                 className=" w-[60vw] h-[70vh] object-cover rounded-lg"
                             />
@@ -80,7 +80,7 @@ export default function productDetail() {
                             {images.map((image, index) => (
                                 <img
                                     key={index}
-                                    src={`http://127.0.0.1:8000//media/images/${image.tenfile}`}
+                                    src={`http://127.0.0.1:8000/media/images/${image.tenfile}`}
                                     alt={`Thumbnail ${index + 1}`}
                                     className={`w-20 h-20 cursor-pointer border-2 rounded-md transition ${index === currentIndex ? "border-yellow-500" : "border-transparent"
                                         } hover:border-yellow-500`}

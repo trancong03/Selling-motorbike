@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from math import ceil
 import os
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
@@ -276,32 +277,28 @@ def get_top_10_favorite_products(request):
         
 def get_top_100_baiviet(request):
     page = int(request.GET.get('page', 1))  # Trang hiện tại
-    limit = int(request.GET.get('limit', 12))  # Số lượng bài viết mỗi trang
+    limit = int(request.GET.get('limit', 2))  # Số lượng bài viết mỗi trang
 
     # Lấy tất cả bài viết và sắp xếp giảm dần theo giatri
     queryset = BaiViet.objects.order_by('-giatri')
     
     # Phân trang
-    paginator = Paginator(queryset, limit)
-    try:
-        paginated_baiviet = paginator.page(page)
-    except:
-        return JsonResponse({'error': 'Page not found'}, status=404)
-
+    offset = (page - 1) * limit
+    products = BaiViet.objects.all()[offset:offset + limit]  # Lấy sản phẩm theo page và limit
+    total_count = BaiViet.objects.count()  # Tổng số sản phẩm
     # Chuẩn bị dữ liệu trả về
     result = []
-    for index, baiviet in enumerate(paginated_baiviet, start=(page - 1) * limit + 1):
+    for index, baiviet in enumerate(products):
         baiviet = model_to_dict(baiviet)
         result.append({
-            'top': index,
+            'top': index+ page*limit -1,
             'baiviet': baiviet,
-            
         })
 
     return JsonResponse({
         'products': result,
-        'total_count': paginator.count,
-        'total_pages': paginator.num_pages,
+        'total_count': total_count,
+        'total_pages': ceil(total_count / limit),
         'current_page': page
     }, safe=False)
 @csrf_exempt
