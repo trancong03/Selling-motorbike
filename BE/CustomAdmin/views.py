@@ -1,12 +1,12 @@
 from rest_framework import viewsets
 from .models import NguoiDung, BaiViet, GoiGiaoDich, HinhAnh, Follwer, NapDayTin, NapGiaHan, NapTienTaiKhoan, ThongBao, ThuocTinhHeThong
-from .serializers import NguoiDungSerializer, BaiVietSerializer, GoiGiaoDichSerializer, GoiGiaoDichSerializer, HinhAnhSerializer, FollwerSerializer, NapDayTinSerializer, NapGiaHanSerializer, NapTienTaiKhoanSerializer, ThongBaoSerializer, ThuocTinhHeThongSerializer, SystemSettingsSerializer
+from .serializers import NguoiDungSerializer, BaiVietSerializer, GoiGiaoDichSerializer, GoiGiaoDichSerializer, HinhAnhSerializer, FollwerSerializer, NapDayTinSerializer, NapGiaHanSerializer, NapTienTaiKhoanSerializer, ThongBaoSerializer, ThuocTinhHeThongSerializer, SystemSettingsSerializer, ThongBaoNguoiDungSerializer
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
 from django.contrib.auth.hashers import check_password
 from django.db.models import Q
-
+from rest_framework.views import APIView
 
 
 class NguoiDungViewSet(viewsets.ModelViewSet):
@@ -45,6 +45,13 @@ class NapTienTaiKhoanViewSet(viewsets.ModelViewSet):
 class ThongBaoViewSet(viewsets.ModelViewSet):
     queryset = ThongBao.objects.all()
     serializer_class = ThongBaoSerializer
+
+class ThongBaoList(APIView):
+    def get(self, request, manguoidung, format=None):
+        # Lọc thông báo theo mã người dùng
+        thongbaos = ThongBao.objects.filter(manguoidung=manguoidung)
+        serializer = ThongBaoSerializer(thongbaos, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 class ThuocTinhHeThongViewSet(viewsets.ModelViewSet):
     queryset = ThuocTinhHeThong.objects.all()
@@ -123,7 +130,7 @@ class GuiThongBaoAPIView(APIView):
         )
         
         # Serialize thông báo và trả về phản hồi
-        serializer = ThongBaoSerializer(thong_bao)
+        serializer = ThongBaoNguoiDungSerializer(thong_bao)
         return Response({
             "message": "Thông báo đã được gửi thành công",
             "notification": serializer.data

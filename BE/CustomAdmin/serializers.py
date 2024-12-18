@@ -57,3 +57,9 @@ class SystemSettingsSerializer(serializers.ModelSerializer):
     class Meta:
         model = ThuocTinhHeThong
         fields = '__all__'
+
+
+class ThongBaoNguoiDungSerializer(serializers.ModelSerializer):
+    class Meta: 
+        model = ThongBao
+        fields = ['mathongbao', 'manguoidung', 'mabaiviet', 'tieude', 'noidung', 'thoigiangui']
