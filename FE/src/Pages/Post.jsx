@@ -2,15 +2,14 @@ import React, { useEffect, useState, useRef, useMemo } from "react";
 import axios from "axios";
 import CartItem from "./../Components/ui/CartItem";
 import ErrorBoundary from "../ErrorBoundary";
-import Top100Post from "../Components/ui/Top100Post";
 
 export default function Post() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalCount, setTotalCount] = useState(0); // Tổng số sản phẩm
-  const [dropdown, setDropdown] = useState(null); // Dropdown trạng thái
+  const [totalCount, setTotalCount] = useState(0);
+  const [dropdown, setDropdown] = useState(null);
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(1500000000);
   const [rangeValues, setRangeValues] = useState([0, 1500000000]);
@@ -18,16 +17,19 @@ export default function Post() {
   const dropdownRef = useRef(null);
   const [selectedLocation, setSelectedLocation] = useState("Toàn quốc");
   const [selectedBrand, setSelectedBrand] = useState("Hãng xe");
+  const [tinh, setTinh] = useState([]);
+  const [selectedTinh, setSelectedTinh] = useState("Tỉnh Thành");
+  const [tinhName, setTinhName] = useState("");
 
-  // Hàm áp dụng bộ lọc giá
+  // Handle applying the price filter
   const handleApplyFilter = () => {
     setRangeNameValues(`Từ ${rangeValues[0]} đến ${rangeValues[1]} đ`);
     setMinPrice(rangeValues[0]);
     setMaxPrice(rangeValues[1]);
-    setDropdown(null); // Đóng dropdown
+    setDropdown(null);
   };
 
-  // Hàm đặt lại bộ lọc giá
+  // Handle resetting the price filter
   const handleResetFilter = () => {
     setRangeValues([0, 1500000000]);
     setMinPrice(0);
@@ -36,22 +38,12 @@ export default function Post() {
     setDropdown(null);
   };
 
-  // Hàm xử lý bật/tắt dropdown
+  // Handle toggling dropdown
   const toggleDropdown = (name) => {
     setDropdown(dropdown === name ? null : name);
   };
 
-  // Hàm xử lý thay đổi lọc
-  const handleFilterChange = (filterType, value) => {
-    if (filterType === "location") {
-      setSelectedLocation(value);
-    } else if (filterType === "brand") {
-      setSelectedBrand(value);
-    }
-    setDropdown(null);
-  };
-
-  // Đóng dropdown khi nhấp ra ngoài
+  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -62,7 +54,7 @@ export default function Post() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [dropdown]);
 
-  // Gọi API để lấy danh sách sản phẩm
+  // Fetch products from API
   const fetchProducts = async (page = 1) => {
     setLoading(true);
     try {
@@ -83,21 +75,37 @@ export default function Post() {
     }
   };
 
-  // Lần đầu gọi API khi component mount
   useEffect(() => {
     fetchProducts(1);
   }, []);
-  
-  // Tải thêm sản phẩm
+
   const loadMoreProducts = () => {
     fetchProducts(currentPage + 1);
   };
 
-  // Lọc sản phẩm theo tiêu chí
+  const handleFilterChange = (filterType, value) => {
+    if (filterType === "location") {
+      const selectedValue = String(value);
+      setSelectedTinh(selectedValue);
+      const selected = tinh.find(
+        (item) => String(item.code) === String(selectedValue)
+      );
+      if (selected) {
+        setTinhName(selected.name);
+      } else {
+        setTinhName("");
+      }
+    } else if (filterType === "brand") {
+      setSelectedBrand(value);
+    }
+    setDropdown(null);
+  };
+
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {
       const matchesLocation =
-        selectedLocation === "Toàn quốc" || product.diachibaiviet.split(',').pop().trim() === selectedLocation;
+        selectedTinh === "Tỉnh Thành" ||
+        product.diachibaiviet.split(",").pop().trim() === tinhName;
       const matchesBrand =
         selectedBrand === "Hãng xe" || product.hangxe === selectedBrand;
       const matchesPrice =
@@ -105,32 +113,53 @@ export default function Post() {
 
       return matchesLocation && matchesBrand && matchesPrice;
     });
-  }, [products, selectedLocation, selectedBrand, rangeValues]);
+  }, [products, selectedTinh, selectedBrand, rangeValues]);
+
+  useEffect(() => {
+    setLoading(true);
+    axios
+      .get("https://provinces.open-api.vn/api/?depth=1")
+      .then((response) => {
+        setTinh(response.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        setError("Error fetching provinces");
+        setLoading(false);
+      });
+  }, []);
 
   return (
-    <div className="bg-white mt-10">
+    <div className="bg-white mt-10 m-10">
       <div className="border-b-2 bg-orange-500 border-orange-500 my-5 m-20 p-0.5"></div>
-      <h1 className="text-3xl font-bold text-center p-3">DANH SÁCH CÁC BÀI VIẾT</h1>
-
-      {/* Bộ lọc sản phẩm */}
+      <div className="flex items-center justify-center p-5">
+      <div 
+          className="p-4 rounded-full shadow-md w-3/4 bg-gradient-to-r from-yellow-400 to-orange-500"
+        >
+          <h1 className="text-3xl font-bold text-center">DANH SÁCH CÁC BÀI VIẾT</h1>
+        </div>
+      </div>
       <div className="text-center mb-3 flex items-center justify-center w-100%">
         <div className="flex items-center gap-4 p-4 border-b bg-white relative">
           <button className="flex items-center gap-2 text-gray-700 hover:text-black">
             <i className="fas fa-filter"></i> Lọc
           </button>
 
-          {/* Dropdown Địa điểm */}
           <select
-            value={selectedLocation}
-            onChange={(e) => handleFilterChange("location", e.target.value)}
             className="border rounded-full px-4 py-2 bg-white text-gray-700 hover:bg-gray-100"
+            id="tinh"
+            name="tinh"
+            value={selectedTinh}
+            onChange={(e) => handleFilterChange("location", e.target.value)}
           >
-            <option value="Toàn quốc">Toàn quốc</option>
-            <option value="Thành phố Hà Nội">Hà Nội</option>
-            <option value="Tp Hồ Chí Minh">Hồ Chí Minh</option>
+            <option value="Tỉnh Thành">Tỉnh Thành</option>
+            {tinh.map(({ code, name }) => (
+              <option key={code} value={code}>
+                {name}
+              </option>
+            ))}
           </select>
 
-          {/* Dropdown Hãng xe */}
           <select
             value={selectedBrand}
             onChange={(e) => handleFilterChange("brand", e.target.value)}
@@ -142,7 +171,6 @@ export default function Post() {
             <option value="SYM">SYM</option>
           </select>
 
-          {/* Dropdown Giá */}
           <div className="relative" ref={dropdownRef}>
             <button
               className="border rounded-full px-4 py-2 bg-white text-gray-700 hover:bg-gray-100"
@@ -192,8 +220,7 @@ export default function Post() {
         </div>
       </div>
 
-      {/* Danh sách sản phẩm */}
-      <div className="grid grid-cols-5 gap-5 p-5 m-5">
+      <div className="grid grid-cols-5 gap-1 p-1 m-1">
         {filteredProducts.map((product) => (
           <ErrorBoundary key={product.mabaiviet}>
             <CartItem Product={product} />
@@ -201,7 +228,6 @@ export default function Post() {
         ))}
       </div>
 
-      {/* Nút tải thêm */}
       {products.length < totalCount && (
         <div className="text-center my-4">
           <button

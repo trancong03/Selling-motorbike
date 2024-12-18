@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from math import ceil
 import os
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
@@ -7,7 +8,7 @@ import json
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Count
 from django.utils import timezone
-from users.models import BaiViet, YeuThich,GOIGIAODICH,NguoiDung,NAPGIAHAN
+from users.models import BaiViet, YeuThich,GOIGIAODICH,NguoiDung,NAPGIAHAN,NAPDAYTIN
 from django.core.paginator import Paginator
 from .user import authenticate_token
 from ..services.post_service import PostService
@@ -276,34 +277,56 @@ def get_top_10_favorite_products(request):
         
 def get_top_100_baiviet(request):
     page = int(request.GET.get('page', 1))  # Trang hiện tại
-    limit = int(request.GET.get('limit', 12))  # Số lượng bài viết mỗi trang
-
+    limit = int(request.GET.get('limit', 2))  # Số lượng bài viết mỗi trang
     # Lấy tất cả bài viết và sắp xếp giảm dần theo giatri
     queryset = BaiViet.objects.order_by('-giatri')
-    
     # Phân trang
-    paginator = Paginator(queryset, limit)
-    try:
-        paginated_baiviet = paginator.page(page)
-    except:
-        return JsonResponse({'error': 'Page not found'}, status=404)
-
+    offset = (page - 1) * limit
+    products = BaiViet.objects.all()[offset:offset + limit]  # Lấy sản phẩm theo page và limit
+    total_count = BaiViet.objects.count()  # Tổng số sản phẩm
     # Chuẩn bị dữ liệu trả về
     result = []
-    for index, baiviet in enumerate(paginated_baiviet, start=(page - 1) * limit + 1):
+    for index, baiviet in enumerate(products):
         baiviet = model_to_dict(baiviet)
         result.append({
-            'top': index,
+            'top': index+ page*limit -1,
             'baiviet': baiviet,
-            
         })
 
     return JsonResponse({
         'products': result,
-        'total_count': paginator.count,
-        'total_pages': paginator.num_pages,
+        'total_count': total_count,
+        'total_pages': ceil(total_count / limit),
         'current_page': page
     }, safe=False)
+
+def get_gia_tri_day_top(request):
+    try:
+        top = int(request.GET.get('top', 1))  # Default is 1 if not provided
+        mabaiviet = request.GET.get('mabaiviet', None)
+        if top <= 0:
+            return JsonResponse({'error': 'Thứ hạng phải lớn hơn 0'}, status=400)
+        baiviet = BaiViet.objects.get(mabaiviet=mabaiviet)  # Attempt to get the bài viết
+        queryset = BaiViet.objects.order_by('-giatri')
+        if top > queryset.count():
+            return JsonResponse({'error': 'Thứ hạng vượt quá số lượng bài viết'}, status=400)
+        target_baiviet = queryset[top - 1]  # top 1 corresponds to index 0
+        target_giatri = target_baiviet.giatri  # Giá trị bài viết tại vị trí `top`
+
+        required_value = target_giatri + 10000 - baiviet.giatri
+        response_data = {
+            'top': top,
+            'required_value': required_value,
+        }
+        return JsonResponse(response_data, status=200)
+    except ValueError:
+        return JsonResponse({'error': 'Tham số top không hợp lệ'}, status=400)
+    except BaiViet.DoesNotExist:
+        return JsonResponse({'error': 'Không tìm thấy bài viết'}, status=404)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+   
 @csrf_exempt
 def search_products(request):
     query = request.GET.get('q', '')  # Get the search query from the request
@@ -321,7 +344,41 @@ def get_all_giao_dich(request):
         return JsonResponse(query_result, safe=False)  # Trả về dữ liệu dưới dạng JSON
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
-from django.utils.dateparse import parse_date
+
+def get_gia_tri_day_top(request):
+    try:
+        mabaiviet = request.GET.get('mabaiviet', None)
+        top = int(request.GET.get('top', 1))
+        if not mabaiviet:
+            return JsonResponse({'error': 'Mã bài viết không hợp lệ'}, status=400)
+        if top <= 0:
+            return JsonResponse({'error': 'Thứ hạng phải lớn hơn 0'}, status=400)
+        baiviet = BaiViet.objects.get(mabaiviet=mabaiviet)  # Attempt to get the bài viết
+        queryset = BaiViet.objects.order_by('-giatri')
+
+        # Calculate rank of the specific bài viết
+        current_top = list(queryset).index(baiviet) + 1  # top 1 corresponds to index 0
+
+        if top >= current_top:
+            return JsonResponse({'error': 'Thứ hạng không nên'}, status=400)
+        target_baiviet = queryset[top - 1]  # top 1 corresponds to index 0
+        target_giatri = target_baiviet.giatri  # Giá trị bài viết tại vị trí `top`
+
+        required_value = target_giatri + 10000 - baiviet.giatri
+        response_data = {
+            'current_top': current_top,
+            'required_value': required_value,
+        }
+        return JsonResponse(response_data, status=200)
+
+    except ValueError:
+        return JsonResponse({'error': 'Tham số top không hợp lệ'}, status=400)
+    except BaiViet.DoesNotExist:
+        return JsonResponse({'error': 'Không tìm thấy bài viết'}, status=404)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+
 
 @csrf_exempt
 def day_tin(request):
@@ -378,7 +435,6 @@ def day_tin(request):
             baiviet = BaiViet.objects.get(mabaiviet=mabaiviet)  # Kiểm tra bài viết bằng khóa chính
             ngay_hien_tai = now().date()
             ngay_het_han = ngay_hien_tai + timedelta(days=goigiaodich.SONGAY)
-            print(ngay_het_han)
             BaiViet.objects.filter(mabaiviet=mabaiviet).update(ngayhethan=ngay_het_han)
         except BaiViet.DoesNotExist:
             return JsonResponse({"error": "Bài viết không tồn tại."}, status=404)
@@ -386,5 +442,124 @@ def day_tin(request):
         return JsonResponse({
             "message": "Đẩy tin thành công."
         }, status=200)
+    except Exception as e:
+        return JsonResponse({"error": f"Lỗi hệ thống: {str(e)}"}, status=500)
+@csrf_exempt
+def get_favorite_products(request, username):
+    try:
+        # Lấy tất cả các đối tượng FavoriteProduct của người dùng
+        favorite_products = YeuThich.objects.filter(manguoidung=username)
+
+        # Kiểm tra nếu không có sản phẩm yêu thích nào
+        if not favorite_products.exists():
+            return JsonResponse({"data": []}, status=200)  # Trả về danh sách rỗng nếu không có sản phẩm yêu thích
+
+        # Tạo danh sách chứa các sản phẩm yêu thích
+        products_list = []
+        for favorite in favorite_products:
+            product_id = favorite.mabaiviet  # Truy cập sản phẩm yêu thích qua trường product
+            if product_id:  # Kiểm tra nếu sản phẩm tồn tại
+                try:
+                    # Lấy thông tin sản phẩm
+                    product = BaiViet.objects.get(mabaiviet=product_id)
+                    # Chuyển đối tượng Product thành dictionary chứa tất cả các thuộc tính
+                    product_data = model_to_dict(product)
+                    products_list.append(product_data)
+                except BaiViet.DoesNotExist:
+                    # Nếu sản phẩm không tồn tại, bỏ qua
+                    continue
+        return JsonResponse({"data": products_list}, safe=False, status=200)
+    except Exception as e:
+        # Xử lý lỗi chung
+        return JsonResponse({"error": f"An error occurred: {str(e)}"}, status=500)
+
+@csrf_exempt
+def toggle_favorite(request, username, product_id):
+    try:
+        # Kiểm tra xem sản phẩm có tồn tại không
+        favorite = YeuThich.objects.filter(manguoidung=username, mabaiviet=product_id)
+
+        if favorite.exists():
+            # Nếu sản phẩm đã có trong danh sách yêu thích, xóa nó
+            favorite.delete()
+            return JsonResponse({"message": "Product removed from favorites."}, status=200)
+        else:
+            # Nếu sản phẩm chưa có trong danh sách yêu thích, thêm nó
+            YeuThich.objects.create(manguoidung=username, mabaiviet=product_id)
+            return JsonResponse({"message": "Product added to favorites."}, status=200)
+
+    except YeuThich.DoesNotExist:
+        return JsonResponse({"error": "Product not found."}, status=404)
+    except Exception as e:
+        # Xử lý lỗi chung
+        return JsonResponse({"error": f"An error occurred: {str(e)}"}, status=500)
+@csrf_exempt
+def day_top(request):
+    try:
+        if request.method != 'POST':
+            return JsonResponse({"error": "Phương thức không hợp lệ. Chỉ chấp nhận POST."}, status=405)
+
+        # Parse JSON data
+        try:
+            data = json.loads(request.body.decode('utf-8'))
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Dữ liệu JSON không hợp lệ."}, status=400)
+        # Lấy dữ liệu đầu vào
+        mabaiviet = data.get('mabaiviet')
+        top = int(data.get('top'))
+        print(mabaiviet, top)
+        # Kiểm tra dữ liệu đầu vào
+        if not all([mabaiviet, top]):
+            return JsonResponse({"error": "Thiếu dữ liệu đầu vào. Vui lòng cung cấp đầy đủ thông tin."}, status=400)
+        # Fetch bài viết cần đẩy
+        baiviet = BaiViet.objects.filter(mabaiviet=mabaiviet).first()
+        if not baiviet:
+            return JsonResponse({"error": "Bài viết không tồn tại."}, status=404)
+        manguoidung = baiviet.manguoidung
+        # Fetch user
+        nguoidung = NguoiDung.objects.filter(manguoidung=manguoidung).first()
+        if not nguoidung:
+            return JsonResponse({"error": "Người dùng không tồn tại."}, status=404)
+
+        # Lấy bài viết tại vị trí top yêu cầu
+        queryset = BaiViet.objects.order_by('-giatri')
+        try:
+            if top > queryset.count():  # Cần kiểm tra top có phải là số nguyên
+                return JsonResponse({"error": "Top yêu cầu vượt quá số lượng bài viết hiện tại."}, status=400)
+        except ValueError:
+            return JsonResponse({"error": "Vị trí top không hợp lệ."}, status=400)
+        baiviet_top = queryset[top - 1]  # Bài viết tại vị trí top
+        giatri_can_top = baiviet_top.giatri + 10000  # Giá trị cần để đẩy lên top
+        sotien_can_nap = giatri_can_top - baiviet.giatri  # Số tiền cần để đẩy top
+
+        # Kiểm tra số dư
+        if nguoidung.sodu < sotien_can_nap:
+            return JsonResponse({"error": "Số dư không đủ để thực hiện giao dịch."}, status=400)
+
+        # Trừ số dư của người dùng
+        nguoidung.sodu -= sotien_can_nap
+        nguoidung.save()
+
+        # Cập nhật giá trị bài viết
+        try:
+            baiviet = BaiViet.objects.get(mabaiviet=mabaiviet)  # Kiểm tra bài viết bằng khóa chính
+            BaiViet.objects.filter(mabaiviet=mabaiviet).update(giatri=giatri_can_top)
+        except BaiViet.DoesNotExist:
+            return JsonResponse({"error": "Bài viết không tồn tại."}, status=404)
+
+        # Ghi nhận giao dịch
+        ngay_giao_dich = now()
+        NAPDAYTIN.objects.create(
+            MANGUOIDUNG=manguoidung,
+            MABAIVIET=mabaiviet,
+            NGAY=ngay_giao_dich,
+        )
+
+        return JsonResponse({
+            "message": "Đẩy bài viết lên top thành công.",
+            "giatri_moi": giatri_can_top,
+            "sodu_moi": nguoidung.sodu
+        }, status=200)
+
     except Exception as e:
         return JsonResponse({"error": f"Lỗi hệ thống: {str(e)}"}, status=500)

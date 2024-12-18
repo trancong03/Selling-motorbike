@@ -8,7 +8,7 @@ import { getImageProductByID, getUserByIDPost } from "../../../services/apiclien
 export default function CartItem({ Product }) {
     const defaultImage = 'default.jpg';
     const navigate = useNavigate();
-    const { likeProduct, isProductLiked, likeProducts } = useCart();
+    const { isProductLiked, handleAddLikeProduct } = useCart();
     const [isLiked, setIsLiked] = useState(false);
     const [images, setImages] = useState([]); // State để lưu hình ảnh
     const [user, setUser] = useState({}); // State để lưu hình ảnh
@@ -37,8 +37,9 @@ export default function CartItem({ Product }) {
 
     // Cập nhật trạng thái yêu thích khi thay đổi sản phẩm
     useEffect(() => {
-        setIsLiked(isProductLiked(Product.MABAIVIET)); // Đồng bộ trạng thái yêu thích khi sản phẩm thay đổi
-    }, [Product.MABAIVIET, isProductLiked]); // Theo dõi sự thay đổi của likeProducts
+        const likedStatus = isProductLiked(Product.mabaiviet);
+        setIsLiked(likedStatus); // Đồng bộ trạng thái yêu thích khi sản phẩm thay đổi
+    }, [Product.mabaiviet, isProductLiked]); // Theo dõi sự thay đổi của likeProducts
 
     // Xử lý xem chi tiết sản phẩm
     const handleViewDetails = () => {
@@ -47,17 +48,17 @@ export default function CartItem({ Product }) {
 
     // Xử lý thay đổi trạng thái yêu thích
     const handleToggleLike = () => {
-
-        likeProduct(Product);
+        const username = JSON.parse(localStorage.getItem('userInfo'))?.manguoidung || null;
+        handleAddLikeProduct(username, Product.mabaiviet);
         // Gọi hàm likeProduct và để nó xử lý trạng thái yêu thích
     };
-
+    
     return (
         <div className='flex items-center justify-center flex-col mt-3 rounded-2xl'>
-            <div className='w-[15vw] bg-white rounded-2xl ml-3 mb-5 group shadow-2xl'>
+            <div className='w-[15vw] bg-white rounded-2xl ml-2 mb-5 group shadow-2xl'>
                 <div className='relative overflow-hidden flex items-center justify-center flex-col'>
                     <img
-                        src={`http://127.0.0.1:8000//media/images//${images?.length > 0 ? images[0].tenfile : defaultImage}`}
+                        src={`http://127.0.0.1:8000/media/images/${images?.length > 0 ? images[0].tenfile : defaultImage}`}
                         alt={Product.Name || 'Sản phẩm không có tên'}
                         className='w-full h-[15rem] shadow-2xl rounded-t-2xl group-hover:scale-105 group-hover:rounded-t-2xl transition-all duration-300'
                     />
@@ -81,7 +82,7 @@ export default function CartItem({ Product }) {
                                 </div>
                             </button>
                             <button
-                                className="w-[10rem] h-[2.5rem] bg-[#1D7E20] text-white font-bold rounded-full mt-3"
+                                className="w-[10rem] h-[2.5rem] bg-[#F97316] text-white font-bold rounded-full mt-3"
                                 onClick={handleViewDetails}
                             >
                                 <div className="flex items-center justify-center gap-2">
@@ -117,7 +118,7 @@ export default function CartItem({ Product }) {
                 {images?.map((image, index) => (
                     <img
                         key={index}
-                        src={`http://127.0.0.1:8000//media/images/${image.tenfile}`}
+                        src={`http://127.0.0.1:8000/media/images/${image.tenfile}`}
                         alt={`${Product.tieude} ${index + 1}`}
                         className='w-8 h-12 object-cover ml-3 rounded-lg cursor-pointer hover:opacity-80'
                     />

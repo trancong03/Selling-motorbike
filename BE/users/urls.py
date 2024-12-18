@@ -1,11 +1,12 @@
+from django.conf import settings
 from django.urls import path, include   # type: ignore
 from users.views import user, post
+from django.conf.urls.static import static
 from . import views1, views2, views3
 from rest_framework.routers import DefaultRouter  # Nhập DefaultRouter
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView # type: ignore
 # router = DefaultRouter()
 # router.register(r'followers', views3.FollowerViewSet)
-
 urlpatterns = [
     path('login/', user.login, name='login'),
     path('register/', user.register, name='register'),
@@ -38,7 +39,11 @@ urlpatterns = [
     path('product_user/<int:product_id>/', post.get_user_by_id_post, name='get_all_product_image_by_id'),
     path('get_top_10_favorite_products/', post.get_top_10_favorite_products, name='get_top_10_favorite_products'),
     path('get_top_100_baiviet/', post.get_top_100_baiviet, name='get_top_10_favorite_products'),
-     path('search_products/', post.search_products, name='search_products'),
-     path('get_all_giao_dich/', post.get_all_giao_dich, name='get_all_giao_dich'),
-     path('day-tin/', post.day_tin, name='day_tin'),  
-]
+    path('get_gia_tri_day_top/', post.get_gia_tri_day_top, name='get_gia_tri_day_top'),
+    path('search_products/', post.search_products, name='search_products'),
+    path('get_all_giao_dich/', post.get_all_giao_dich, name='get_all_giao_dich'),
+    path('day-tin/', post.day_tin, name='day_tin'),  
+    path('day-top/', post.day_top, name='day_tin'),  
+    path('toggle-favorite/<str:username>/<int:product_id>/', post.toggle_favorite, name='toggle_favorite'),
+    path('favorite-products/<int:username>/', post.get_favorite_products, name='get_favorite_products'),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

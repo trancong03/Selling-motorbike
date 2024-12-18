@@ -3,6 +3,7 @@ import { MapPin, Car, Calendar, BatteryCharging, CheckCircle, Tag, Box, Shield, 
 import { useNavigate } from 'react-router-dom';
 import ExtendPostComponent from './ExtendPostComponent ';
 import ErrorBoundary from './../../ErrorBoundary';
+import DayTopComponent from "./DayTopComponent";
 export default function PostItemUser({ product, userId }) {
     const navigate = useNavigate();
     const images = product.HINHANH;
@@ -79,14 +80,27 @@ export default function PostItemUser({ product, userId }) {
 
         return daysDifference;
     };
+    const calculateDateExprice = (date) => {
+        const currentDate = new Date();
+        const targetDate = new Date(date);
+        if (isNaN(targetDate)) {
+            throw new Error('Invalid date format');
+        }
+
+        const timeDifference = targetDate - currentDate;
+        const daysDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+
+        return daysDifference;
+    };
 
     if (!product) {
         return <p>Không tìm thấy sản phẩm.</p>;
     }
     const [showExtendComponent, setShowExtendComponent] = useState(false);
+    const [showTopComponent, setShowTopComponent] = useState(false);
+
 
     const handleExtend = async ({ product, selectedVoucher }) => {
-        console.log(`Gia hạn bài viết: ${product.MABAIVIET} ${selectedVoucher}`);
         try {
             const response = await fetch('http://127.0.0.1:8000/api/day-tin/', {
                 method: 'POST',
@@ -109,6 +123,7 @@ export default function PostItemUser({ product, userId }) {
 
             // Ẩn component sau khi gia hạn thành công
             setShowExtendComponent(false);
+            setShowTopComponent(false)
             window.location.reload();
         } catch (error) {
             console.error('Lỗi khi gọi API gia hạn:', error);
@@ -117,9 +132,10 @@ export default function PostItemUser({ product, userId }) {
 
     const handleclose = ({ product }) => {
         setShowExtendComponent(false); // Ẩn component sau khi gia hạn
+        setShowTopComponent(false)
     };
     return (
-        <div className="bg-white rounded-lg shadow-md overflow-hidden !text-lg">
+        <div className="ml-[150px] bg-white rounded-lg shadow-md overflow-hidden !text-lg w-[70%]">
             <div className="flex items-center justify-between p-4 bg-slate-200">
                 {/* Seller Info */}
                 <div className="flex items-center space-x-4">
@@ -159,6 +175,12 @@ export default function PostItemUser({ product, userId }) {
                                     <span className="flex text-sm items-center justify-center gap-2"> <Settings2 /> Sửa bài viết</span>
                                 </li>
                                 <li
+                                    className="px-4 py-2 text-gray-800 hover:bg-slate-300 hover:text-gray-900 cursor-pointer"
+                                    onClick={() => setShowTopComponent(true)}
+                                >
+                                    <span className="flex text-sm items-center justify-center gap-2"> <Settings2 /> Đẩy lên top</span>
+                                </li>
+                                <li
                                     className="px-4 py-2 text-gray-800 hover:bg-slate-300 hover:text-red-700 cursor-pointer"
                                     onClick={handleDelete}
                                 >
@@ -185,7 +207,7 @@ export default function PostItemUser({ product, userId }) {
             </div>
 
             {/* Description */}
-            <div className="flex flex-col items-start w-full p-5">
+            <div className="flex flex-col items-start w-full p-5 text-sm">
                 <div dangerouslySetInnerHTML={{ __html: product.MOTA }} />
             </div>
 
@@ -207,11 +229,11 @@ export default function PostItemUser({ product, userId }) {
                     </div>
 
                     {/* Main Image */}
-                    <div className="mt-4 flex-1">
+                    <div className="mt-4 flex-1 mr-10">
                         <img
                             src={`http://127.0.0.1:8000/media/images/${images[currentIndex].TENFILE}`}
                             alt={`Main Image`}
-                            className="w-full max-h-[70vh] rounded-md object-cover"
+                            className="w-[80%] max-h-[50vh] rounded-md object-cover"
                         />
                     </div>
                 </div>
@@ -223,8 +245,8 @@ export default function PostItemUser({ product, userId }) {
                     {new Intl.NumberFormat('vi-VN').format(product.GIABAN) || 'Sản phẩm không có tên'} đ
                 </h2>
 
-                <h2 className="text-xl font-bold">Thông số kỹ thuật</h2>
-                <div className="grid grid-cols-2 gap-4 text-lg w-full">
+                <h2 className="text-xl font-bold mb-3">Thông số kỹ thuật</h2>
+                <div className="grid grid-cols-2 gap-4 text-sm w-full">
                     <div className="flex items-center">
                         <Car className="mr-2" />
                         <h3 className="line-clamp-3">Hãng xe: {product.HANGXE || 'Sản phẩm không có tên'}</h3>
@@ -259,6 +281,8 @@ export default function PostItemUser({ product, userId }) {
                     </div>
                 </div>
             </div>
+            <div className="m-4 text-sm">* Bài viết sẽ hết hạn sau {calculateDateExprice(product.NGAYHETHAN)} ngày </div>
+
             {showExtendComponent && (
                 <div className="absolute z-100 top-0 left-0 w-70% h-90%">
                     <ErrorBoundary>
@@ -270,6 +294,18 @@ export default function PostItemUser({ product, userId }) {
                         />
                     </ErrorBoundary>
                    
+                </div>
+            )}
+            {showTopComponent && (
+                <div className="absolute z-100 top-0 left-0 w-70% h-90%">
+                    <ErrorBoundary>
+                        <DayTopComponent
+                            product={product}
+                            userId={userId}
+                            onClose={handleclose}
+                        />
+                    </ErrorBoundary>
+
                 </div>
             )}
 

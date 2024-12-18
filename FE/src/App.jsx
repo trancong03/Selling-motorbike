@@ -27,8 +27,8 @@ import PaymentForm from "./Pages/PaymentForm";
 import ResultPage from "./Components/ResultPage";
 import ProductLike from "./Pages/ProductLike";
 import SearchProduct from './Components/product/SearchProduct';
-import NotificationList from "./Components/Header/NotificationList";
 import AboutUs from "../src/Components/ui/AboutUs";
+import DayTopComponent from "./Components/ui/DayTopComponent";
 
 function App() {
   const [showLogin, setShowLogin] = useState(false);
@@ -52,7 +52,6 @@ function App() {
   const handleLoginSuccess = (data) => {
     setUserInfo(data.user);
     const { token } = data;
-    console.log(data);
     localStorage.setItem('authToken', token);
     localStorage.setItem('userInfo', JSON.stringify(data.user));
     setShowLogin(false);
@@ -119,7 +118,7 @@ function App() {
   }, []); // Chạy một lần khi component mount
 
   return (
-    <CartProvider User={userInfo}>
+    <CartProvider User={userInfo} onLoginClick={handleLoginClick} >
       <BrowserRouter>
         {/* Điều chỉnh Header chỉ hiển thị khi không phải là các route admin */}
         {!isAdminRoute && (
@@ -139,13 +138,13 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/payment" element={<PaymentForm />} />
+          <Route path="/daytop" element={<DayTopComponent />} />
           <Route path="/payment-result" element={<ResultPage/>} />
           <Route path="/account/*" element={<Account user={userInfo} setUserInfo={setUserInfo} />}>
             <Route path="like-product" element={<ErrorBoundary><ProductLike /></ErrorBoundary>} />
             <Route path="info" element={<InfomationAccount user={userInfo} setUserInfo={setUserInfo} />} />
             <Route path="reset-password" element={<ResetPassWord user={userInfo} />} />
             <Route path="user-post/" element={<PostOfUser userId={userInfo} />} />
-            
           </Route>
           <Route path="/aboutus" element={<AboutUs />} />
           <Route path="/product-detail" element={<ProductDetail />} />

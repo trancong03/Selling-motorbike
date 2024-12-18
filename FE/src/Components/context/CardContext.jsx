@@ -1,58 +1,57 @@
 import { createContext, useState, useContext, useEffect } from 'react';
+import { getLikeProduct, handleLikeProduct } from '../../../services/apiclient';
 
 const CartContext = createContext();
 
-export const CartProvider = ({ children, User }) => {
+export const CartProvider = ({ children, User, onLoginClick }) => {
     const personID = User? User.manguoidung :null;
     const [likeProducts, setLikeProducts] = useState([]);
-    const fetchLikedProducts = async () => {
-        if (!personID) return;
-
+    
+    // Inside your CartContext (useCart)
+    const fetchLike = async () => {
         try {
-            const response = await fetch(`http://127.0.0.1:8000/api/get-like-post/${personID}/`);
-            const result = await response.json();
-            if (result.favorites) {
-                setLikeProducts(result.favorites);
-            } else {
-                console.error('Invalid response format:', result);
+            if (personID){
+                const result = await getLikeProduct(personID);
+                // Kiểm tra result.data trước khi xử lý
+                if (result && result.data) {
+                    const products = result.data || []; // Đảm bảo cart_items là mảng
+                    setLikeProducts(products);
+                }
             }
         } catch (error) {
-            console.error('Error fetching liked products:', error);
+            console.error('Error while fetching cart:', error);
         }
+    };
+
+    const isProductLiked = (productId) => {
+        const status = likeProducts.some(product => product.mabaiviet === productId);
+        return status;
     };
     useEffect(() => {
-        fetchLikedProducts();
-    }, [personID]);
-    
-    const isProductLiked = (item) => {
-        return likeProducts.some(product => product.mabaiviet === item);
-    };
-    // Inside your CartContext (useCart)
-  
-    const likeProduct = async (item) => {
-        try {
-            const isAlreadyLiked = isProductLiked(item.MABAIVIET); 
-            // Check if already liked from state
-            const formData = new FormData();
-            formData.append('manguoidung', personID);
-            formData.append('maBaiViet', item.MABAIVIET);
-
-            const response = await fetch(isAlreadyLiked
-                ? 'http://127.0.0.1:8000/api/remove-like-post/'
-                : 'http://127.0.0.1:8000/api/like-post/', {
-                method: 'POST',
-                body: formData,
-            });
-            fetchLikedProducts();
-        } catch (error) {
-            console.error('Error updating product likes:', error);
+        if (personID) {
+            fetchLike();
         }
+    }, [personID]);
+
+    const handleAddLikeProduct = (username, product_id) => {
+        if (!username) {
+            onLoginClick();
+        }else{
+            handleLikeProduct(username, product_id)
+                .then(() => {
+                    fetchLike();
+                })
+                .catch(error => {
+                    console.error("Error add cart item:", error);
+                });
+        }
+       
     };
     
     return (
         <CartContext.Provider value={{
             personID, User,
-            likeProduct, likeProducts, isProductLiked, 
+            likeProducts, isProductLiked, handleAddLikeProduct
         }}>
             {children}
         </CartContext.Provider>
