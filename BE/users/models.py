@@ -137,3 +137,13 @@ class NAPGIAHAN(models.Model):
     class Meta:
         db_table = 'NAPGIAHAN'  # Custom table name for the images
 
+class NAPDAYTIN(models.Model):
+    MAGD = models.AutoField(primary_key=True)
+    MANGUOIDUNG = models.IntegerField()
+    MABAIVIET = models.IntegerField()
+    NGAY = models.DateTimeField(max_length=255)
+    class Meta:
+        db_table = 'NAPDAYTIN'  # Custom table name for the images
+
+
+

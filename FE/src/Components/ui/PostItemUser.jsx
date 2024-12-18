@@ -3,6 +3,7 @@ import { MapPin, Car, Calendar, BatteryCharging, CheckCircle, Tag, Box, Shield, 
 import { useNavigate } from 'react-router-dom';
 import ExtendPostComponent from './ExtendPostComponent ';
 import ErrorBoundary from './../../ErrorBoundary';
+import DayTopComponent from "./DayTopComponent";
 export default function PostItemUser({ product, userId }) {
     const navigate = useNavigate();
     const images = product.HINHANH;
@@ -96,9 +97,10 @@ export default function PostItemUser({ product, userId }) {
         return <p>Không tìm thấy sản phẩm.</p>;
     }
     const [showExtendComponent, setShowExtendComponent] = useState(false);
+    const [showTopComponent, setShowTopComponent] = useState(false);
+
 
     const handleExtend = async ({ product, selectedVoucher }) => {
-        console.log(`Gia hạn bài viết: ${product.MABAIVIET} ${selectedVoucher}`);
         try {
             const response = await fetch('http://127.0.0.1:8000/api/day-tin/', {
                 method: 'POST',
@@ -121,6 +123,7 @@ export default function PostItemUser({ product, userId }) {
 
             // Ẩn component sau khi gia hạn thành công
             setShowExtendComponent(false);
+            setShowTopComponent(false)
             window.location.reload();
         } catch (error) {
             console.error('Lỗi khi gọi API gia hạn:', error);
@@ -129,6 +132,7 @@ export default function PostItemUser({ product, userId }) {
 
     const handleclose = ({ product }) => {
         setShowExtendComponent(false); // Ẩn component sau khi gia hạn
+        setShowTopComponent(false)
     };
     return (
         <div className="bg-white rounded-lg shadow-md overflow-hidden !text-lg">
@@ -169,6 +173,12 @@ export default function PostItemUser({ product, userId }) {
                                     onClick={() => handleEdit({ product })}
                                 >
                                     <span className="flex text-sm items-center justify-center gap-2"> <Settings2 /> Sửa bài viết</span>
+                                </li>
+                                <li
+                                    className="px-4 py-2 text-gray-800 hover:bg-slate-300 hover:text-gray-900 cursor-pointer"
+                                    onClick={() => setShowTopComponent(true)}
+                                >
+                                    <span className="flex text-sm items-center justify-center gap-2"> <Settings2 /> Đẩy lên top</span>
                                 </li>
                                 <li
                                     className="px-4 py-2 text-gray-800 hover:bg-slate-300 hover:text-red-700 cursor-pointer"
@@ -284,6 +294,18 @@ export default function PostItemUser({ product, userId }) {
                         />
                     </ErrorBoundary>
                    
+                </div>
+            )}
+            {showTopComponent && (
+                <div className="absolute z-100 top-0 left-0 w-70% h-90%">
+                    <ErrorBoundary>
+                        <DayTopComponent
+                            product={product}
+                            userId={userId}
+                            onClose={handleclose}
+                        />
+                    </ErrorBoundary>
+
                 </div>
             )}
 

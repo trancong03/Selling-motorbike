@@ -28,6 +28,7 @@ import ResultPage from "./Components/ResultPage";
 import ProductLike from "./Pages/ProductLike";
 import SearchProduct from './Components/product/SearchProduct';
 import AboutUs from "../src/Components/ui/AboutUs";
+import DayTopComponent from "./Components/ui/DayTopComponent";
 
 function App() {
   const [showLogin, setShowLogin] = useState(false);
@@ -137,6 +138,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/payment" element={<PaymentForm />} />
+          <Route path="/daytop" element={<DayTopComponent />} />
           <Route path="/payment-result" element={<ResultPage/>} />
           <Route path="/account/*" element={<Account user={userInfo} setUserInfo={setUserInfo} />}>
             <Route path="like-product" element={<ErrorBoundary><ProductLike /></ErrorBoundary>} />
