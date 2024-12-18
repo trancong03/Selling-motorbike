@@ -5,7 +5,7 @@ import NoPosts from './NoPosts';
 export default function PostOfUser({ userId }) {
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(true);
-
+    
     useEffect(() => {
         if (!userId || !userId.manguoidung) {
             setLoading(false);
@@ -22,7 +22,8 @@ export default function PostOfUser({ userId }) {
                 }
 
                 const data = await response.json();
-
+                console.log(data[0].NGAYHETHAN);
+                
                 // Kiểm tra nếu dữ liệu không rỗng
                 if (Array.isArray(data) && data.length > 0) {
                     setPosts(data);
@@ -59,6 +60,7 @@ export default function PostOfUser({ userId }) {
                                     userId={userId}
                                 />
                             </div>
+
                         ))}
                     </ul>
                 </div>

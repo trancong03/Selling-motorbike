@@ -1,11 +1,12 @@
+from django.conf import settings
 from django.urls import path, include   # type: ignore
 from users.views import user, post
+from django.conf.urls.static import static
 from . import views1, views2, views3
 from rest_framework.routers import DefaultRouter  # Nhập DefaultRouter
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView # type: ignore
 # router = DefaultRouter()
 # router.register(r'followers', views3.FollowerViewSet)
-
 urlpatterns = [
     path('login/', user.login, name='login'),
     path('register/', user.register, name='register'),
@@ -41,4 +42,4 @@ urlpatterns = [
      path('search_products/', post.search_products, name='search_products'),
      path('get_all_giao_dich/', post.get_all_giao_dich, name='get_all_giao_dich'),
      path('day-tin/', post.day_tin, name='day_tin'),  
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

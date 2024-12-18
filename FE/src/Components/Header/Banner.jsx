@@ -42,7 +42,7 @@ export default function Banner() {
         {/* Kiểm tra nếu products là mảng hợp lệ */}
         {Array.isArray(products.data) ? (
           products.data.map((product) => (
-            <ErrorBoundary key={product.product_id}>
+            <ErrorBoundary key={product.mabaiviet}>
                <div className="relative">
                                           <p className="absolute top-2 z-10 right-8 bg-gradient-to-r text-black text-sm font-extrabold rounded-full px-3 py-1 shadow-lg flex items-center space-x-2 transform scale-110 hover:scale-125 transition duration-300">
                                               <p className="flex items-center justify-center text-lg">

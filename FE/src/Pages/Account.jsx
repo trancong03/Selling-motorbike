@@ -6,6 +6,7 @@ import InfomationAccount from "../Components/userUI/InfomationAccount"; // Infor
 import PostOfUser from "../Components/userUI/PostOfUser";
 import ProductLike from "./ProductLike";
 import ErrorBoundary from "../ErrorBoundary";
+import PaymentForm from "./PaymentForm";
 
 export default function Account({ user, setUserInfo }) {
   return (
@@ -19,6 +20,7 @@ export default function Account({ user, setUserInfo }) {
           {/* Route mặc định cho InfomationAccount */}
           <Route path="/" element={<InfomationAccount user={user} setUserInfo={setUserInfo} />} />
           {/* Route cho ResetPassWord */}
+          <Route path="/payment" element={<PaymentForm />} />
           <Route path="like-product" element={<ErrorBoundary><ProductLike /></ErrorBoundary>} />
           <Route path="reset-password" element={<ResetPassWord user={user} />} />
           <Route path="user-post/" element={<PostOfUser userId={user} />} />

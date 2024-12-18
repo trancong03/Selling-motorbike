@@ -79,6 +79,18 @@ export default function PostItemUser({ product, userId }) {
 
         return daysDifference;
     };
+    const calculateDateExprice = (date) => {
+        const currentDate = new Date();
+        const targetDate = new Date(date);
+        if (isNaN(targetDate)) {
+            throw new Error('Invalid date format');
+        }
+
+        const timeDifference = targetDate - currentDate;
+        const daysDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+
+        return daysDifference;
+    };
 
     if (!product) {
         return <p>Không tìm thấy sản phẩm.</p>;
@@ -259,6 +271,8 @@ export default function PostItemUser({ product, userId }) {
                     </div>
                 </div>
             </div>
+            <div className="m-4 text-sm">* Bài viết sẽ hết hạn sau {calculateDateExprice(product.NGAYHETHAN)} ngày </div>
+
             {showExtendComponent && (
                 <div className="absolute z-100 top-0 left-0 w-70% h-90%">
                     <ErrorBoundary>

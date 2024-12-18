@@ -29,6 +29,9 @@ ALLOWED_HOSTS = []
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'd3ed-101-53-36-58.ngrok-free.app']
+
+
 JWT_SECRET_KEY = 'TRANCHICONG3003'
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:5173',  # Thêm địa chỉ ứng dụng React
@@ -66,7 +69,7 @@ SIMPLE_JWT = {
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
 }
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '7340-14-161-13-253.ngrok-free.app']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'd3ed-101-53-36-58.ngrok-free.app']
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -125,9 +128,6 @@ import os
 # settings.py của Django
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-
-
 
 
 # Password validation

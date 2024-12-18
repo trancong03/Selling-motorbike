@@ -1,5 +1,5 @@
 import { ImagePlus } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import LocationSelector from "../Components/ui/LocationSelector";
 import { useCart } from "../Components/context/CardContext";
 import DungTichSelect from "../Components/newpost/DungTichSelect ";
@@ -19,7 +19,6 @@ function NewPost() {
     const { personID, User } = useCart();
     const [images, setImages] = useState([]);
     const [loaiXe,setLoaiXe] = useState([]);
-    console.log(loaiXe);
     
     const [formData, setFormData] = useState({
         manguoidung: "",
@@ -43,7 +42,6 @@ function NewPost() {
         danhSachHinh: "", // Sẽ chứa chuỗi ảnh
     });
 
-    console.log(formData.hangXe);
     
     const updatediachi = (diachi) => {
         setFormData({
@@ -103,11 +101,9 @@ function NewPost() {
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
-        console.log("Form data:", formData);
     };
     const handleDropdownChange = (fieldName) => (selectedValue) => {
         setFormData({ ...formData, [fieldName]: selectedValue });
-        console.log("Form data:", formData);
     };
     const navigate = useNavigate();
     // Xử lý khi submit form
@@ -163,24 +159,34 @@ function NewPost() {
         if (parts.length === 2) return parts.pop().split(";").shift();
         return "";
     }
+     // Kiểm tra sự thay đổi của formData để tránh vòng lặp vô hạn
+    const prevFormDataRef = useRef();
+
+    useEffect(() => {
+        const { hangXe, mauXe, loaiXe, mauSac, style } = formData;
+        const prevData = JSON.parse(prevFormDataRef.current || '{}');
+
+        if (prevData.hangXe !== hangXe || prevData.mauXe !== mauXe || prevData.loaiXe !== loaiXe || prevData.mauSac !== mauSac || prevData.style !== style) {
+            prevFormDataRef.current = JSON.stringify(formData);
+            handlePredictPrice();
+        }
+    }, [formData.hangXe, formData.mauXe, formData.loaiXe, formData.mauSac, formData.style]);
 
     const handlePredictPrice = async () => {
-        const { hangXe, mauXe, loaiXe, mauSac, style } = formData;  // Assuming formData1 is defined
+        const { hangXe, mauXe, loaiXe, mauSac, style } = formData;  // Assuming formData is defined
 
-       
-    
-        // Prepare the data as FormData
+        // Kiểm tra nếu tất cả các trường cần thiết đều có dữ liệu
+        if (!hangXe || !mauXe || !loaiXe || !mauSac || !style) {
+            return;
+        }
+
         const formData1 = new FormData();
-        formData1.append('brand', hangXe);  // Access formData1 properties correctly
+        formData1.append('brand', hangXe);
         formData1.append('model', mauXe);
         formData1.append('color', mauSac);
         formData1.append('style', style);
         formData1.append('type', loaiXe);
-    
-        // Get the auth token from localStorage
         const token = localStorage.getItem('authToken');
-        console.log(token);
-        console.log(formData1.type);
         try {
             // Make the POST request with async/await using FormData
             const response = await apiClient.post('/api/predict-price/', formData1, {
@@ -189,14 +195,13 @@ function NewPost() {
                     'Authorization': `Bearer ${token}`,
                 },
             });
-    
+
             // Check if the request was successful
-            if (response.status === 200) {  // Axios uses status, not ok
-                const result = response.data;  // Use response.data instead of response.json()
-                console.log("Predicted price:", result.predicted_price);
+            if (response.status === 200) {
+                const result = response.data;
                 setFormData(prevFormData => ({
                     ...prevFormData,
-                    giaBan: result.predicted_price,
+                    giaBan: parseInt(result.predicted_price.replace(/,/g, ''), 10)
                 }));
             } else {
                 console.error("Error:", response.status, response.statusText);
@@ -207,6 +212,8 @@ function NewPost() {
             console.error("Request failed:", error);
         }
     };
+
+
 
     const [footerPaymentMethods, setFooterPaymentMethods] = useState(formData.moTa); // Lưu trữ nội dung mô tả
     return (
@@ -457,18 +464,8 @@ function NewPost() {
                             onChange={handleChange}
                             className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
                         />
-                        
                     </div>
-                    <div className="container">
-                    <button
-                                    type="button"
-                                    onClick={() => handlePredictPrice()}
-                                    className="mt-4 px-4 py-2 bg-red-500 text-white rounded-md"
-                                >
-                                    Dự đoán giá
-                                </button>
-                    </div>
-                            
+
                 </div>
 
                 {/* Tiêu đề và mô tả */}

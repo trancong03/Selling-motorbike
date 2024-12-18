@@ -143,7 +143,6 @@ function App() {
             <Route path="info" element={<InfomationAccount user={userInfo} setUserInfo={setUserInfo} />} />
             <Route path="reset-password" element={<ResetPassWord user={userInfo} />} />
             <Route path="user-post/" element={<PostOfUser userId={userInfo} />} />
-            
           </Route>
           <Route path="/product-detail" element={<ProductDetail />} />
           <Route path="/search-product/" element={<SearchProduct />} />

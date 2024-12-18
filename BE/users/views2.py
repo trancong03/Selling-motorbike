@@ -3,13 +3,15 @@ from sklearn.tree import DecisionTreeRegressor # ủ
 import joblib
 import pandas as pd # type: ignore
 import json  # To parse JSON data from request
+import os
+# Đường dẫn đến các file
+path_to_encoders = os.path.join("users", "new_label_encoders_1.pkl")
+path_to_model = os.path.join("users", "new_decision_tree_model_1.pkl")
 from django.views.decorators.csrf import csrf_exempt
 # Load the model and LabelEncoders (Make sure to use raw strings for paths or forward slashes)
-try:
-    model = joblib.load(r'E:\_2025_HK1\DoAnChuyenNganh\Selling-motorbike\Selling-motorbike\BE\media\new_decision_tree_model_1.pkl')
-except Exception as e:
-    print(f"Error loading model: {e}")
-label_encoders = joblib.load(r'E:\_2025_HK1\DoAnChuyenNganh\Selling-motorbike\Selling-motorbike\BE\media\new_label_encoders_1.pkl')
+# Load model và LabelEncoders
+model = joblib.load(path_to_model)  # Load model từ path_to_model
+label_encoders = joblib.load(path_to_encoders)  # Load label_encoders từ path_to_encoders
 @csrf_exempt
 def predict_price(request):
     if request.method == 'POST':
@@ -56,6 +58,7 @@ def predict_price(request):
             return JsonResponse({'predicted_price': formatted_price})
         
         except Exception as e:
+            print(str(e))
             return JsonResponse({'error': f'Error processing data: {str(e)}'}, status=400)
 
     return JsonResponse({'error': 'Invalid request method'}, status=405)

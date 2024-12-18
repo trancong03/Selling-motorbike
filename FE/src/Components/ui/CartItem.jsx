@@ -57,7 +57,7 @@ export default function CartItem({ Product }) {
             <div className='w-[15vw] bg-white rounded-2xl ml-3 mb-5 group shadow-2xl'>
                 <div className='relative overflow-hidden flex items-center justify-center flex-col'>
                     <img
-                        src={`http://127.0.0.1:8000//media/images//${images?.length > 0 ? images[0].tenfile : defaultImage}`}
+                        src={`http://127.0.0.1:8000/media/images/${images?.length > 0 ? images[0].tenfile : defaultImage}`}
                         alt={Product.Name || 'Sản phẩm không có tên'}
                         className='w-full h-[15rem] shadow-2xl rounded-t-2xl group-hover:scale-105 group-hover:rounded-t-2xl transition-all duration-300'
                     />
@@ -117,7 +117,7 @@ export default function CartItem({ Product }) {
                 {images?.map((image, index) => (
                     <img
                         key={index}
-                        src={`http://127.0.0.1:8000//media/images/${image.tenfile}`}
+                        src={`http://127.0.0.1:8000/media/images/${image.tenfile}`}
                         alt={`${Product.tieude} ${index + 1}`}
                         className='w-8 h-12 object-cover ml-3 rounded-lg cursor-pointer hover:opacity-80'
                     />

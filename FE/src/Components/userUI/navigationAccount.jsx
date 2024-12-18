@@ -143,7 +143,7 @@ export default function NavigationAccount({ user, setUserInfo }) {
                         <a href="/account/user-post" className="block p-2 rounded">Quản lý Tin</a></li>
                     <li className='flex justify-start ml-3 items-center  hover:bg-gray-200'>
                         <FaCartPlus />
-                        <a href="/account/cart" className="block p-2 rounded">Sản phẩm trong giỏ hàng</a></li>
+                        <a href="/account/payment" className="block p-2 rounded">Nạp tiền tài khoản</a></li>
                     <li className='flex justify-start ml-3 items-center  hover:bg-gray-200'>
                         <Heart />
                         <a href="/account/like-product" className="block p-2 rounded">Tin yêu thích</a></li>
