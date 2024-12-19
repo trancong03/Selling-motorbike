@@ -183,7 +183,12 @@ const images = product.HINHANH;
                     </div>
                 </div>
             </div>
-           
+            <button
+                onClick={onClose}
+                className="mt-2 w-40 bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600"
+            >
+                Đóng
+            </button>
         </div>
        
     );

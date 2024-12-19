@@ -2,8 +2,9 @@ import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { MapPin, Clock, Star, Phone, MessageSquare, Car, Calendar, BatteryCharging, CheckCircle, Tag, Box, Shield, UserPlus, UserCheck } from 'lucide-react';
 import axios from "axios";
+import { useCart } from "../Components/context/CardContext";
 export default function productDetail() {
-
+    const { handleShowPhone } = useCart();
     const { state } = useLocation();
     const { product, user, image } = state || {}; // Lấy product từ state
     const images = image;
@@ -49,6 +50,26 @@ export default function productDetail() {
             console.error('Error while following/unfollowing', error);
         }
     };
+        const [showPhone, setShowPhone] = useState(false);
+
+        const togglePhoneVisibility = () => {
+            const username = JSON.parse(localStorage.getItem('userInfo'))?.manguoidung || null;
+            if(username){
+                setShowPhone(!showPhone);
+            }
+            else{
+                handleShowPhone(username);
+            }
+        };
+
+        // Hàm ẩn một phần số điện thoại
+        const formatPhoneNumber = (number) => {
+            if (number?.length > 4) {
+                return `${number.slice(0, 4)}******${number.slice(-3)}`;
+            }
+            return number; // Trả lại số gốc nếu số ngắn hơn 4 ký tự
+        };
+        
     return (
         <div className="flex items-center justify-center">
             <div className="flex  max-w-[100%] items-center justify-center">
@@ -198,10 +219,13 @@ export default function productDetail() {
                                 </div>
                                 {/* Action Buttons */}
                                 <div className="grid grid-cols-2 gap-4 mb-6">
-                                    <button className="w-full bg-green-500 hover:bg-green-600 text-white rounded-lg py-2 flex items-center justify-center">
+                                    <div
+                                        className="w-full bg-green-500 hover:bg-green-600 text-white rounded-lg py-2 flex items-center justify-center cursor-pointer"
+                                        onClick={togglePhoneVisibility}
+                                    >
                                         <Phone className="w-5 h-5 mr-2" />
-                                        {users?.sodienthoai}
-                                    </button>
+                                        {showPhone ? users?.sodienthoai : formatPhoneNumber(users?.sodienthoai)}
+                                    </div>
                                     <button className="w-full border-2 border-green-500 hover:bg-green-100 text-green-500 rounded-lg py-2 flex items-center justify-center">
                                         <MessageSquare className="w-5 h-5 mr-2" />
                                         Chat

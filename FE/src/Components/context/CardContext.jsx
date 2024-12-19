@@ -47,11 +47,16 @@ export const CartProvider = ({ children, User, onLoginClick }) => {
         }
        
     };
+    const handleShowPhone = (username) => {
+        if (!username) {
+            onLoginClick();
+        } 
+    };
     
     return (
         <CartContext.Provider value={{
             personID, User,
-            likeProducts, isProductLiked, handleAddLikeProduct
+            likeProducts, isProductLiked, handleAddLikeProduct, handleShowPhone
         }}>
             {children}
         </CartContext.Provider>
