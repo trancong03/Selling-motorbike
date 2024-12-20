@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-
+import "../../Style/TransactionManagement.css";
 const TransactionManagement = () => {
   const [transactions, setTransactions] = useState([]);
   const [editingTransaction, setEditingTransaction] = useState(null);
@@ -63,7 +63,7 @@ const TransactionManagement = () => {
   };
 
   return (
-    <div>
+    <div className="transaction-management">
       <h2 className="text-xl font-bold mb-4">Quản lý gói giao dịch</h2>
 
       <table className="min-w-full bg-white border-collapse">

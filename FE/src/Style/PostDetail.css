@@ -1,0 +1,62 @@
+/* Container chính cho toàn bộ chi tiết bài viết */
+.post-detail {
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  /* Tiêu đề chính */
+  .post-detail h1 {
+    font-size: 28px;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  /* Tiêu đề bài viết */
+  .post-detail h2 {
+    font-size: 24px;
+    color: #2c3e50;
+    margin-bottom: 15px;
+  }
+  
+  /* Thông tin bài viết */
+  .post-info {
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 4px;
+  }
+  
+  .post-info p {
+    margin-bottom: 10px;
+    color: #555;
+  }
+  
+  .post-info strong {
+    color: #007bff;
+    font-weight: bold;
+    margin-right: 5px;
+  }
+  
+  /* Định dạng cho nội dung và mô tả dài */
+  .post-info p:nth-child(3),
+  .post-info p:nth-child(4) {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    hyphens: auto;
+  }
+  
+  /* Định dạng cho giá trị tiền tệ */
+  .post-info p:nth-child(6) {
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  /* Định dạng cho ngày tháng */
+  .post-info p:nth-child(8),
+  .post-info p:nth-child(9) {
+    color: #777;
+  }

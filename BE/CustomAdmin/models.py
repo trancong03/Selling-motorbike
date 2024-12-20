@@ -148,3 +148,17 @@ class ThuocTinhHeThong(models.Model):
     class Meta:
         db_table = 'THUOCTINHHETHONG'
         managed = False
+
+class Voucher(models.Model):
+    MaVoucher = models.AutoField(primary_key=True)  # IDENTITY(1,1) -> AutoField
+    code = models.CharField(max_length=20, unique=True)  # char(20), UNIQUE NONCLUSTERED
+    Mota = models.TextField(null=True, blank=True)  # nvarchar(max)
+    GiaTriGiam = models.FloatField()  # float
+    NgayBatDau = models.DateTimeField()  # datetime
+    NgayKetThuc = models.DateTimeField()  # datetime
+    HoatDong = models.BooleanField(default=True)  # bit with DEFAULT ((1))
+    NgayTao = models.DateTimeField(auto_now_add=True)  # datetime with DEFAULT (getdate())
+
+    class Meta:
+        db_table = 'Voucher'  # Tên bảng trong SQL Server
+        managed = False

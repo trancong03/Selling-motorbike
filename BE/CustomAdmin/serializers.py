@@ -63,3 +63,8 @@ class ThongBaoNguoiDungSerializer(serializers.ModelSerializer):
     class Meta: 
         model = ThongBao
         fields = ['mathongbao', 'manguoidung', 'mabaiviet', 'tieude', 'noidung', 'thoigiangui']
+
+class VoucherSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Voucher
+        fields = '__all__'  

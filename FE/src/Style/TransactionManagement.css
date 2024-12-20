@@ -1,0 +1,126 @@
+/* Container chính cho component */
+.transaction-management {
+    padding: 20px;
+    background: #f5f5f5;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Tiêu đề chính và phụ */
+  .transaction-management h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  .transaction-management h3 {
+    font-size: 18px;
+    margin-bottom: 15px;
+    color: #666;
+  }
+  
+  /* Bảng giao dịch */
+  .transaction-management table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  .transaction-management th,
+  .transaction-management td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .transaction-management th {
+    background-color: #4CAF50;
+    color: white;
+    font-weight: bold;
+  }
+  
+  .transaction-management td {
+    font-size: 14px;
+  }
+  
+  .transaction-management tbody tr:hover {
+    background-color: #f5f5f5;
+  }
+  
+  /* Nút trong bảng */
+  .transaction-management button {
+    font-size: 12px;
+    padding: 6px 10px;
+    margin: 0 5px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .transaction-management button.bg-blue-500 {
+    background-color: #007BFF;
+    color: white;
+  }
+  
+  .transaction-management button.bg-blue-500:hover {
+    background-color: #0056b3;
+  }
+  
+  .transaction-management button.bg-red-500 {
+    background-color: #DC3545;
+    color: white;
+  }
+  
+  .transaction-management button.bg-red-500:hover {
+    background-color: #c82333;
+  }
+  
+  /* Form thêm và sửa giao dịch */
+  .transaction-management .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+  }
+  
+  .transaction-management input {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 100%;
+  }
+  
+  /* Nút thêm mới và cập nhật */
+  .transaction-management button.bg-green-500 {
+    background-color: #28a745;
+    color: white;
+    padding: 10px 20px;
+    margin-top: 15px;
+    display: inline-block;
+  }
+  
+  .transaction-management button.bg-green-500:hover {
+    background-color: #218838;
+  }
+  
+  /* Nút cập nhật */
+  .transaction-management button.bg-blue-500 {
+    background-color: #007BFF;
+    color: white;
+    padding: 10px 20px;
+    margin-top: 15px;
+    display: inline-block;
+  }
+  
+  .transaction-management button.bg-blue-500:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Trường nhập liệu bị disable */
+  .transaction-management input[disabled] {
+    background-color: #e9ecef;
+    opacity: 0.7;
+    cursor: not-allowed;
+  }

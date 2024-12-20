@@ -1,6 +1,6 @@
 from rest_framework import viewsets
-from .models import NguoiDung, BaiViet, GoiGiaoDich, HinhAnh, Follwer, NapDayTin, NapGiaHan, NapTienTaiKhoan, ThongBao, ThuocTinhHeThong
-from .serializers import NguoiDungSerializer, BaiVietSerializer, GoiGiaoDichSerializer, GoiGiaoDichSerializer, HinhAnhSerializer, FollwerSerializer, NapDayTinSerializer, NapGiaHanSerializer, NapTienTaiKhoanSerializer, ThongBaoSerializer, ThuocTinhHeThongSerializer, SystemSettingsSerializer, ThongBaoNguoiDungSerializer
+from .models import NguoiDung, BaiViet, GoiGiaoDich, HinhAnh, Follwer, NapDayTin, NapGiaHan, NapTienTaiKhoan, ThongBao, ThuocTinhHeThong, Voucher
+from .serializers import NguoiDungSerializer, BaiVietSerializer, GoiGiaoDichSerializer, GoiGiaoDichSerializer, HinhAnhSerializer, FollwerSerializer, NapDayTinSerializer, NapGiaHanSerializer, NapTienTaiKhoanSerializer, ThongBaoSerializer, ThuocTinhHeThongSerializer, SystemSettingsSerializer, ThongBaoNguoiDungSerializer, VoucherSerializer
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
@@ -45,6 +45,10 @@ class NapTienTaiKhoanViewSet(viewsets.ModelViewSet):
 class ThongBaoViewSet(viewsets.ModelViewSet):
     queryset = ThongBao.objects.all()
     serializer_class = ThongBaoSerializer
+
+class VoucherViewSet(viewsets.ModelViewSet):
+    queryset = Voucher.objects.all()
+    serializer_class = VoucherSerializer
 
 class ThongBaoList(APIView):
     def get(self, request, manguoidung, format=None):
