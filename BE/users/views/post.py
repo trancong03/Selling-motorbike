@@ -279,17 +279,19 @@ def get_top_100_baiviet(request):
     page = int(request.GET.get('page', 1))  # Trang hiện tại
     limit = int(request.GET.get('limit', 2))  # Số lượng bài viết mỗi trang
     # Lấy tất cả bài viết và sắp xếp giảm dần theo giatri
-    queryset = BaiViet.objects.order_by('-giatri')
-    # Phân trang
     offset = (page - 1) * limit
-    products = BaiViet.objects.all()[offset:offset + limit]  # Lấy sản phẩm theo page và limit
+    products =BaiViet.objects.filter(status = 1).order_by('-giatri')[offset:offset + limit]  # Lấy sản phẩm theo page và limit
     total_count = BaiViet.objects.count()  # Tổng số sản phẩm
     # Chuẩn bị dữ liệu trả về
     result = []
     for index, baiviet in enumerate(products):
         baiviet = model_to_dict(baiviet)
+        if(page ==1):
+            topindex = index +1
+        else:
+            topindex =index + page * limit -1,
         result.append({
-            'top': index+ page*limit -1,
+            'top': topindex,
             'baiviet': baiviet,
         })
 
@@ -300,31 +302,6 @@ def get_top_100_baiviet(request):
         'current_page': page
     }, safe=False)
 
-def get_gia_tri_day_top(request):
-    try:
-        top = int(request.GET.get('top', 1))  # Default is 1 if not provided
-        mabaiviet = request.GET.get('mabaiviet', None)
-        if top <= 0:
-            return JsonResponse({'error': 'Thứ hạng phải lớn hơn 0'}, status=400)
-        baiviet = BaiViet.objects.get(mabaiviet=mabaiviet)  # Attempt to get the bài viết
-        queryset = BaiViet.objects.order_by('-giatri')
-        if top > queryset.count():
-            return JsonResponse({'error': 'Thứ hạng vượt quá số lượng bài viết'}, status=400)
-        target_baiviet = queryset[top - 1]  # top 1 corresponds to index 0
-        target_giatri = target_baiviet.giatri  # Giá trị bài viết tại vị trí `top`
-
-        required_value = target_giatri + 10000 - baiviet.giatri
-        response_data = {
-            'top': top,
-            'required_value': required_value,
-        }
-        return JsonResponse(response_data, status=200)
-    except ValueError:
-        return JsonResponse({'error': 'Tham số top không hợp lệ'}, status=400)
-    except BaiViet.DoesNotExist:
-        return JsonResponse({'error': 'Không tìm thấy bài viết'}, status=404)
-    except Exception as e:
-        return JsonResponse({'error': str(e)}, status=500)
 
    
 @csrf_exempt

@@ -10,7 +10,7 @@ export default function NavigationAccount({ user, setUserInfo }) {
 
     useEffect(() => {
         setCoverImage(`/image/${user.anhnen || 'default-cover.jpg'}`);
-        setAvatarImage(`/image/${user.anhdaidien || 'default-avatar.jpg'}`);
+        setAvatarImage(`http://127.0.0.1:8000/media/images/${user.anhdaidien || 'default-avatar.jpg'}`);
     }, [user]);
 
     const handleImageChange = async (file, type) => {

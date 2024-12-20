@@ -15,7 +15,7 @@ export default function Top100Post() {
         setLoading(true);
         try {
             const response = await axios.get(
-                `http://127.0.0.1:8000/api/get_top_100_baiviet/?page=${page}&limit=2`
+                `http://127.0.0.1:8000/api/get_top_100_baiviet/?page=${page}&limit=8`
             );
 
             setProducts((prev) => {

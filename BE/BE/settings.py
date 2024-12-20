@@ -29,8 +29,8 @@ ALLOWED_HOSTS = []
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'd3ed-101-53-36-58.ngrok-free.app']
-
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '88da-101-53-36-58.ngrok-free.app']
+ALLOWED_HOSTS = ['*'] 
 
 JWT_SECRET_KEY = 'TRANCHICONG3003'
 CSRF_TRUSTED_ORIGINS = [
@@ -69,7 +69,7 @@ SIMPLE_JWT = {
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
 }
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'd3ed-101-53-36-58.ngrok-free.app']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '88da-101-53-36-58.ngrok-free.app']
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',

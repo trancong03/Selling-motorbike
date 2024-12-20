@@ -19,7 +19,7 @@ def create_payment(request):
     secretKey = "K951B6PE1waDMi640xX08PD3vg6EkVlz"
     orderInfo = "Nap tien vao tai khoan"
     redirectUrl = "http://localhost:5173/payment-result"
-    ipnUrl = "https://d3ed-101-53-36-58.ngrok-free.app/payment/ipn/"
+    ipnUrl = "https://88da-101-53-36-58.ngrok-free.app/payment/ipn/"
     requestType = "captureWallet"
     extraData = ""
 

@@ -79,8 +79,9 @@ const PaymentForm = () => {
       </div>
       
       <button
-        type="button"
+        type="submit"
         className="w-[30%] py-2 px-4 bg-orange-500 text-white font-medium rounded-md hover:bg-green-500 transition duration-500"
+              
       >
         Tạo thanh toán
       </button>

@@ -140,7 +140,7 @@ export default function PostItemUser({ product, userId }) {
                 {/* Seller Info */}
                 <div className="flex items-center space-x-4">
                     <img
-                        src={userId.anhdaidien ? `http://127.0.0.1:8000//media/images/${userId.anhdaidien}` : "http://127.0.0.1:8000//media/images/icon.png"}
+                        src={userId.anhdaidien ? `http://127.0.0.1:8000/media/images/${userId.anhdaidien}` : "http://127.0.0.1:8000//media/images/icon.png"}
                         alt="User avatar"
                         className="w-12 h-12 rounded-full border-2 border-gray-300"
                     />

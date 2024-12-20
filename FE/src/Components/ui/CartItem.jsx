@@ -105,7 +105,7 @@ export default function CartItem({ Product }) {
                 </h4>
                 <div className="flex justify-start items-center gap-2 ml-3 mt-2 pb-2">
                     <img
-                        src={user ? `/image/${user[0]?.anhdaidien}` : "/image/icon.png"}
+                        src={user[0]?.anhdaidien ? `http://127.0.0.1:8000/media/images/${user[0]?.anhdaidien}` : "http://127.0.0.1:8000/media/images/icon.png"}
                         alt="User anhdaidien"
                         className="w-4 h-4 rounded-full"
                     />

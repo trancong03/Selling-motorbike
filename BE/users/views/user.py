@@ -181,7 +181,8 @@ def reset_password_forgot(request):
         data = json.loads(request.body)
         email = data.get('email')
         new_password = data.get('newPassword')
-        UserService.reset_password_forgot(email, new_password)
+        hashed_password = make_password(new_password)
+        UserService.reset_password_forgot(email, hashed_password)
         return JsonResponse({'success': True, 'message': 'Mật khẩu đã được thay đổi thành công.'})
     return JsonResponse({'error': 'Method not allowed'}, status=405)
 @csrf_exempt
