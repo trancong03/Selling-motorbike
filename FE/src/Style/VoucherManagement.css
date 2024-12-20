@@ -1,0 +1,97 @@
+.voucher-management {
+    padding: 20px;
+  }
+  
+  .section-title {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  .add-voucher-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .add-voucher-form input, .add-voucher-form textarea {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .add-voucher-form button {
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .voucher-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .voucher-table th, .voucher-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  .voucher-table th {
+    background-color: #f2f2f2;
+  }
+  
+  .voucher-table button {
+    margin: 0 5px;
+    padding: 5px 10px;
+    background-color: #008CBA;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .voucher-table button:hover {
+    background-color: #005f73;
+  }
+
+  /* Đảm bảo rằng các nút trong bảng có kích thước và màu sắc phù hợp */
+.voucher-table button {
+    font-size: 20px; /* Tăng kích thước font của biểu tượng */
+    padding: 10px; /* Tăng padding để nút lớn hơn */
+    margin: 0 5px; /* Khoảng cách giữa các nút */
+    border: none;
+    border-radius: 5px; /* Góc bo tròn cho nút */
+    cursor: pointer;
+    transition: all 0.3s ease; /* Hiệu ứng chuyển đổi khi hover */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Nút sửa */
+  .voucher-table button svg.fa-edit {
+    color: #28a745; /* Màu xanh lá cây cho biểu tượng sửa */
+  }
+  
+  .voucher-table button:hover svg.fa-edit {
+    color: #218838; /* Màu xanh đậm hơn khi hover */
+  }
+  
+  /* Nút xóa */
+  .voucher-table button svg.fa-trash {
+    color: #dc3545; /* Màu đỏ cho biểu tượng xoá */
+  }
+  
+  .voucher-table button:hover svg.fa-trash {
+    color: #c82333; /* Màu đỏ đậm hơn khi hover */
+  }
+  
+  /* Hiệu ứng hover cho nút */
+  .voucher-table button:hover {
+    transform: scale(1.1); /* Phóng to nút khi hover */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Thêm bóng khi hover */
+  }

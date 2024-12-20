@@ -4,7 +4,7 @@
 
 
 import React, { useState, useEffect } from "react";
-import { FaUsers, FaChartLine, FaNewspaper, FaExchangeAlt, FaFilter, FaBell, FaHeadset, FaCog, FaLock, FaSignOutAlt } from "react-icons/fa";
+import { FaUsers, FaChartLine, FaNewspaper, FaExchangeAlt, FaFilter, FaBell, FaHeadset, FaCog, FaLock, FaSignOutAlt, FaTag } from "react-icons/fa";
 import UserManagement from "./UserManagement";
 import PostManagement from "./PostManagement";
 import NotificationManagement from "./NotificationManagement";
@@ -12,6 +12,7 @@ import RevenueReport from "./RevenueReport";
 import RevenueChart from "./RevenueChart";
 import TransactionManagement from "./TransactionManagement";
 import SystemSettings from "./SystemSettings.jsx";
+import VoucherManagement from "./VoucherManagement.jsx";
 import { Navigate } from "react-router-dom";
 import "../../Style/admin.css";
 
@@ -31,6 +32,7 @@ const AdminDashboard = () => {
     { icon: FaUsers, text: "Tài khoản", view: "users" },
     { icon: FaNewspaper, text: "Bài viết", view: "posts" },
     { icon: FaExchangeAlt, text: "Giao dịch", view: "transactions" },
+    { icon: FaTag, text: "Quản lý Voucher", view: "vouchers" }, // Mục mới
     { icon: FaFilter, text: "Danh mục", view: "categories" },
     { icon: FaBell, text: "Thông báo", view: "notifications" },
     { icon: FaChartLine, text: "Thống kê doanh thu", view: "revenue" },
@@ -58,6 +60,8 @@ const AdminDashboard = () => {
         return <div className="dashboard-container"><PostManagement handleSendNotification={handleSendNotification} /></div>;
       case "transactions":
         return <div className="dashboard-container"><TransactionManagement /></div>;
+      case "vouchers":
+        return <div className="dashboard-container"><VoucherManagement /></div>;
       case "notifications":
         return <div className="dashboard-container"><NotificationManagement notifications={notifications} /></div>;
       case "revenue":

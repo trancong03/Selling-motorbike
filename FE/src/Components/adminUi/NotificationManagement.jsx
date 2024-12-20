@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-
+import "../../Style/NotificationManagement.css";
 const NotificationManagement = () => {
   const [notifications, setNotifications] = useState([]);
   const [users, setUsers] = useState([]);
@@ -82,7 +82,7 @@ const NotificationManagement = () => {
   };
 
   return (
-    <div>
+    <div className="notification-management">
       <h2 className="text-xl font-semibold mb-4">Quản lý thông báo</h2>
 
       <div className="mb-6">

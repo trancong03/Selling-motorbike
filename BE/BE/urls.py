@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-
+from users import views1, views2, views3
 urlpatterns = [
     path('admin-api/', include('CustomAdmin.urls')),
     path('api/', include('users.urls')),  # Thêm đường dẫn tới ứng dụng 'users'

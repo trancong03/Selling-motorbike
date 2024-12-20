@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom'; // Sử dụng useParams
-import '../Style/PostDetail.css';
+import "../../Style/PostDetail.css";
 
 const PostDetail = () => {
   const [post, setPost] = useState(null);

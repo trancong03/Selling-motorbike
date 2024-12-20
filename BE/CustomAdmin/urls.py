@@ -1,6 +1,6 @@
 from rest_framework.routers import DefaultRouter
 from django.urls import path, include
-from CustomAdmin.views import AdminLoginAPIView, NguoiDungViewSet, BaiVietViewSet, GoiGiaoDichViewSet, HinhAnhViewSet, FollwerViewSet, NapDayTinViewSet, NapGiaHanViewSet, NapTienTaiKhoanViewSet, ThongBaoViewSet, GuiThongBaoAPIView, ThuocTinhHeThongViewSet, ThongBaoList
+from CustomAdmin.views import AdminLoginAPIView, NguoiDungViewSet, BaiVietViewSet, GoiGiaoDichViewSet, HinhAnhViewSet, FollwerViewSet, NapDayTinViewSet, NapGiaHanViewSet, NapTienTaiKhoanViewSet, ThongBaoViewSet, GuiThongBaoAPIView, ThuocTinhHeThongViewSet, ThongBaoList, VoucherViewSet
 from CustomAdmin import views
 
 router = DefaultRouter()
@@ -14,6 +14,7 @@ router.register(r'napgiahan', NapGiaHanViewSet)
 router.register(r'naptientaikhoan', NapTienTaiKhoanViewSet)
 router.register(r'thongbao', ThongBaoViewSet)
 router.register(r'thuoctinhhethong', ThuocTinhHeThongViewSet)
+router.register(r'voucher', VoucherViewSet)
 
 
 urlpatterns = [
