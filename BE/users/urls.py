@@ -2,7 +2,7 @@ from django.conf import settings
 from django.urls import path, include   # type: ignore
 from users.views import user, post
 from django.conf.urls.static import static
-from . import views1, views2, views3
+from . import views1, views2, views3, views5
 from rest_framework.routers import DefaultRouter  # Nhập DefaultRouter
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView # type: ignore
 # router = DefaultRouter()
@@ -19,6 +19,7 @@ urlpatterns = [
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('scan-cccd/', views1.scan_cccd, name='scan_cccd'),
+    path('scan-cccd-back/', views5.scan_cccd_back, name='scan_cccd_back'),
     path('predict-price/', views2.predict_price, name='predict_price'),
     # path('followers/', include(router.urls)),
     # path('follow/<int:user_id>/', views3.follow_user, name='follow_user'),

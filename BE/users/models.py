@@ -44,7 +44,7 @@ class NguoiDung(models.Model):
     anhnen = models.CharField(max_length=10, null=True, blank=True)
     is_superuser = models.BooleanField(default=False)
     sodu = models.DecimalField(max_digits=19, decimal_places=4, null=True, blank=True)
-
+    date = models.DateField(null=True, blank=True)
     class Meta:
         db_table = 'NGUOIDUNG'  # Custom table name
 
